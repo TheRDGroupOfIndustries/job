@@ -1,15 +1,33 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  --color-primary: #FD5E00;
+  --color-primary-hover: #e65500;
+  --color-secondary: #9A9A9A;
+
+  --color-card: #FFFFFF;
+
+  --color-background: #E6E6E6;
+  --color-foreground: #000000;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --font-dm-mono: var(--font-dm-mono);
+  --font-stix-two-math: var(--font-stix-two-math);
+  /* --font-spline-sans: var(--font-spline-sans); */
+
+  --shadow-primary: 
+  0px 2px 3px -1px #FD5E00,
+  0px 1px 0px 0px #FD5E00,
+  0px 8px 8px -4px #FD5E00,
+  0px 20px 20px -10px #FD5E00,
+  0px 40px 40px -20px #FD5E00,
+  0px 60px 60px -30px #FD5E00;
+
+  --shadow-badge: 
+  0px 0px 5px 1px #FD5E00;
+
 }

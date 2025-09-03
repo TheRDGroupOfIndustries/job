@@ -1,14 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  DM_Mono,
+  Geist,
+  Geist_Mono,
+  Spline_Sans,
+  STIX_Two_Text,
+} from "next/font/google";
 import "../styles/globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmMono = DM_Mono({
+  weight: ["400", "500"],
+  variable: "--font-dm-mono",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const stixTwoMath = STIX_Two_Text({
+  weight: ["400", "700"],
+  variable: "--font-stix-two-math",
+  subsets: ["latin"],
+});
+
+const splineSans = Spline_Sans({
+  weight: ["400", "700"],
+  variable: "--font-spline-sans",
   subsets: ["latin"],
 });
 
@@ -25,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
       >
         {children}
       </body>
