@@ -1,8 +1,8 @@
+import MailComp from "@/components/MailComp";
 
 export default function Page () {
   return (
-    <div>
-      <h1>Send-mails Page</h1>
-    </div>
+      <MailComp/>
+    
   );
 };

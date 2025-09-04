@@ -7,6 +7,7 @@ import {
   STIX_Two_Text,
 } from "next/font/google";
 import "../styles/globals.css";
+import { Providers } from "@/redux/Providers";
 
 const dmMono = DM_Mono({
   weight: ["400", "500"],
@@ -41,7 +42,7 @@ export default function RootLayout({
       <body
         className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

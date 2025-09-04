@@ -23,7 +23,7 @@ import { Button } from "./ui/button";
 export default function Sidebar() {
   const pathname = usePathname();
 
-  console.log(pathname);
+  // console.log(pathname);
   const Options = [
     {
       label: "Dashboard",
