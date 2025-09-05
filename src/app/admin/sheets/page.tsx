@@ -1,8 +1,7 @@
+import SheetComp from "@/components/SheetComp";
 
 export default function Page () {
   return (
-    <div>
-      <h1>Sheets Page</h1>
-    </div>
+    <SheetComp/>
   );
 };

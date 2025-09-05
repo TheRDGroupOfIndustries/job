@@ -15,7 +15,7 @@ export default function Header() {
   const dispatch = useDispatch();
 
   return (
-    <header className="h-[80px] bg-card rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between ">
+    <header className="h-[80px] bg-card rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
       <div className="flex items-center">
         <h1 className="text-2xl font-bold mr-10">LOGO</h1>
         <form

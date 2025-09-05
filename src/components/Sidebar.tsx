@@ -73,6 +73,7 @@ export default function Sidebar() {
           <Image
             src={"/images/profile_picture.jpg"}
             alt="Profile Picture"
+            priority={true} 
             width={80}
             height={80}
             className=" rounded-full"
