@@ -35,7 +35,7 @@ export interface IJob extends Document {
     locatedAt: string;
   };
   jobDescription: string;
-  vacancy: number;
+  vacancy?: number;
 }
 
 const JobSchema: Schema<IJob> = new Schema(
