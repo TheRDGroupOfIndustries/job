@@ -1,6 +1,7 @@
 import { IUser } from "@/models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { NextRequest, NextResponse } from "next/server";
 
 export const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 10);
@@ -25,3 +26,17 @@ export const generateToken = (user: IUser) => {
     }
   );
 };
+
+export function authenticate(req: NextRequest) {
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader) return null;
+
+  const token = authHeader.replace("Bearer ", "");
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    return decoded; 
+  } catch {
+    return null;
+  }
+}

@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IJob extends Document {
   designation: string;
-  employmentType: "flul-time" | "part-time" | "contract" | "internship";
+  employmentType: "full-time" | "part-time" | "contract" | "internship";
   keySkills: string[];
   skills: string[];
   department: string;
