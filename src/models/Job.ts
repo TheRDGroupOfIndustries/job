@@ -36,6 +36,7 @@ export interface IJob extends Document {
   };
   jobDescription: string;
   vacancy?: number;
+  createdBy: mongoose.Types.ObjectId;
 }
 
 const JobSchema: Schema<IJob> = new Schema(
@@ -95,8 +96,14 @@ const JobSchema: Schema<IJob> = new Schema(
 
     jobDescription: { type: String, required: true },
     vacancy: { type: Number, required: true },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
   },
   { timestamps: true }
 );
 
-export const Job = mongoose.model<IJob>("Job", JobSchema);
+export const Job =
+  mongoose.models.Job || mongoose.model<IJob>("Job", JobSchema);

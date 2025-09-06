@@ -3,6 +3,12 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
+export interface DecodedUser {
+  id: string;
+  email: string;
+  role: string;
+}
+
 export const hashPassword = async (password: string) => {
   return await bcrypt.hash(password, 10);
 };
@@ -22,19 +28,19 @@ export const generateToken = (user: IUser) => {
     { id: user._id, email: user.email, role: user.role },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: "1h",
     }
   );
 };
 
-export function authenticate(req: NextRequest) {
+export function authenticate(req: NextRequest): DecodedUser | null {
   const authHeader = req.headers.get("authorization");
   if (!authHeader) return null;
 
   const token = authHeader.replace("Bearer ", "");
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
     return decoded; 
   } catch {
     return null;
