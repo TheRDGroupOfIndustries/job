@@ -15,13 +15,21 @@ import {
 import { Badge } from "./ui/badge";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { authLogout } from "@/redux/features/authSlice";
 
 export default function Sidebar() {
+  const { userData, isAutheticated } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const dispatch = useDispatch();
   const pathname = usePathname();
+  const router = useRouter();
 
   // console.log(pathname);
   const Options = [
@@ -62,6 +70,14 @@ export default function Sidebar() {
     },
   ];
 
+  const handleLogout = async () => {
+    const res = await fetch("/api/auth/logout", { method: "POST" });
+    const data = await res.json();
+    console.log(data);
+    dispatch(authLogout());
+    router.push("/auth/login");
+  };
+
   return (
     <div className="min-w-[250px] py-4 md:py-10 flex flex-col gap-5">
       {/* Profile Card */}
@@ -73,17 +89,19 @@ export default function Sidebar() {
           <Image
             src={"/images/profile_picture.jpg"}
             alt="Profile Picture"
-            priority={true} 
+            priority={true}
             width={80}
             height={80}
             className=" rounded-full"
           />
         </div>
         <h2 className="text-xl font-semibold leading-tight font-stix-two-math">
-          Adarsh Pandit
+          {userData && userData.name ? userData.name : "Adarsh Pandit"}
         </h2>
         <p className="text-sm text-secondary leading-tight font-dm-mono font-thin">
-          adarshpandit@gmail.com
+          {userData && userData.email
+            ? userData.email
+            : "adarshpandit@gmail.com"}
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
           <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
@@ -143,7 +161,12 @@ export default function Sidebar() {
             <span className=" text-lg">Notification</span>
             <Switch id="notification" className="shadow-md" />
           </Label>
-          <Button variant={"ghost"} className="text-lg text-primary cursor-pointer">
+          <Button
+            type="button"
+            onClick={handleLogout}
+            variant={"ghost"}
+            className="text-lg text-primary cursor-pointer"
+          >
             <DoorOpen size={24} /> Logout
           </Button>
         </div>

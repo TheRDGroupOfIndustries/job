@@ -6,6 +6,7 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <div className=" bg-background w-full min-h-screen px-4 md:px-10 flex gap-5">
       <Sidebar />

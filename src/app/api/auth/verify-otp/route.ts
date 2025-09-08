@@ -27,7 +27,10 @@ export async function POST(req: NextRequest) {
     await Otp.deleteOne({email})
     return NextResponse.json({
       message: "User registered successfully",
-      newUser,
+      newUser: {
+        ...newUser,
+        password: undefined,
+      },
     });
   } catch (error) {
     return NextResponse.json(
