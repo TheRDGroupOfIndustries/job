@@ -52,7 +52,7 @@ export default function Login() {
   const onSubmit = async (data: LoginFormData) => {
     console.log("Login Data:", data);
     // Handle login submission, e.g., send data to an API
-
+    setLoading(true)
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",

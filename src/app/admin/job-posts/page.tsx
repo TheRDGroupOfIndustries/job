@@ -1,8 +1,8 @@
+import JobComp from "@/components/JobComp";
+import JobForm from "@/components/JobForm";
 
 export default function Page () {
   return (
-    <div>
-      <h1>Job-posts Page</h1>
-    </div>
+    <JobComp/>
   );
 };

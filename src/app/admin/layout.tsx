@@ -1,5 +1,7 @@
+import AuthInitializer from "@/components/auth/AuthInitializer";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import { authenticate } from "@/lib/auth";
 
 export default function AdminLayout({
   children,
@@ -17,6 +19,7 @@ export default function AdminLayout({
           {children}
         </div>
       </div>
+      <AuthInitializer/>
     </div>
   );
 }

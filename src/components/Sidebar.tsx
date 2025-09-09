@@ -96,12 +96,12 @@ export default function Sidebar() {
           />
         </div>
         <h2 className="text-xl font-semibold leading-tight font-stix-two-math">
-          {userData && userData.name ? userData.name : "Adarsh Pandit"}
+          {userData && userData.name ? userData.name : "Username"}
         </h2>
         <p className="text-sm text-secondary leading-tight font-dm-mono font-thin">
           {userData && userData.email
             ? userData.email
-            : "adarshpandit@gmail.com"}
+            : "username@gmail.com"}
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
           <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">

@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const jobs = await Job.findOne({ createdBy: user.id });
+    const jobs = await Job.find({ createdBy: user.id });
 
     return NextResponse.json({
       message: `Jobs created by ${user.email.split("@")[0]}`,

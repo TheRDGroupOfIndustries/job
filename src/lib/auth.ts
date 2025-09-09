@@ -25,7 +25,7 @@ export const generateToken = (user: IUser) => {
     return "No secret token provided";
   }
   return jwt.sign(
-    { id: user._id, email: user.email, role: user.role },
+    { id: user._id, email: user.email, role: user.role, name: user.name },
     process.env.JWT_SECRET,
     {
       expiresIn: "10m",
@@ -34,13 +34,13 @@ export const generateToken = (user: IUser) => {
 };
 
 export function authenticate(req: NextRequest): DecodedUser | null {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader) return null;
-
-  const token = authHeader.replace("Bearer ", "");
+  
+  const token = req.cookies.get("job-auth-token")?.value;
+  if (!token) return null;
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
+    console.log("decoded", decoded);
     return decoded; 
   } catch {
     return null;
