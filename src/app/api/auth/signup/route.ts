@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const reg = "register";
     await sendOTP(email, OTP, "Register");
 
-    let OptUser = await Otp.findOne({ email });
+    const OptUser = await Otp.findOne({ email });
     if (OptUser) {
       await Otp.findOneAndUpdate({ email }, { otp: OTP });
     } else {

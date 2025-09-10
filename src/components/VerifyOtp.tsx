@@ -89,7 +89,7 @@ export default function VerifyOtp() {
             Login
           </Button>
           <p className="text-center text-secondary text-base">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/auth/register" className="hover:text-primary">
               Register here.
             </Link>
