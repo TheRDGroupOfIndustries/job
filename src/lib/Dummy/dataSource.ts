@@ -1,4 +1,4 @@
-export let defaultData: object[] = [
+export const defaultData: object[] = [
   {
     "Customer Name": "Romona Heaslip",
     "Model": "Taurus",

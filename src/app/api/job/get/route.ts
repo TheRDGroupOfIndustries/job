@@ -6,14 +6,17 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const user = authenticate(req as any);
+
+    const user = await authenticate(req as any);
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
     if (user.role !== "admin") {
       return NextResponse.json(
         { error: "Only admin allowed" },
-        { status: 400 }
+        { status: 403 }
       );
     }
 

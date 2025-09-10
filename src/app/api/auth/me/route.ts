@@ -15,7 +15,7 @@ console.log("token", token)
     return NextResponse.json({ user: decoded });
   } catch (error) {
     console.error("Error verifying token:", error);
-    let res = NextResponse.json({ user: null });
+    const res = NextResponse.json({ user: null });
     res.cookies.delete("job-auth-token");
     return res;
   }
