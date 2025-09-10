@@ -32,16 +32,22 @@ export async function POST(req: NextRequest) {
     const OTP = generateOTP();
     console.log(OTP);
 
-    const reg = "register"
-    await sendOTP(email, OTP, "Register" );
-    await Otp.create({
-      name,
-      email,
-      password,
-      role,
-      phone,
-      otp: OTP,
-    });
+    const reg = "register";
+    await sendOTP(email, OTP, "Register");
+
+    let OptUser = await Otp.findOne({ email });
+    if (OptUser) {
+      await Otp.findOneAndUpdate({ email }, { otp: OTP });
+    } else {
+      await Otp.create({
+        name,
+        email,
+        password,
+        role,
+        phone,
+        otp: OTP,
+      });
+    }
 
     return NextResponse.json({ message: "Otp send to the email" });
   } catch (error) {

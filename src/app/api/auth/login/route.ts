@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     }
     const token = generateToken(user);
 
-    return NextResponse.json({
+    const res =  NextResponse.json({
       message: "Login successful",
       token,
       user: {
@@ -42,6 +42,9 @@ export async function POST(req: NextRequest) {
         role: user.role,
       },
     });
+    res.cookies.set("job-auth-token", token, { httpOnly: true });
+    return res;
+
   } catch (error) {
     return NextResponse.json(
       { message: (error as Error).message },
