@@ -17,14 +17,14 @@ export async function POST(req: NextRequest) {
 
     if (!name || !email || !password) {
       return NextResponse.json(
-        { message: "All fields should be filled." },
+        { success: false, message: "All fields should be filled." },
         { status: 400 }
       );
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exist" },
+        { success: false, message: "User already exist" },
         { status: 400 }
       );
     }
@@ -49,10 +49,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ message: "Otp send to the email" });
+    return NextResponse.json({ success: true, message: "Otp send to the email" });
   } catch (error) {
     return NextResponse.json(
-      { message: (error as Error).message },
+      { success: false, message: (error as Error).message },
       { status: 500 }
     );
   }

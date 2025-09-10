@@ -8,6 +8,7 @@ import {
 } from "next/font/google";
 import "../styles/globals.css";
 import { Providers } from "@/redux/Providers";
+import { Toaster } from "react-hot-toast";
 
 const dmMono = DM_Mono({
   weight: ["400", "500"],
@@ -43,6 +44,21 @@ export default function RootLayout({
         className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
       >
         <Providers>{children}</Providers>
+        <Toaster
+          // toastOptions={{
+          //   success: {
+          //     style: {
+          //       background: "green",
+          //       color: "white",
+          //     },
+          //   },
+          //   error: {
+          //     style: {
+          //       background: "red",
+          //     },
+          //   },
+          // }}
+        />
       </body>
     </html>
   );

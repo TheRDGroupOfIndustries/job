@@ -11,7 +11,10 @@ export async function POST(req: NextRequest) {
 
     const existingOtp = await Otp.findOne({ email });
     if (otp !== existingOtp.otp) {
-      return NextResponse.json({ message: "Invalid otp. Try again." });
+      return NextResponse.json(
+        { success: false, message: "Invalid otp. Try again." },
+        { status: 400 }
+      );
     }
 
     const hashedPassword = await hashPassword(existingOtp.password);
@@ -24,17 +27,18 @@ export async function POST(req: NextRequest) {
       phone: existingOtp.phone,
     });
 
-    await Otp.deleteOne({email})
+    await Otp.deleteOne({ email });
     return NextResponse.json({
+      success: true,
       message: "User registered successfully",
       newUser: {
         ...newUser,
         password: undefined,
       },
-    });
+    }, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { message: (error as Error).message },
+      { success: false, message: (error as Error).message },
       { status: 500 }
     );
   }

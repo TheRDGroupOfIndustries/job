@@ -25,7 +25,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import BtnLoader from "./BtnLoader";
 import { useDispatch } from "react-redux";
-import { authLogin } from "@/redux/features/authSlice";
+import { authLogin, loginUser } from "@/redux/features/authSlice";
 
 interface LoginFormData {
   email: string;
@@ -46,50 +46,31 @@ export default function Login() {
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log("Login Data:", data);
-    // Handle login submission, e.g., send data to an API
-    setLoading(true)
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    setLoading(true);
+
+    dispatch(loginUser(data) as any)
+      .unwrap()
+      .then((res: any) => {
+        // console.log("login res", res);
+        switch (res.user.role) {
+          case "admin":
+            router.push("/admin");
+            break;
+          case "employee":
+            router.push("/employee");
+            break;
+          default:
+            router.push("/");
+            break;
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      console.log(res)
-      if (!res.ok) {
-        throw new Error("Login failed");
-      }
-      
-      const responseData = await res.json();
-      console.log(responseData);
-      dispatch(authLogin(responseData))
-      
-      switch (responseData.user.role) {
-        case "admin":
-          router.push("/admin");
-          break;
-        case "employee":
-          router.push("/employee");
-          break;
-        default:
-          router.push("/");
-          break;
-      }
-      
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
-
-
 
   return (
     <Card className="w-full max-w-md shadow-lg rounded-2xl border-none">
@@ -131,8 +112,8 @@ export default function Login() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-4 p-6 pt-6">
-          <Button className="w-full rounded-full" type="submit">
-            {loading ? <BtnLoader/> : "Login"}
+          <Button className="w-full rounded-full cursor-pointer" type="submit">
+            {loading ? <BtnLoader /> : "Login"}
           </Button>
           <p className="text-center text-secondary text-base">
             Don&apos;t have an account?{" "}

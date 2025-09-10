@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { IJob } from "@/models/Job";
 import { createJob, updateJob } from "@/redux/features/jobSlice";
+import toast from "react-hot-toast";
 
 export default function JobForm({
   mode = "create",
@@ -132,27 +133,33 @@ export default function JobForm({
 
     if (mode === "edit" && jobId) {
       console.log("JobId:", jobId);
+      toast.loading("Updating Job...", { id: "update-job" })
       dispatch(updateJob(data) as any)
-        .unwrap()
-        .then((res: { message: string; job: IJob }) => {
-          console.log("res", res);
-          reset();
-          close();
+      .unwrap()
+      .then((res: { message: string; job: IJob }) => {
+        console.log("res", res);
+        toast.success("Job Updated Successfully", { id: "update-job" })
+        reset();
+        close();
         }).catch((err: any) => {
+          toast.error("Error Updating Job", { id: "update-job" })
           console.log("err", err);
         }).finally(() => {
           setLoading(false);
         });
         
     } else {
+      toast.loading("Creating Job...", { id: "create-job" })
       dispatch(createJob(data) as any)
         .unwrap()
         .then((res: { message: string; job: IJob }) => {
+          toast.success("Job Created Successfully", { id: "create-job" })
           console.log("res", res);
           reset();
           close();
         })
         .catch((err: any) => {
+          toast.error("Error Creating Job", { id: "create-job" })
           console.log("err", err);
         })
         .finally(() => {

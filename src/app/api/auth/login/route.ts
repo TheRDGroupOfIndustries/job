@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { success: false, message: "Email and password are required" },
         { status: 400 }
       );
     }
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     const user = await User.findOne({ email });
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { success: false, message: "Invalid credentials" },
         { status: 401 }
       );
     }
@@ -26,13 +26,14 @@ export async function POST(req: NextRequest) {
     const isValid = await comparePassword(password, user.password);
     if (!isValid) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        { success: false, message: "Invalid credentials" },
         { status: 401 }
       );
     }
     const token = generateToken(user);
 
-    const res =  NextResponse.json({
+    const res = NextResponse.json({
+      success: true,
       message: "Login successful",
       token,
       user: {
@@ -41,13 +42,12 @@ export async function POST(req: NextRequest) {
         email: user.email,
         role: user.role,
       },
-    });
+    }, { status: 200 });
     res.cookies.set("job-auth-token", token, { httpOnly: true });
     return res;
-
   } catch (error) {
     return NextResponse.json(
-      { message: (error as Error).message },
+      { success: false, message: (error as Error).message },
       { status: 500 }
     );
   }

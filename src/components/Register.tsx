@@ -16,6 +16,9 @@ import Link from "next/link";
 import { useState } from "react";
 import BtnLoader from "./BtnLoader";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { registerUser, verifyUser } from "@/redux/features/authSlice";
+import { ArrowLeft } from "lucide-react";
 
 interface RegisterFormData {
   name: string;
@@ -46,69 +49,51 @@ export default function Register() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch()
 
 
   const handleSendOtp = async (data: RegisterFormData) => {
-    console.log("Register Data:", data);
-    // Handle registration submission, e.g., send data to an API
     setSendingOtp(true);
-
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    dispatch(registerUser(data) as any)
+      .unwrap().then((res: any)=> {
+        // console.log("register res", res)
+        if(res.success){
+          setOtpSent(true)
+        }
+      }).catch((err: any) => {
+        console.log("register err", err)
+      }).finally(() => {
+        setSendingOtp(false);
       });
-      const responseData = await res.json();
-      if (responseData) {
-        setOtpSent(true);
-      }
-      console.log(responseData);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setSendingOtp(false);
-    }
   };
 
   const handleVerifyOtp = async (data: RegisterFormData) => {
-    console.log("Register Data:", data);
-    // Handle registration submission, e.g., send data to an API
     setLoading(true);
-
-    try {
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    dispatch(verifyUser({email: data.email, otp: data.otp}) as any)
+      .unwrap().then((res: any) => {
+        // console.log("register res", res)
+        if(res.success){
+          router.push("/auth/login")
+        }
+      }).catch((err: any) => {
+        console.log("register err", err)
+      }).finally(() => {
+        setLoading(false);
       });
-      const responseData = await res.json();
-      console.log(responseData);
-      if(responseData){
-        router.push('/auth/login')
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
     <Card className="w-full max-w-md shadow-lg rounded-2xl border-none">
       {otpSent ? (
         <>
-          <CardHeader>
+          <CardHeader className="relative">
             <CardTitle className="text-2xl text-center">
               Verify your account
             </CardTitle>
             <CardDescription className="text-center">
               Enter Otp sent to your email to verify your account.
             </CardDescription>
+            <Button className="absolute -top-18 -left-0 rounded-full cursor-pointer" onClick={() => setOtpSent(false)}><ArrowLeft/> </Button>
           </CardHeader>
           <form onSubmit={handleSubmit(handleVerifyOtp)}>
             <CardContent className="grid gap-4">
@@ -141,7 +126,7 @@ export default function Register() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4 p-6 pt-6">
-              <Button className="w-full rounded-full" type="submit">
+              <Button className="w-full rounded-full cursor-pointer" type="submit">
                 {loading ? <BtnLoader /> : "Varify"}
               </Button>
             </CardFooter>
@@ -264,7 +249,7 @@ export default function Register() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4 p-6 pt-6">
-              <Button className="w-full rounded-full" type="submit">
+              <Button className="w-full rounded-full cursor-pointer" type="submit">
                 {sendingOtp ? <BtnLoader /> : "Register"}
               </Button>
               <p className="text-center text-secondary text-base">

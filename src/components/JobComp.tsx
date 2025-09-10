@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import BtnLoader from "./BtnLoader";
 import JobDetails from "./JobDetails";
 import { Pencil, Plus, Trash } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function JobComp() {
   const { mails, selectedMail } = useSelector((state: RootState) => state.mail);
@@ -38,9 +39,15 @@ export default function JobComp() {
 
   const handleDelete = (jobId: string) => {
     setDeletingJob(true);
+    toast.loading("Deleting Job...", { id: "delete-job" });
     dispatch(deleteJob(jobId))
       .unwrap()
       .then(() => {
+        toast.success("Job Deleted Successfully", { id: "delete-job" });
+      }).catch((err: any) => {
+        toast.error("Error Deleting Job", { id: "delete-job" });
+        console.log("err", err);
+      }).finally(() => {
         setDeletingJob(false);
       });
   };
