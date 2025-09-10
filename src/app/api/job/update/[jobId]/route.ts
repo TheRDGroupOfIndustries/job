@@ -6,8 +6,9 @@ import { authenticate } from "@/lib/auth";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { jobId: string } }
+  { params }: Promise<{ params }>
 ) {
+
   try {
     await connectDB();
 
@@ -19,12 +20,14 @@ export async function PUT(
       return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
     }
 
-    const { jobId } = params;
+    const { jobId } = await params;
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
 
     const body: Partial<IJob> = await req.json();
+
+    console.log(jobId, body)
 
     const immutableFields: (keyof IJob)[] = [
       "createdBy",

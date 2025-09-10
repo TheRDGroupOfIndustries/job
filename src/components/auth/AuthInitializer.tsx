@@ -16,7 +16,7 @@ export default function AuthInitializer() {
       .unwrap()
       .catch(() => {
         // if unauthorized -> redirect
-        router.push("/auth/login");
+        // router.push("/auth/login");
       });
   }, [dispatch]);
 

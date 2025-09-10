@@ -31,7 +31,7 @@ export async function DELETE(
     await Job.findByIdAndDelete(jobId);
 
     return NextResponse.json(
-      { message: "Deleted successfully" },
+      { message: "Deleted successfully", job},
       { status: 200 }
     );
   } catch (error) {

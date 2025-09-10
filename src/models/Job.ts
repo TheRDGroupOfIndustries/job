@@ -37,6 +37,8 @@ export interface IJob extends Document {
   jobDescription: string;
   vacancy?: number;
   createdBy: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const JobSchema: Schema<IJob> = new Schema(
