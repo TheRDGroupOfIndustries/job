@@ -7,17 +7,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { deleteSelectedMails } from "@/redux/features/mailSlice";
 import ComposeMailModal from "./ComposeMailModal";
-
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedMail } = useSelector((state: RootState) => state.mail);
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   return (
-    <header className="h-[80px] bg-card rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
-      <div className="flex items-center">
-        <h1 className="text-2xl font-bold mr-10">LOGO</h1>
+    <header className="h-[80px] bg-section rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
+      <h1 className="text-2xl font-bold mr-10">LOGO</h1>
+      { pathname.includes("send-mails") && (<>
+      <div className="flex flex-1 items-center">
         <form
           onSubmit={(e) => e.preventDefault()}
           className="flex items-center gap-2"
@@ -48,8 +50,8 @@ export default function Header() {
           </Button>
         )}
 
-        <ComposeMailModal/>
-      </div>
+        <ComposeMailModal />
+      </div></>)}
     </header>
   );
 }

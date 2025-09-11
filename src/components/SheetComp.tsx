@@ -33,7 +33,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-[calc(100vw-400px)] h-[600px] mx-auto pl-10">
+    <div className="w-[calc(100vw-470px)] h-[600px] ">
       <SpreadsheetComponent
         height="100%"
         width="100%"
