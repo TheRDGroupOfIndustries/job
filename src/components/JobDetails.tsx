@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 export default function JobDetails({ jobId }: { jobId: string }) {
   const [openView, setOpenView] = useState(false);
-  const [updateId, setUpdateId] = useState(null);
+  const [updateId, setUpdateId] = useState<string | null>(null);
   const [deletingJob, setDeletingJob] = useState(false);
   const [isOpenForm, setIsOpenForm] = useState(false);
 
