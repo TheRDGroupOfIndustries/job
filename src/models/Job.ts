@@ -16,7 +16,7 @@ export interface IJob extends Document {
   };
   annualSalary: {
     min: number;
-    max: number;
+    max: number; 
     hideFromCandidates?: boolean;
   };
   companyIndustry: string;
