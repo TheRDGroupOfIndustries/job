@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         password,
         role,
         phone,
-        otp: OTP,
+        otp: OTP, 
       });
     }
 

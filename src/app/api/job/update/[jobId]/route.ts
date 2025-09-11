@@ -6,10 +6,10 @@ import { authenticate } from "@/lib/auth";
 
 export async function PUT(
   req: NextRequest,
-  { params }: Promise<{ params }>
+  { params }: { params: { jobId: string } }
 ) {
 
-  try {
+  try { 
     await connectDB();
 
     const user = authenticate(req as any);
