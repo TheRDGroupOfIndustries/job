@@ -40,7 +40,7 @@ const ApplicationSchema = new mongoose.Schema<IApplication>(
   }
 );
 
-export const Application = mongoose.model<IApplication>(
+export const Application =mongoose.models.Application || mongoose.model<IApplication>(
   "Application",
   ApplicationSchema
 );

@@ -16,7 +16,7 @@ export interface IJob extends Document {
   };
   annualSalary: {
     min: number;
-    max: number; 
+    max: number;
     hideFromCandidates?: boolean;
   };
   companyIndustry: string;
@@ -101,8 +101,8 @@ const JobSchema: Schema<IJob> = new Schema(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
-    }
+      required: true,
+    },
   },
   { timestamps: true }
 );
