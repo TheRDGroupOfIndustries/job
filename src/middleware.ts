@@ -20,13 +20,13 @@ function getRoleFromToken(token?: string): string | null {
   }
 }
 
-
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
 
-  // if(!token) return NextResponse.redirect(new URL("/auth/login", req.url));
+  if (!token && !pathname.startsWith("/auth"))
+    return NextResponse.redirect(new URL("/auth/login", req.url));
 
   // Protect only specific API routes
   if (pathname.startsWith("/api/job/create")) {

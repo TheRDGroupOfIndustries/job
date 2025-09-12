@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IJob extends Document {
+  _id: string;
   designation: string;
   employmentType: "full-time" | "part-time" | "contract" | "internship";
   keySkills: string[];

@@ -45,7 +45,7 @@ export default function MailDetails({ id }: { id: string }) {
 
   return (
     <>
-      <div className="flex sticky top-0 left-0 right-0 justify-between p-2 pl-20 pr-10 ">
+      <div className="flex sticky top-0 left-0 right-0 justify-between ">
         <Button
           variant={"ghost"}
           onClick={() => router.back()}
@@ -55,8 +55,8 @@ export default function MailDetails({ id }: { id: string }) {
         </Button>
         <h1 className="text-xl font-semibold">Primary Mails</h1>
       </div>
-      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto px-10">
-        <Card className="w-full p-6 border-none shadow-none rounded-none">
+      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto">
+        <Card className="w-full  border-none shadow-none rounded-none">
           <CardHeader>
             <div className="flex items-center space-x-4">
               <Avatar className="h-12 w-12 rounded-full">

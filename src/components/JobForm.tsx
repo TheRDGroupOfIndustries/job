@@ -1,3 +1,5 @@
+// components/JobForm.tsx
+
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -16,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Trash2, X } from "lucide-react";
+import { Trash2, X, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import BtnLoader from "./BtnLoader";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +32,7 @@ export default function JobForm({
   close,
   jobId,
 }: {
-  mode?: "create" | "edit";
+  mode?: "create" | "update";
   close: () => void;
   jobId?: string;
 }) {
@@ -86,13 +88,12 @@ export default function JobForm({
   const { userData } = useSelector((state: RootState) => state.auth);
   const { jobs } = useSelector((state: RootState) => state.job);
 
-  const [isOpenForm, setIsOpenForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (mode === "edit" && jobId) {
+    if (mode === "update" && jobId) {
       const job = jobs.find((j) => j._id === jobId);
       console.log("job", job)
       reset(job);
@@ -131,7 +132,7 @@ export default function JobForm({
     data.createdBy = userData?.id || "";
     console.log("Job Data:", data);
 
-    if (mode === "edit" && jobId) {
+    if (mode === "update" && jobId) {
       console.log("JobId:", jobId);
       toast.loading("Updating Job...", { id: "update-job" })
       dispatch(updateJob(data) as any)
@@ -174,37 +175,36 @@ export default function JobForm({
   return (
     <div className="fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]">
       <Card className="w-full max-w-4xl h-[90vh] shadow-lg rounded-2xl overflow-y-auto border-none">
-        <CardHeader className="relative">
-          <CardTitle className="text-3xl font-bold text-center">
-            Post a New Job
+        <CardHeader className="relative flex-row flex justify-between items-center p-6 pb-2">
+          <CardTitle className="text-2xl font-bold capitalize">
+            {mode} a Job Post
           </CardTitle>
-          <CardDescription className="text-center mt-2">
-            Fill out the details below to create a new job posting.
-          </CardDescription>
           <Button
-            className="text-card rounded-full cursor-pointer absolute right-4 top-1/2 -translate-y-1/2"
+            className="text-white rounded-full p-0 w-8 h-8 bg-primary hover:bg-primary-hover cursor-pointer hover:scale-110 transition-all duration-300"
             onClick={() => {
               close();
               reset();
             }}
+            size="icon"
           >
-            <X />{" "}
+            <X className="w-4 h-4" />
           </Button>
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="grid gap-8 p-6">
+          <CardContent className="grid gap-8 p-6 pt-0">
             <div className="grid gap-4">
-              <h2 className="text-xl font-semibold border-b pb-2">
+              {/* <h2 className="text-xl font-semibold border-b pb-2">
                 Job Details
-              </h2>
+              </h2> */}
               <div className="grid gap-2">
                 <Label htmlFor="designation">Designation</Label>
                 <Input
                   id="designation"
+                  placeholder="e.g., Senior Frontend Developer"
                   {...register("designation", {
                     required: "Designation is required",
                   })}
-                  className="rounded-xl"
+                  className="rounded-xl bg-gray-100 border-none h-12"
                 />
                 {errors.designation && (
                   <p className="text-sm text-red-500">
@@ -280,10 +280,11 @@ export default function JobForm({
                 <Textarea
                   id="jobDescription"
                   rows={5}
+                  placeholder="e.g., We are looking for a highly skilled Senior Frontend Developer..."
                   {...register("jobDescription", {
                     required: "Job description is required",
                   })}
-                  className="rounded-xl"
+                  className="rounded-xl bg-gray-100 border-none"
                 />
                 {errors.jobDescription && (
                   <p className="text-sm text-red-500">
@@ -297,10 +298,11 @@ export default function JobForm({
                   <Label htmlFor="department">Department</Label>
                   <Input
                     id="department"
+                    placeholder="e.g., Engineering"
                     {...register("department", {
                       required: "Department is required",
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.department && (
                     <p className="text-sm text-red-500">
@@ -312,10 +314,11 @@ export default function JobForm({
                   <Label htmlFor="roleCategory">Role Category</Label>
                   <Input
                     id="roleCategory"
+                    placeholder="e.g., Software Development"
                     {...register("roleCategory", {
                       required: "Role category is required",
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.roleCategory && (
                     <p className="text-sm text-red-500">
@@ -331,10 +334,11 @@ export default function JobForm({
                 </Label>
                 <Input
                   id="educationQualification"
+                  placeholder="e.g., Bachelor's Degree in Computer Science"
                   {...register("educationQualification", {
                     required: "Education qualification is required",
                   })}
-                  className="rounded-xl"
+                  className="rounded-xl bg-gray-100 border-none h-12"
                 />
                 {errors.educationQualification && (
                   <p className="text-sm text-red-500">
@@ -354,8 +358,8 @@ export default function JobForm({
                 {keySkillsFields.map((item, index) => (
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
-                      placeholder="e.g., JavaScript"
-                      className="rounded-xl"
+                      placeholder="e.g., React"
+                      className="rounded-xl bg-gray-100 border-none h-12"
                       {...register(`keySkills.${index}`, {
                         required: "Key skill is required",
                       })}
@@ -390,8 +394,8 @@ export default function JobForm({
                 {skillsFields.map((item, index) => (
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
-                      placeholder="e.g., React, Node.js"
-                      className="rounded-xl"
+                      placeholder="e.g., Tailwind CSS"
+                      className="rounded-xl bg-gray-100 border-none h-12"
                       {...register(`skills.${index}`, {
                         required: "Skill is required",
                       })}
@@ -427,7 +431,7 @@ export default function JobForm({
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
                       placeholder="e.g., Bengaluru"
-                      className="rounded-xl"
+                      className="rounded-xl bg-gray-100 border-none h-12"
                       {...register(`location.${index}`, {
                         required: "Location is required",
                       })}
@@ -484,11 +488,12 @@ export default function JobForm({
                   <Input
                     id="minWorkExperience"
                     type="number"
+                    placeholder="e.g., 5"
                     {...register("workExperience.min", {
                       required: "Min experience is required",
                       valueAsNumber: true,
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.workExperience?.min && (
                     <p className="text-sm text-red-500">
@@ -503,11 +508,12 @@ export default function JobForm({
                   <Input
                     id="maxWorkExperience"
                     type="number"
+                    placeholder="e.g., 8"
                     {...register("workExperience.max", {
                       required: "Max experience is required",
                       valueAsNumber: true,
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.workExperience?.max && (
                     <p className="text-sm text-red-500">
@@ -523,11 +529,12 @@ export default function JobForm({
                   <Input
                     id="minSalary"
                     type="number"
+                    placeholder="e.g., 1500000"
                     {...register("annualSalary.min", {
                       required: "Min salary is required",
                       valueAsNumber: true,
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.annualSalary?.min && (
                     <p className="text-sm text-red-500">
@@ -540,11 +547,12 @@ export default function JobForm({
                   <Input
                     id="maxSalary"
                     type="number"
+                    placeholder="e.g., 2500000"
                     {...register("annualSalary.max", {
                       required: "Max salary is required",
                       valueAsNumber: true,
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.annualSalary?.max && (
                     <p className="text-sm text-red-500">
@@ -564,10 +572,11 @@ export default function JobForm({
                   <Label htmlFor="companyName">Company Name</Label>
                   <Input
                     id="companyName"
+                    placeholder="e.g., Innovate Solutions Inc."
                     {...register("companyDetails.name", {
                       required: "Company name is required",
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.companyDetails?.name && (
                     <p className="text-sm text-red-500">
@@ -579,12 +588,13 @@ export default function JobForm({
                   <Label htmlFor="established">Established Year</Label>
                   <Input
                     id="established"
-                    type="number"
+                    type="text"
+                    placeholder="e.g., 2010"
                     {...register("companyDetails.established", {
                       required: "Established year is required",
                       valueAsNumber: true,
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.companyDetails?.established && (
                     <p className="text-sm text-red-500">
@@ -598,10 +608,11 @@ export default function JobForm({
                   <Label htmlFor="sector">Sector</Label>
                   <Input
                     id="sector"
+                    placeholder="e.g., Software"
                     {...register("companyDetails.sector", {
                       required: "Sector is required",
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.companyDetails?.sector && (
                     <p className="text-sm text-red-500">
@@ -613,10 +624,11 @@ export default function JobForm({
                   <Label htmlFor="locatedAt">Located At</Label>
                   <Input
                     id="locatedAt"
+                    placeholder="e.g., Bengaluru, India"
                     {...register("companyDetails.locatedAt", {
                       required: "Location is required",
                     })}
-                    className="rounded-xl"
+                    className="rounded-xl bg-gray-100 border-none h-12"
                   />
                   {errors.companyDetails?.locatedAt && (
                     <p className="text-sm text-red-500">
@@ -630,10 +642,11 @@ export default function JobForm({
                 <Label htmlFor="companyIndustry">Company Industry</Label>
                 <Input
                   id="companyIndustry"
+                  placeholder="e.g., Information Technology"
                   {...register("companyIndustry", {
                     required: "Company industry is required",
                   })}
-                  className="rounded-xl"
+                  className="rounded-xl bg-gray-100 border-none h-12"
                 />
                 {errors.companyIndustry && (
                   <p className="text-sm text-red-500">
@@ -646,10 +659,11 @@ export default function JobForm({
                 <Label htmlFor="candidateIndustry">Candidate Industry</Label>
                 <Input
                   id="candidateIndustry"
+                  placeholder="e.g., IT-Software"
                   {...register("candidateIndustry", {
                     required: "Candidate industry is required",
                   })}
-                  className="rounded-xl"
+                  className="rounded-xl bg-gray-100 border-none h-12"
                 />
                 {errors.candidateIndustry && (
                   <p className="text-sm text-red-500">
@@ -715,21 +729,34 @@ export default function JobForm({
               <Label htmlFor="vacancy">Vacancy</Label>
               <Input
                 id="vacancy"
-                type="number"
+                type="text"
+                placeholder="e.g., 3"
                 {...register("vacancy", {
                   required: "Vacancy is required",
                   valueAsNumber: true,
                 })}
-                className="rounded-xl"
+                className="rounded-xl bg-gray-100 border-none h-12"
               />
               {errors.vacancy && (
                 <p className="text-sm text-red-500">{errors.vacancy.message}</p>
               )}
             </div>
           </CardContent>
-          <CardFooter className="p-6 pt-0">
-            <Button className="w-full rounded-full" type="submit">
-              {loading ? <BtnLoader /> : "Post Job"}
+          <CardFooter className="flex justify-end p-6">
+            <Button
+              type="submit"
+              className="rounded-full bg-primary hover:bg-primary-hover cursor-pointer capitalize text-card text-base"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                <BtnLoader /> {mode === "create" ? "Creating..." : "Updating..."}
+                </>
+              ) : (
+                <>
+                  {mode} Job Post
+                </>
+              )}
             </Button>
           </CardFooter>
         </form>
