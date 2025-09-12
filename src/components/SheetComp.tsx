@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { defaultData } from "@/lib/Dummy/dataSource";
 import {
@@ -33,47 +33,49 @@ export default function Home() {
   }
 
   return (
-    <div className="w-[calc(100vw-470px)] h-[600px] ">
-      <SpreadsheetComponent
-        height="100%"
-        width="100%"
-        openUrl="https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open"
-        allowOpen={true}
-        saveUrl="https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save"
-        allowSave={true}
-        ref={(Obj: any) => {
-          spreadsheet = Obj as SpreadsheetComponent;
-        }}
-        created={onCreated}
-      >
-        <SheetsDirective>
-          <SheetDirective name="Car Sales Report">
-            <RangesDirective>
-              <RangeDirective dataSource={defaultData}></RangeDirective>
-            </RangesDirective>
-            <RowsDirective>
-              <RowDirective index={30}>
-                <CellsDirective>
-                  <CellDirective
-                    index={4}
-                    value="Total Amount:"
-                    style={boldRight}
-                  />
-                  <CellDirective formula="=SUM(F2:F30)" style={bold} />
-                </CellsDirective>
-              </RowDirective>
-            </RowsDirective>
-            <ColumnsDirective>
-              <ColumnDirective width={180} />
-              <ColumnDirective width={130} />
-              <ColumnDirective width={130} />
-              <ColumnDirective width={180} />
-              <ColumnDirective width={130} />
-              <ColumnDirective width={120} />
-            </ColumnsDirective>
-          </SheetDirective>
-        </SheetsDirective>
-      </SpreadsheetComponent>
+    <div className=" pr-10 pl-20 py-10">
+      <div className="w-[calc(100vw-480px)] h-[564px]">
+        <SpreadsheetComponent
+          height="100%"
+          width="100%"
+          openUrl="https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open"
+          allowOpen={true}
+          saveUrl="https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save"
+          allowSave={true}
+          ref={(Obj: any) => {
+            spreadsheet = Obj as SpreadsheetComponent;
+          }}
+          created={onCreated}
+        >
+          <SheetsDirective>
+            <SheetDirective name="Car Sales Report">
+              <RangesDirective>
+                <RangeDirective dataSource={defaultData}></RangeDirective>
+              </RangesDirective>
+              <RowsDirective>
+                <RowDirective index={30}>
+                  <CellsDirective>
+                    <CellDirective
+                      index={4}
+                      value="Total Amount:"
+                      style={boldRight}
+                    />
+                    <CellDirective formula="=SUM(F2:F30)" style={bold} />
+                  </CellsDirective>
+                </RowDirective>
+              </RowsDirective>
+              <ColumnsDirective>
+                <ColumnDirective width={180} />
+                <ColumnDirective width={130} />
+                <ColumnDirective width={130} />
+                <ColumnDirective width={180} />
+                <ColumnDirective width={130} />
+                <ColumnDirective width={120} />
+              </ColumnsDirective>
+            </SheetDirective>
+          </SheetsDirective>
+        </SpreadsheetComponent>
+      </div>
     </div>
   );
 }

@@ -33,7 +33,6 @@ export function middleware(req: NextRequest) {
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const role = getRoleFromToken(token);
     if (role !== "admin") {
       return NextResponse.json(
         { error: "Only admin allowed" },
@@ -43,17 +42,18 @@ export function middleware(req: NextRequest) {
   }
 
   // 🔒 Protect /admin → only admin
-  if (pathname.startsWith("/admin")) {
-    if (role !== "admin") {
-      return NextResponse.redirect(new URL("/auth/login", req.url));
-    }
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
   // 🔒 Protect /employee → only employee
-  if (pathname.startsWith("/employee")) {
-    if (role !== "employee") {
-      return NextResponse.redirect(new URL("/auth/login", req.url));
-    }
+  if (pathname.startsWith("/employee") && role !== "employee") {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  // 🔒 Protect /user → only user
+  if (pathname === "/" && role !== "user") {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
   if (pathname.startsWith("/auth") && token) {
@@ -61,8 +61,10 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/admin", req.url));
     } else if (role === "employee") {
       return NextResponse.redirect(new URL("/employee", req.url));
-    } else {
+    } else if (role === "user") {
       return NextResponse.redirect(new URL("/", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
     }
   }
 
@@ -76,5 +78,6 @@ export const config = {
     "/employee/:path*",
     "/auth/:path*",
     "/api/job/create",
+    "/",
   ],
 };

@@ -17,9 +17,9 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, details, assignedTo } = body;
+    const { title, details, assignedTo, deadline } = body;
 
-    if (!title || !details || !assignedTo) {
+    if (!title || !details || !assignedTo || !deadline) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 

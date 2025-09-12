@@ -41,7 +41,7 @@ export default function JobComp() {
 
   return (
     <>
-      <div className="flex-1 h-[calc(100vh-80px)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto">
+      <div className="flex-1 h-[calc(100vh-80px)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 overflow-y-auto pl-20 pr-10 my-10">
         <Card
           onClick={() => setIsOpenForm(true)}
           className="max-w-xs  w-full max-h-[350px] rounded-2xl p-4 bg-card hover:bg-background duration-200 transition-all shadow-none border-none flex flex-col justify-center items-center cursor-pointer "

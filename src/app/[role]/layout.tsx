@@ -15,7 +15,7 @@ export default function AdminLayout({
 
       <div className="flex-1 h-screen flex flex-col gap-5 pb-10">
         <Header />
-        <div className="flex-1 bg-section rounded-[40px] rounded-tl-[100px]  pl-20 p-10 flex flex-col overflow-y-auto">
+        <div className="flex-1 bg-section rounded-[40px] rounded-tl-[100px] flex flex-col overflow-y-auto">
           {children}
         </div>
       </div>

@@ -28,7 +28,7 @@ export const generateToken = (user: IUser) => {
     { id: user._id, email: user.email, role: user.role, name: user.name },
     process.env.JWT_SECRET,
     {
-      expiresIn: "10m",
+      expiresIn: "1d",
     }
   );
 };

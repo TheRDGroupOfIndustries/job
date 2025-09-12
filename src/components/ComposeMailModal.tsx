@@ -60,7 +60,7 @@ export default function ComposeMailModal() {
               <input
                 type="text"
                 placeholder="To:"
-                className={`w-full border-b-2 ${errors.to ? "border-primary" : "border-background"} text-lg outline-0`}
+                className={`w-full border-b-2 focus:border-primary ${errors.to ? "border-primary" : "border-background"} text-lg outline-0`}
                 {...register("to", { required: "Recipient is required" })}
               />
 
@@ -68,7 +68,7 @@ export default function ComposeMailModal() {
               <input
                 type="text"
                 placeholder="Subject:"
-                className={`w-full border-b-2 ${errors.subject ? "border-primary" : "border-background"} text-lg outline-0`}
+                className={`w-full border-b-2 focus:border-primary ${errors.subject ? "border-primary" : "border-background"} text-lg outline-0`}
                 {...register("subject", { required: "Subject is required" })}
               />
 
@@ -76,7 +76,7 @@ export default function ComposeMailModal() {
               <textarea
                 placeholder="Body:"
                 rows={10}
-                className={`w-full border-b-2 ${errors.body ? "border-primary" : "border-background"} text-lg outline-0 resize-none`}
+                className={`w-full border-b-2 focus:border-primary ${errors.body ? "border-primary" : "border-background"} text-lg outline-0 resize-none`}
                 {...register("body", {
                   required: "Message body cannot be empty",
                 })}

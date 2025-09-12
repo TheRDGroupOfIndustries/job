@@ -18,8 +18,9 @@ export const fetchUser = createAsyncThunk(
     try {
       const res = await fetch("/api/auth/me", { credentials: "include" });
       const data = await res.json();
+      // console.log("auth-response: ", data)
 
-      if (!data.user) {
+      if (data.success === false ) {
         return rejectWithValue("Unauthorized");
       }
       return data;
