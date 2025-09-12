@@ -1,7 +1,7 @@
 import { hashPassword } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Otp from "@/models/Otp";
-import User from "@/models/User";
+import {User} from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

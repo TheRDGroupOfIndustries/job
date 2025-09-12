@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Kanban from "@/models/Kanban";
-import User from "@/models/User";
+import {User} from "@/models/User";
 import { authenticate } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {

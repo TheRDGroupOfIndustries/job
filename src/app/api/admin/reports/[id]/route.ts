@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Kanban from "@/models/Kanban";
-import User from "@/models/User";
+import { User } from "@/models/User";
 import { getGeminiSummary } from "@/lib/gemini";
-import { adminOnly } from "../../middleware/adminOnly";
+import { adminOnly } from "../../../middleware/adminOnly";
 import { authenticate } from "@/lib/auth";
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
+
     await connectDB();
     const user = authenticate(req as any);
 
@@ -22,8 +24,8 @@ export async function GET(
         { status: 400 }
       );
     }
-    
-    const employee = await User.findById(params.id).select("name email role");
+
+    const employee = await User.findById(id).select("name email role");
     if (!employee) {
       return NextResponse.json(
         { error: "Employee not found" },
@@ -31,7 +33,7 @@ export async function GET(
       );
     }
 
-    const tasks = await Kanban.find({ assignedTo: params.id })
+    const tasks = await Kanban.find({ assignedTo: id })
       .populate("createdBy", "name email role")
       .sort({ createdAt: -1 });
 

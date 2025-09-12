@@ -1,21 +1,33 @@
 import mongoose from "mongoose";
 
-let isConnected = false;
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+let cached = (globalThis as any).mongoose as MongooseCache;
+
+if (!cached) {
+  cached = (globalThis as any).mongoose = { conn: null, promise: null };
+}
 
 export const connectDB = async () => {
-  if (!process.env.MONGODB_URI) {
-    throw new Error("No mongodb URI");
-  }
-  if (isConnected) {
-    console.log("✅ MongoDB already connected");
-    return;
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    isConnected = true;
-    console.log("MongoDB connected✅");
-  } catch (error) {
-    console.log("🚫DB connection error: ", (error as Error).message);
+  if (!process.env.MONGODB_URI) {
+    throw new Error("⚠️ Please define the MONGODB_URI environment variable");
   }
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(process.env.MONGODB_URI, {
+        bufferCommands: false,
+      })
+      .then((mongoose) => mongoose);
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };

@@ -1,6 +1,7 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 export type UserRole = "user" | "admin" | "employee";
+
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -19,7 +20,7 @@ const UserSchema = new Schema<IUser>(
     role: {
       type: String,
       enum: ["user", "admin", "employee"],
-      default: "employee",
+      default: "user", 
     },
     profileImage: { type: String, required: false },
   },
@@ -28,7 +29,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-const User: Model<IUser> =
-  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+delete mongoose.models.User;
 
-export default User;
+export const User: Model<IUser> = mongoose.model<IUser>("User", UserSchema);
