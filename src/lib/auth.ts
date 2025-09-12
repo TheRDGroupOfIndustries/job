@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export interface DecodedUser {
   id: string;
   email: string;
-  role: string;
+  role: "employee" | "admin" | "user";
 }
 
 export const hashPassword = async (password: string) => {
@@ -34,14 +34,13 @@ export const generateToken = (user: IUser) => {
 };
 
 export function authenticate(req: NextRequest): DecodedUser | null {
-  
   const token = req.cookies.get("job-auth-token")?.value;
   if (!token) return null;
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
     console.log("decoded", decoded);
-    return decoded; 
+    return decoded;
   } catch {
     return null;
   }

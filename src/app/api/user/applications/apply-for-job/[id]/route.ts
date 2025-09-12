@@ -5,7 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Application } from "@/models/Application";
 import mongoose from "mongoose";
 import { NextResponse, NextRequest } from "next/server";
-import { v4 as uuidv4 } from "uuid";  
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(
   req: NextRequest,
@@ -13,14 +13,20 @@ export async function POST(
 ) {
   try {
     await connectDB();
-    const id = params.id
+    const id = params.id;
     const user = authenticate(req as any);
+
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
     }
 
+    console.log(user.role);
+    
     if (user.role !== "user") {
-      return NextResponse.json({ error: "Only users can apply" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Only users can apply" },
+        { status: 403 }
+      );
     }
 
     const formData = await req.formData();
@@ -33,6 +39,18 @@ export async function POST(
       return NextResponse.json(
         { error: "Resume file required" },
         { status: 400 }
+      );
+    }
+
+    const existingApplication = await Application.findOne({
+      appliedBy: new mongoose.Types.ObjectId(appliedBy),
+      jobId: new mongoose.Types.ObjectId(id),
+    });
+
+    if (existingApplication) {
+      return NextResponse.json(
+        { error: "You have already applied for this job." },
+        { status: 409 } 
       );
     }
 
@@ -60,6 +78,7 @@ export async function POST(
       jobDesignation,
       userEmail,
       resume: uploadResult.secure_url,
+      status: "pending"
     });
 
     return NextResponse.json(

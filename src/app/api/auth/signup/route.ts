@@ -1,4 +1,4 @@
-import User from "@/models/User";
+import { User } from "@/models/User";
 import { connectDB } from "@/lib/mongodb";
 import { hashPassword } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -32,7 +33,6 @@ export async function POST(req: NextRequest) {
     const OTP = generateOTP();
     console.log(OTP);
 
-    const reg = "register";
     await sendOTP(email, OTP, "Register");
 
     const OptUser = await Otp.findOne({ email });
@@ -43,9 +43,9 @@ export async function POST(req: NextRequest) {
         name,
         email,
         password,
-        role,
+        role: role || "user",
         phone,
-        otp: OTP, 
+        otp: OTP,
       });
     }
 
