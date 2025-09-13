@@ -39,7 +39,7 @@ export function authenticate(req: NextRequest): DecodedUser | null {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
-    console.log("decoded", decoded);
+    // console.log("decoded", decoded);
     return decoded;
   } catch {
     return null;

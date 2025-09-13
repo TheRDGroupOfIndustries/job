@@ -39,13 +39,19 @@ export async function PUT(
     }
 
     if (user.role !== "admin" && user.role !== "employee") {
-      return NextResponse.json({ error: "Only admin or employee allowed" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Only admin or employee allowed" },
+        { status: 403 }
+      );
     }
 
     const { id } = await context.params;
     const body = await req.json();
+    console.log("Body", body);
 
-    const updatedTask = await Kanban.findByIdAndUpdate(id, body, { new: true });
+    const updatedTask = await Kanban.findByIdAndUpdate(id, body, {
+      new: true,
+    }).populate("assignedTo createdBy", "name email role");
 
     if (!updatedTask) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
@@ -72,7 +78,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     if (user.role !== "admin") {
-      return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Only admin allowed" },
+        { status: 403 }
+      );
     }
 
     const { id } = await context.params;
@@ -82,7 +91,10 @@ export async function DELETE(
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: "Task deleted" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Task deleted", task: deletedTask },
+      { status: 200 }
+    );
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

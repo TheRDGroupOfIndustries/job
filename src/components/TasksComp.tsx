@@ -1,19 +1,31 @@
 "use client";
 
 import { IKanban } from "@/models/Kanban";
-import { getEmployeeTasks, getTasks, updateTaskStatus } from "@/redux/features/taskSlice";
+import {
+  deleteTask,
+  getEmployeeTasks,
+  getTasks,
+  updateTaskStatus,
+} from "@/redux/features/taskSlice";
 import { RootState } from "@/redux/store";
 import { DeleteIcon, EditIcon, PencilLine, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import TaskForm from "./TaskForm";
+import toast from "react-hot-toast";
 
-const MarkAsDoneCheckbox = ({status, id}: {status: string, id: string}) => {
+const MarkAsDoneCheckbox = ({ status, id }: { status: string; id: string }) => {
   const [isDone, setIsDone] = useState(status === "Completed");
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleToggle = () => {
     setIsDone(!isDone);
-    dispatch(updateTaskStatus({status: isDone ? "Pending": "Completed", id}) as any)
+    dispatch(
+      updateTaskStatus({
+        newData: isDone ? { status: "Pending" } : { status: "Completed" },
+        id,
+      }) as any
+    );
   };
 
   return (
@@ -54,8 +66,22 @@ const MarkAsDoneCheckbox = ({status, id}: {status: string, id: string}) => {
   );
 };
 
-
 const AdminTasksCard = ({ task }: { task: any }) => {
+  const [editId, setEditId] = useState<string | null>(null);
+  const dispatch = useDispatch();
+
+  const handleDeleteTask = () => {
+    toast.loading("Deleting Task", { id: "deleting" })
+    dispatch(deleteTask(task._id) as any)
+      .unwrap()
+      .then(() => {
+        toast.success("Task deleted successfully", { id: "deleting" });
+      })
+      .catch(() => {
+        toast.success("Failed to deleted Task", { id: "deleting" });
+      });
+  };
+
   const formatDate = (dateString: Date) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -103,9 +129,16 @@ const AdminTasksCard = ({ task }: { task: any }) => {
         </a>
         <div className="flex space-x-2">
           <button className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group">
-            <PencilLine size={20} className="group-hover:text-section" />
+            <PencilLine
+              onClick={() => setEditId(task._id)}
+              size={20}
+              className="group-hover:text-section"
+            />
           </button>
-          <button className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group">
+          <button
+            onClick={handleDeleteTask}
+            className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group"
+          >
             <Trash
               size={20}
               className="text-primary group-hover:text-section"
@@ -113,6 +146,9 @@ const AdminTasksCard = ({ task }: { task: any }) => {
           </button>
         </div>
       </div>
+      {editId && (
+        <TaskForm mode="Update" id={editId} close={() => setEditId(null)} />
+      )}
     </div>
   );
 };
@@ -164,7 +200,7 @@ const EmployeeTasksCard = ({ task }: { task: any }) => {
 };
 
 export default function TasksComp() {
-  const [tasks, setTasks] = useState([]);
+  const { tasks } = useSelector((state: RootState) => state.task);
 
   const { userData, isAutheticated } = useSelector(
     (state: RootState) => state.auth
@@ -173,25 +209,9 @@ export default function TasksComp() {
 
   useEffect(() => {
     if (userData && userData.role === "admin") {
-      dispatch(getTasks() as any)
-        .unwrap()
-        .then((res: any) => {
-          console.log("Tasks:", res);
-          setTasks(res);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+      dispatch(getTasks() as any);
     } else if (userData && userData.role === "employee") {
-      dispatch(getEmployeeTasks() as any)
-        .unwrap()
-        .then((res: any) => {
-          console.log("Tasks:", res);
-          setTasks(res);
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
+      dispatch(getEmployeeTasks() as any);
     } else {
     }
   }, [userData]);

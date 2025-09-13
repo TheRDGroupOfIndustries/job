@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { Forward, X } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { createTask } from "@/redux/features/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createTask, updateTaskStatus } from "@/redux/features/taskSlice";
 import toast from "react-hot-toast";
 import BtnLoader from "./BtnLoader";
+import { RootState } from "@/redux/store";
 
 export default function TaskForm({
   mode = "Create",
@@ -17,6 +18,7 @@ export default function TaskForm({
   id?: string;
 }) {
   const [loading, setLoading] = useState(false);
+  const { tasks } = useSelector((state: RootState) => state.task);
   const dispatch = useDispatch();
 
   const {
@@ -26,6 +28,24 @@ export default function TaskForm({
     reset,
     setValue,
   } = useForm();
+
+  useEffect(() => {
+    if (id) {
+      const task = tasks.find((task) => task._id === id);
+
+      if (!task) return;
+      setValue("title", task.title);
+      setValue("details", task.details)
+      const deadlineDate = new Date(task.deadline).toISOString().split("T")[0];
+      setValue("deadline", deadlineDate);
+      setValue("assignedTo", task.assignedTo._id);
+      setSelectedUser(
+        `${(task?.assignedTo as any)?.name} (${
+          (task?.assignedTo as any)?.email
+        }) `
+      );
+    }
+  }, [id]);
 
   // dummy users (replace with API later)
   const users = [
@@ -52,31 +72,52 @@ export default function TaskForm({
   const onSubmit = (data: any) => {
     console.log("Form Data:", data);
     setLoading(true);
-    toast.loading("Assigning Task ...", { id: "task" });
-    dispatch(createTask(data) as any)
-      .unwrap()
-      .then((res: any) => {
-        console.log(res);
-        toast.success(res.message, { id: "task" });
-        close();
-        reset();
-        setSelectedUser("");
-        setShowDropdown(false);
-      })
-      .catch((err: any) => {
-        console.log(err);
-        toast.error(err.message || "Failed To Assign Task!", { id: "task" });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    if (!id) {
+      toast.loading("Assigning Task ...", { id: "task" });
+      dispatch(createTask(data) as any)
+        .unwrap()
+        .then((res: any) => {
+          console.log(res);
+          toast.success(res.message, { id: "task" });
+          close();
+          reset();
+          setSelectedUser("");
+          setShowDropdown(false);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          toast.error(err.message || "Failed To Assign Task!", { id: "task" });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      toast.loading("Updating Task ...", { id: "task" });
+      dispatch(updateTaskStatus({ newData: data, id}) as any)
+        .unwrap()
+        .then((res: any) => {
+          console.log(res);
+          toast.success(res.message, { id: "task" });
+          close();
+          reset();
+          setSelectedUser("");
+          setShowDropdown(false);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          toast.error(err.message || "Failed To Assign Task!", { id: "task" });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
 
   return (
     <div className="fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]">
       <div className="w-[90vw] md:w-[80vw] lg:w-[60vw] h-[80vh] bg-card rounded-4xl px-8 py-4 flex flex-col gap-8">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold">Assign Work</h2>
+          <h2 className="text-2xl font-semibold">{mode} Work</h2>
           <Button
             className="text-card rounded-full cursor-pointer"
             onClick={() => {

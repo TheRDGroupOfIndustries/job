@@ -72,13 +72,36 @@ export const getEmployeeTasks = createAsyncThunk(
 
 export const updateTaskStatus = createAsyncThunk(
   "task/updateTaskStatus",
-  async ({status, id}: {status: string, id: string}, { rejectWithValue }) => {
+  async ({newData, id}: {newData: any, id: string}, { rejectWithValue }) => {
     try {
+      console.log("details:", {newData, id})
       const response = await fetch(`/api/kanban/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({status})
+        body: JSON.stringify(newData)
+      });
+
+      if (!response.ok) {
+        return rejectWithValue("Failed to fetch job");
+      }
+      const data = await response.json();
+      console.log(data)
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  "task/deleteTask",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/kanban/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -124,6 +147,10 @@ export const taskSlice = createSlice({
           }
           return task;
         });
+      })
+      .addCase(deleteTask.fulfilled, (state, action) => {
+        console.log("action", action.payload)
+        state.tasks = state.tasks.filter((task) => task._id !== action.payload.task._id);
       })
 
   },
