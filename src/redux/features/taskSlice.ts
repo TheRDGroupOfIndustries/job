@@ -38,7 +38,7 @@ export const getTasks = createAsyncThunk(
       });
 
       if (!response.ok) {
-        return rejectWithValue("Failed to create job");
+        return rejectWithValue("Failed to fetch job");
       }
       const data = await response.json();
       return data;
@@ -47,6 +47,53 @@ export const getTasks = createAsyncThunk(
     }
   }
 );
+
+export const getEmployeeTasks = createAsyncThunk(
+  "task/getEmployeeTasks",
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState() as any; // Cast getState() to 'any' to access auth property
+      const response = await fetch(`/api/kanban/employee/${auth.userData.id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        return rejectWithValue("Failed to fetch job");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateTaskStatus = createAsyncThunk(
+  "task/updateTaskStatus",
+  async ({status, id}: {status: string, id: string}, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/kanban/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({status})
+      });
+
+      if (!response.ok) {
+        return rejectWithValue("Failed to fetch job");
+      }
+      const data = await response.json();
+      console.log(data)
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+
 
 const initialState: TaskState = {
   tasks: [],
@@ -64,7 +111,21 @@ export const taskSlice = createSlice({
       .addCase(getTasks.fulfilled, (state, action) => {
         console.log("action", action.payload)
         state.tasks = action.payload;
-      });
+      })
+      .addCase(getEmployeeTasks.fulfilled, (state, action) => {
+        console.log("action", action.payload)
+        state.tasks = action.payload;
+      })
+      .addCase(updateTaskStatus.fulfilled, (state, action) => {
+        console.log("action", action.payload)
+        state.tasks = state.tasks.map((task) => {
+          if (task._id === action.payload.task._id) {
+            return action.payload.task;
+          }
+          return task;
+        });
+      })
+
   },
 });
 

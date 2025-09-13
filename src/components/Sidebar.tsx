@@ -93,6 +93,7 @@ export default function Sidebar() {
       path: "employee-chatbot",
     },
   ];
+  
   const EmployeeOptions = [
     {
       label: "Dashboard",
@@ -130,6 +131,7 @@ export default function Sidebar() {
       path: "my-works",
     },
   ];
+
   const UserOptions = [
     {
       label: "Dashboard",
@@ -180,14 +182,14 @@ export default function Sidebar() {
         ? setOptions(UserOptions)
         : setOptions([]);
     }
-    console.log(userData);
+    // console.log(userData);
   }, [userData]);
 
   const handleLogout = async () => {
     toast.loading("Logging Out...", { id: "logout" });
     const res = await fetch("/api/auth/logout", { method: "POST" });
     const data = await res.json();
-    console.log(data);
+    // console.log(data);
     dispatch(authLogout());
     toast.success("Logged out", { id: "logout" });
     router.push("/auth/login");

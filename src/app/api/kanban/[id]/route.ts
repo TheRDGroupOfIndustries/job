@@ -37,14 +37,15 @@ export async function PUT(
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
+
+    if (user.role !== "admin" && user.role !== "employee") {
+      return NextResponse.json({ error: "Only admin or employee allowed" }, { status: 403 });
     }
 
     const { id } = await context.params;
     const body = await req.json();
 
-    const updatedTask = await Kanban.findByIdAndUpdate(id, { $set: body }, { new: true });
+    const updatedTask = await Kanban.findByIdAndUpdate(id, body, { new: true });
 
     if (!updatedTask) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });

@@ -69,6 +69,11 @@ export default function Header() {
         <h2 className="text-2xl font-semibold">All Employees</h2>
         </>
       )}
+      {pathname.includes("my-works") && (
+        <>
+        <h2 className="text-2xl font-semibold">Your Kanban</h2>
+        </>
+      )}
     </header>
   );
 }
