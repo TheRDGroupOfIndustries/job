@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <div className=" pr-10 pl-20 py-10">
-      <div className="w-[calc(100vw-480px)] h-[564px]">
+      <div className="w-[calc(100vw-480px)] h-[72vh]">
         <SpreadsheetComponent
           height="100%"
           width="100%"

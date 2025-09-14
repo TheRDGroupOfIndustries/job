@@ -61,7 +61,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
 
   return (
     <>
-      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto">
+      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto pl-20 pr-10 my-10 custom-scrollbar">
         <p className="text-sm text-secondary">{job._id}</p>
         <div className="flex justify-between items-center text-3xl font-bold text-gray-800">
           <div className="flex items-center gap-5">
