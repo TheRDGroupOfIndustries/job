@@ -45,19 +45,6 @@ export default function RootLayout({
       >
         <Providers>{children}</Providers>
         <Toaster
-          // toastOptions={{
-          //   success: {
-          //     style: {
-          //       background: "green",
-          //       color: "white",
-          //     },
-          //   },
-          //   error: {
-          //     style: {
-          //       background: "red",
-          //     },
-          //   },
-          // }}
         />
       </body>
     </html>
