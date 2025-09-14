@@ -19,6 +19,9 @@ export default function JobDetails({ jobId }: { jobId: string }) {
   const [updateId, setUpdateId] = useState<string | null>(null);
   const [deletingJob, setDeletingJob] = useState(false);
   const [isOpenForm, setIsOpenForm] = useState(false);
+  
+  const dispatch = useDispatch<any>();
+  const router = useRouter()
 
   const { jobs } = useSelector((state: RootState) => state.job);
   if (!jobs) {
@@ -26,8 +29,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
   }
   const job = jobs.find((job: IJob) => job._id === jobId) as IJob;
   console.log("job: ", job);
-  const dispatch = useDispatch<any>();
-  const router = useRouter()
+
 
   // Format the date to "MM/DD/YYYY"
   const formatDate = (dateString: string) => {
