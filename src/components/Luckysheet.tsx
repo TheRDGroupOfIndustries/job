@@ -8,6 +8,7 @@ import "luckysheet/dist/plugins/css/pluginsCss.css";
 import "luckysheet/dist/plugins/plugins.css";
 import "luckysheet/dist/css/luckysheet.css";
 import "luckysheet/dist/assets/iconfont/iconfont.css";
+import toast from "react-hot-toast";
 
 export default function Luckysheet({ id }: { id: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -107,12 +108,16 @@ export default function Luckysheet({ id }: { id: string }) {
 
     console.log(extracted);
 
+    toast.loading("Saving Sheet...", {id: "sheet-save"})
     await fetch(`/api/sheets/${id}`, {
-      method: "PUT",
-      body: JSON.stringify({ title: data[0].name, data: extracted }),
-      headers: { "Content-Type": "application/json" },
-    });
-    alert("✅ Sheet saved");
+        method: "PUT",
+        body: JSON.stringify({ title: data[0].name, data: extracted }),
+        headers: { "Content-Type": "application/json" },
+    }).then((res)=> {
+        toast.success("Sheet Saved Successfully", {id: "sheet-save"})
+    }).catch((err)=>{
+        toast.error("Error Saving Sheet", {id: "sheet-save"})
+    })
   };
 
   return (

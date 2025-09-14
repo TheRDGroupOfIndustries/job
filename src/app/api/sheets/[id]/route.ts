@@ -18,3 +18,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   );
   return NextResponse.json(sheet);
 }
+
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+  await connectDB();
+  const sheet = await Sheet.findByIdAndDelete(params.id);
+  return NextResponse.json(sheet);
+}

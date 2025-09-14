@@ -33,6 +33,15 @@
     0px 8px 8px -4px #fd5e00, 0px 20px 20px -10px #fd5e00,
     0px 40px 40px -20px #fd5e00, 0px 60px 60px -30px #fd5e00;
 
+    --shadow-card: 
+  0px 2px 3px -1px rgba(0, 0, 0, 0.1),
+  0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+  0px 8px 8px -4px rgba(25, 28, 33, 0.02),
+  0px 20px 20px -10px rgba(25, 28, 33, 0.04),
+  0px 40px 40px -20px rgba(25, 28, 33, 0.06),
+  0px 60px 60px -30px rgba(25, 28, 33, 0.08);
+
+
   --shadow-badge: 0px 0px 5px 1px #fd5e00;
 }
 

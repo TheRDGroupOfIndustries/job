@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 
 
 export interface ISheet extends Document {
+    _id: string;
     title: string;
     data: Record<string, any>;
 }
