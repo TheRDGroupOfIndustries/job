@@ -40,13 +40,30 @@ export default function Luckysheet({ id }: { id: string }) {
         containerRef.current.innerHTML = "";
       }
 
+      console.log("sheetData:", sheetData);
+      const savedCelldata = sheetData?.data?.length > 0 ? sheetData.data.map((cell: any) => ({
+        r: cell.row - 1, // Luckysheet is 0-indexed
+        c: cell.col - 1,
+        v: {
+          v: cell.value, // raw value
+          m: cell.value, // display value
+          ct: { fa: "General", t: "g" }, // cell type
+        },
+      })) : [];
       setTimeout(() => {
         luckysheet.create({
           container: "luckysheet",
           lang: "en",
           data:
             sheetData?.data?.length > 0
-              ? sheetData.data
+              ? [
+                  {
+                    name: sheetData.title,
+                    row: 100,
+                    column: 100,
+                    celldata: savedCelldata,
+                  },
+                ]
               : [
                   {
                     name: "Sheet1",
@@ -69,7 +86,7 @@ export default function Luckysheet({ id }: { id: string }) {
     if (!ls) return alert("⚠ Luckysheet not ready yet!");
 
     const data = ls.getLuckysheetfile();
-    // console.log("📄 Saving data:", data);
+    console.log("📄 Saving data:", data);
 
     const sheet = ls.getAllSheets()[0] as { data: any[][] }; // first sheet
     const rawData: any[][] = sheet.data;
@@ -92,7 +109,7 @@ export default function Luckysheet({ id }: { id: string }) {
 
     await fetch(`/api/sheets/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ data: extracted }),
+      body: JSON.stringify({ title: data[0].name, data: extracted }),
       headers: { "Content-Type": "application/json" },
     });
     alert("✅ Sheet saved");
@@ -101,18 +118,18 @@ export default function Luckysheet({ id }: { id: string }) {
   return (
     <div className="w-full h-screen flex flex-col">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b">
-        <h1 className="font-bold">{sheetData?.title ?? "Untitled Sheet"}</h1>
+
+      {/* Spreadsheet Container */}
+      <div className="flex-1 relative">
+      <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
+        <h1 className="font-bold capitalize">{sheetData?.title ?? "Untitled Sheet"}</h1>
         <button
           onClick={saveSheet}
-          className="bg-green-500 text-white px-4 py-2 rounded"
+          className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
         >
           Save
         </button>
       </div>
-
-      {/* Spreadsheet Container */}
-      <div className="flex-1 relative">
         <div
           ref={containerRef}
           id="luckysheet"

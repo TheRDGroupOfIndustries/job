@@ -13,7 +13,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   const body = await req.json();
   const sheet = await Sheet.findByIdAndUpdate(
     params.id,
-    { data: body.data, updatedAt: new Date() },
+    { title: body.title, data: body.data, updatedAt: new Date() },
     { new: true }
   );
   return NextResponse.json(sheet);

@@ -95,10 +95,10 @@ export default function Home() {
     //     </SpreadsheetComponent>
     //   </div>
     // </div>
-    <div className="p-6">
+    <div className="pl-20 pr-10 my-10">
       <h1 className="text-xl font-bold">My Sheets</h1>
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+        className="bg-blue-500 text-white px-4 py-2 rounded mt-4 cursor-pointer"
         onClick={async () => {
           const res = await fetch("/api/sheets", {
             method: "POST",
@@ -115,7 +115,7 @@ export default function Home() {
       <ul className="mt-6 space-y-2">
         {sheets.map((s: any) => (
           <li key={s._id} className="border p-3 rounded">
-            <Link href={`/${userData?.role}/sheets/${s._id}`} className="text-blue-600">
+            <Link href={`/${userData?.role}/sheets/${s._id}`} className="text-blue-600 capitalize">
               {s.title}
             </Link>
           </li>
