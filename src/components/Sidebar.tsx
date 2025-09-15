@@ -93,7 +93,7 @@ export default function Sidebar() {
       path: "employee-chatbot",
     },
   ];
-  
+
   const EmployeeOptions = [
     {
       label: "Dashboard",
@@ -239,59 +239,27 @@ export default function Sidebar() {
       </div>
 
       {/* Options Card */}
-      <div className=" bg-section flex-1 p-5 rounded-4xl relative">
+      <div className=" bg-section flex-1 p-5 rounded-4xl relative ">
         <Badge className="rounded-full bg-primary text-card absolute top-0 left-6 -translate-y-1/2 ">
           Options
         </Badge>
-        <div className=" w-full ">
-          {userData?.role === "admin" && (
-            <div className="flex justify-end gap-2">
-              <div
-                onClick={() => setTab(1)}
-                className={`h-2 w-2 rounded-full cursor-pointer ${
-                  tab === 1 ? "bg-primary" : "bg-secondary"
-                }`}
-              ></div>
-              <div
-                onClick={() => setTab(2)}
-                className={`h-2 w-2 rounded-full cursor-pointer ${
-                  tab === 2 ? "bg-primary" : "bg-secondary"
-                }`}
-              ></div>
-            </div>
-          )}
-          <ul className="flex flex-col justify-between ">
-            {tab === 1
-              ? Options.slice(0, 7).map((option) => (
-                  <Link
-                    href={`/${userData?.role}/${option.path}`}
-                    key={option.label}
-                    className={`flex items-center gap-2 p-2 ${
-                      pathname === `/${userData?.role}/${option.path}` ||
-                      (option.path === "" && pathname === `/${userData?.role}`)
-                        ? "text-primary font-semibold"
-                        : "text-secondary"
-                    } hover:text-primary rounded-md transition-all duration-200`}
-                  >
-                    {option.icon}
-                    <span>{option.label}</span>
-                  </Link>
-                ))
-              : Options.slice(7).map((option) => (
-                  <Link
-                    href={`/${userData?.role}/${option.path}`}
-                    key={option.label}
-                    className={`flex items-center gap-2 p-2 ${
-                      pathname === `/${userData?.role}/${option.path}` ||
-                      (option.path === "" && pathname === `/${userData?.role}`)
-                        ? "text-primary font-semibold"
-                        : "text-secondary"
-                    } hover:text-primary rounded-md transition-all duration-200`}
-                  >
-                    {option.icon}
-                    <span>{option.label}</span>
-                  </Link>
-                ))}
+        <div className=" w-full h-[calc(100vh-500px)] overflow-y-auto custom-scrollbar">
+          <ul className="flex flex-col h-full justify-between ">
+            {Options.map((option) => (
+              <Link
+                href={`/${userData?.role}/${option.path}`}
+                key={option.label}
+                className={`flex items-center gap-2 p-2 ${
+                  pathname === `/${userData?.role}/${option.path}` ||
+                  (option.path === "" && pathname === `/${userData?.role}`)
+                    ? "text-primary font-semibold"
+                    : "text-secondary"
+                } hover:text-primary rounded-md transition-all duration-200`}
+              >
+                {option.icon}
+                <span>{option.label}</span>
+              </Link>
+            ))}
           </ul>
         </div>
       </div>

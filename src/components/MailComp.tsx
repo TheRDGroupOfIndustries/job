@@ -26,7 +26,7 @@ export default function MailComp() {
       <div className="flex sticky top-0 left-0 right-0 justify-end  pr-10 pl-20 py-4 ">
         <h1 className="text-xl font-semibold">Primary Mails</h1>
       </div>
-      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar pr-10 pl-20 mb-10 ">
+      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar pr-10 pl-10 mb-10 ">
         {mails.map((mail: Mail) => (
           <Link key={mail.id} href={`/admin/send-mails/${mail.id}`}>
             <div
