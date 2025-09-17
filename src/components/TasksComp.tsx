@@ -243,7 +243,7 @@ const AdminTasksCard = ({ task }: { task: any }) => {
         </h2>
         <p
           className={`mt-2 text-sm text-gray-600 break-words ${
-            isExpanded ? '' : 'line-clamp-4'
+            isExpanded ? '' : 'line-clamp-2'
           }`}
         >
           {task.details}
@@ -255,7 +255,7 @@ const AdminTasksCard = ({ task }: { task: any }) => {
         </p>
       </div>
 
-      <div className="text-sm mb-4">
+      {!isExpanded && <div className="text-sm mb-4">
         <p className="text-gray-700">
           <span className="font-semibold">Assign To</span> -{" "}
           {task.assignedTo?.name || "N/A"}
@@ -268,12 +268,12 @@ const AdminTasksCard = ({ task }: { task: any }) => {
           <span className="font-semibold">Deadline</span> -{" "}
           {formatDate(task.deadline)}
         </p>
-      </div>
+      </div>}
 
       <div className="flex items-center justify-between">
         <button
           onClick={toggleExpand}
-          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
+          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none cursor-pointer"
         >
           {isExpanded ? 'Collapse' : 'Expand'}
         </button>

@@ -28,7 +28,7 @@ export default function Page() {
     "Jessica Miller (jessica.miller@company.com)",
   ];
 
-  const handleEmployeeSelect = (employee) => {
+  const handleEmployeeSelect = (employee: string) => {
     setSelectedEmployee(employee);
     setIsDropdownOpen(false);
   };
@@ -46,7 +46,7 @@ export default function Page() {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -54,9 +54,9 @@ export default function Page() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden">
+    <div className="flex flex-col h-screen bg-gray-50 overflow-hidden ">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
+      <div className="bg-white border-b border-gray-200 p-4 pl-20">
         <div className="flex justify-end items-center">
           {selectedEmployee && (
             <div className="bg-gray-500 text-white px-4 py-2 rounded-full text-sm ">
@@ -67,7 +67,7 @@ export default function Page() {
       </div>
 
       {/* Chat Messages Area */}
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar pl-20">
         {messages.map((message) => (
           <div
             key={message.id}
