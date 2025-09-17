@@ -66,8 +66,148 @@ const MarkAsDoneCheckbox = ({ status, id }: { status: string; id: string }) => {
   );
 };
 
+// const AdminTasksCard = ({ task }: { task: any }) => {
+//   const [editId, setEditId] = useState<string | null>(null);
+//   const dispatch = useDispatch();
+
+//   const handleDeleteTask = () => {
+//     toast.loading("Deleting Task", { id: "deleting" })
+//     dispatch(deleteTask(task._id) as any)
+//       .unwrap()
+//       .then(() => {
+//         toast.success("Task deleted successfully", { id: "deleting" });
+//       })
+//       .catch(() => {
+//         toast.success("Failed to deleted Task", { id: "deleting" });
+//       });
+//   };
+
+//   const formatDate = (dateString: Date) => {
+//     if (!dateString) return "N/A";
+//     const date = new Date(dateString);
+//     const day = String(date.getDate()).padStart(2, "0");
+//     const month = String(date.getMonth() + 1).padStart(2, "0");
+//     const year = date.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   };
+//   return (
+//     <div className="bg-card rounded-xl p-6 w-full">
+//       <div className="mb-4">
+//         <h2 className="text-xl font-bold text-gray-800 break-words">
+//           {task.title}
+//         </h2>
+//         <p className="mt-2 text-sm text-gray-600 break-words line-clamp-4">
+//           {task.details} Lorem ipsum dolor sit amet consectetur adipisicing
+//           elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
+//           corporis repellendus tenetur architecto dolorem exercitationem, ullam
+//           accusantium veniam nihil in minus mollitia esse saepe eligendi
+//           recusandae doloremque sequi cupiditate nisi.
+//         </p>
+//       </div>
+
+//       <div className="text-sm space-y-2">
+//         <p className="text-gray-700">
+//           <span className="font-semibold">Assign To</span> -{" "}
+//           {task.assignedTo?.name || "N/A"}
+//         </p>
+//         <p className="text-gray-700">
+//           <span className="font-semibold">Assigned At</span> -{" "}
+//           {formatDate(task.createdAt)}
+//         </p>
+//         <p className="text-gray-700">
+//           <span className="font-semibold">Deadline</span> -{" "}
+//           {formatDate(task.deadline)}
+//         </p>
+//       </div>
+
+//       <div className="mt-6 flex items-center justify-between">
+//         <a
+//           href="#"
+//           className="text-blue-600 text-sm font-medium hover:underline"
+//         >
+//           Expand
+//         </a>
+//         <div className="flex space-x-2">
+//           <button className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group">
+//             <PencilLine
+//               onClick={() => setEditId(task._id)}
+//               size={20}
+//               className="group-hover:text-section"
+//             />
+//           </button>
+//           <button
+//             onClick={handleDeleteTask}
+//             className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group"
+//           >
+//             <Trash
+//               size={20}
+//               className="text-primary group-hover:text-section"
+//             />
+//           </button>
+//         </div>
+//       </div>
+//       {editId && (
+//         <TaskForm mode="Update" id={editId} close={() => setEditId(null)} />
+//       )}
+//     </div>
+//   );
+// };
+
+
+
+
+// const EmployeeTasksCard = ({ task }: { task: any }) => {
+//   const formatDate = (dateString: Date) => {
+//     if (!dateString) return "N/A";
+//     const date = new Date(dateString);
+//     const day = String(date.getDate()).padStart(2, "0");
+//     const month = String(date.getMonth() + 1).padStart(2, "0");
+//     const year = date.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   };
+//   return (
+//     <div className="bg-card rounded-xl p-6 w-full">
+//       <div className="mb-4">
+//         <h2 className="text-xl font-bold text-gray-800 break-words">
+//           {task.title}
+//         </h2>
+//         <p className="mt-2 text-sm text-gray-600 break-words line-clamp-4">
+//           {task.details} Lorem ipsum dolor sit amet consectetur adipisicing
+//           elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
+//           corporis repellendus tenetur architecto dolorem exercitationem, ullam
+//           accusantium veniam nihil in minus mollitia esse saepe eligendi
+//           recusandae doloremque sequi cupiditate nisi.
+//         </p>
+//       </div>
+
+//       <div className="text-sm space-y-2">
+//         <p className="text-gray-700">
+//           <span className="font-semibold">Deadline</span> -{" "}
+//           {formatDate(task.deadline)}
+//         </p>
+//       </div>
+
+//       <div className="mt-6 flex items-center justify-between">
+//         <a
+//           href="#"
+//           className="text-blue-600 text-sm font-medium hover:underline"
+//         >
+//           Expand
+//         </a>
+//         <div className="flex space-x-2">
+//           <MarkAsDoneCheckbox status={task.status} id={task._id} />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+
+
 const AdminTasksCard = ({ task }: { task: any }) => {
   const [editId, setEditId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch();
 
   const handleDeleteTask = () => {
@@ -90,22 +230,32 @@ const AdminTasksCard = ({ task }: { task: any }) => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className="bg-card rounded-xl p-6 w-full">
-      <div className="mb-4">
+    <div className="bg-card rounded-xl p-6 w-full flex flex-col min-h-[250px] max-h-[350px]">
+      <div className="flex-1 overflow-y-auto pr-2 mb-4 custom-scrollbar">
         <h2 className="text-xl font-bold text-gray-800 break-words">
           {task.title}
         </h2>
-        <p className="mt-2 text-sm text-gray-600 break-words line-clamp-4">
-          {task.details} Lorem ipsum dolor sit amet consectetur adipisicing
-          elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
-          corporis repellendus tenetur architecto dolorem exercitationem, ullam
-          accusantium veniam nihil in minus mollitia esse saepe eligendi
-          recusandae doloremque sequi cupiditate nisi.
+        <p
+          className={`mt-2 text-sm text-gray-600 break-words ${
+            isExpanded ? '' : 'line-clamp-4'
+          }`}
+        >
+          {task.details}
+          <br />
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Animi, vitae! Voluptates autem quia illo assumenda accusantium non voluptatibus odit blanditiis consequatur dolorum. Dolorem quo neque velit, laudantium hic quam in!
+          Rem quia explicabo accusantium non ducimus consequuntur. Quasi laboriosam facere libero sunt ea unde, laudantium, quam, officia optio hic itaque numquam pariatur similique. Vel repellat iusto veritatis corporis, tenetur sed!
+          Ea, ipsam explicabo earum cupiditate illum asperiores ducimus consectetur mollitia distinctio veniam tenetur pariatur commodi, aliquam molestias, dolorum unde odit? Alias doloribus sequi eveniet itaque autem tempora magni fuga reprehenderit.
+          Quasi officiis, recusandae cupiditate nisi quaerat totam illum ab facilis asperiores. Sed pariatur itaque harum! Fuga sequi veniam quidem officiis? Non dolorem laboriosam tenetur, ipsam quis laudantium veniam? Velit, dolor?
         </p>
       </div>
 
-      <div className="text-sm space-y-2">
+      <div className="text-sm mb-4">
         <p className="text-gray-700">
           <span className="font-semibold">Assign To</span> -{" "}
           {task.assignedTo?.name || "N/A"}
@@ -120,13 +270,13 @@ const AdminTasksCard = ({ task }: { task: any }) => {
         </p>
       </div>
 
-      <div className="mt-6 flex items-center justify-between">
-        <a
-          href="#"
-          className="text-blue-600 text-sm font-medium hover:underline"
+      <div className="flex items-center justify-between">
+        <button
+          onClick={toggleExpand}
+          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
         >
-          Expand
-        </a>
+          {isExpanded ? 'Collapse' : 'Expand'}
+        </button>
         <div className="flex space-x-2">
           <button className="p-2 rounded-full hover:bg-secondary flex items-center justify-center cursor-pointer transition duration-200 ease-in-out group">
             <PencilLine
@@ -153,7 +303,10 @@ const AdminTasksCard = ({ task }: { task: any }) => {
   );
 };
 
+
 const EmployeeTasksCard = ({ task }: { task: any }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const formatDate = (dateString: Date) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -162,35 +315,45 @@ const EmployeeTasksCard = ({ task }: { task: any }) => {
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className="bg-card rounded-xl p-6 w-full">
-      <div className="mb-4">
+    <div className="bg-card rounded-xl p-6 w-full flex flex-col min-h-[250px] max-h-[350px]">
+      <div className="flex-1 overflow-y-auto pr-2 mb-4 custom-scrollbar">
         <h2 className="text-xl font-bold text-gray-800 break-words">
           {task.title}
         </h2>
-        <p className="mt-2 text-sm text-gray-600 break-words line-clamp-4">
-          {task.details} Lorem ipsum dolor sit amet consectetur adipisicing
-          elit. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores
-          corporis repellendus tenetur architecto dolorem exercitationem, ullam
-          accusantium veniam nihil in minus mollitia esse saepe eligendi
-          recusandae doloremque sequi cupiditate nisi.
+        <p
+          className={`mt-2 text-sm text-gray-600 break-words ${
+            isExpanded ? '' : 'line-clamp-4'
+          }`}
+        >
+          {task.details} Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores ipsa suscipit accusamus veniam repellendus. Dolorem odio maiores maxime culpa necessitatibus alias ipsa provident! Possimus temporibus ad doloribus accusamus nam aliquam?
+          Voluptates, alias explicabo, voluptatibus dolorem mollitia sint distinctio, ut libero error animi quibusdam delectus provident reprehenderit nisi dolore ipsum nostrum officiis totam a quis eligendi voluptas modi aliquid cupiditate. Magnam.
+          Deleniti dolore ipsam voluptate qui ea illo eos soluta obcaecati commodi necessitatibus unde tempora ab nulla voluptatem repellendus saepe, blanditiis magnam perspiciatis perferendis, iure, est nobis quae reiciendis? Adipisci, sed.
+          Nam similique vero iusto ducimus aut at ullam totam odio a accusamus, quibusdam, explicabo dolores quidem? Quas ratione vitae reiciendis, odit at distinctio provident est quibusdam ab, ipsum porro asperiores.
+          Ex debitis reprehenderit sequi magni, animi iusto quos quibusdam eum hic, officiis sed. Cum odio ad voluptates quisquam animi accusamus, dolores voluptas dolor magnam ratione, sint hic modi fugiat qui?
+          Tenetur, eligendi quod eaque illum, quaerat praesentium architecto cumque, at sequi laudantium dolores quos atque ipsam consectetur tempora sunt voluptatibus obcaecati quo! Maxime, sint libero doloribus id odit odio error!
         </p>
       </div>
 
-      <div className="text-sm space-y-2">
+      <div className="text-sm mb-4">
         <p className="text-gray-700">
           <span className="font-semibold">Deadline</span> -{" "}
           {formatDate(task.deadline)}
         </p>
       </div>
 
-      <div className="mt-6 flex items-center justify-between">
-        <a
-          href="#"
-          className="text-blue-600 text-sm font-medium hover:underline"
+      <div className="flex items-center justify-between">
+        <button
+          onClick={toggleExpand}
+          className="text-blue-600 text-sm font-medium hover:underline focus:outline-none"
         >
-          Expand
-        </a>
+          {isExpanded ? 'Collapse' : 'Expand'}
+        </button>
         <div className="flex space-x-2">
           <MarkAsDoneCheckbox status={task.status} id={task._id} />
         </div>
