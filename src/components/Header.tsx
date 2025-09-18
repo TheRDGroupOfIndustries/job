@@ -64,6 +64,15 @@ export default function Header() {
         {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />}
         </>
       )}
+      {pathname.includes("applications") && (
+        <>
+        <Button 
+        // onClick={()=>setOpenAssignWorkForm(true)} 
+        className="rounded-full text-section cursor-pointer"><CirclePlus /> Add Application</Button>
+
+        {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
+        </>
+      )}
       {pathname.includes("all-employee") && (
         <>
         <h2 className="text-2xl font-semibold">All Employees</h2>
