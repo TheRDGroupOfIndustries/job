@@ -21,7 +21,6 @@ export async function GET(
     }
 
     const tasks = await Kanban.find({ assignedTo: id })
-      .populate("createdBy", "name email role")
       .sort({ createdAt: -1 });
 
     if (!tasks || tasks.length === 0) {

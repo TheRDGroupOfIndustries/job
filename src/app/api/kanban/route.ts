@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
-    }
+    // if (user.role !== "admin") {
+    //   return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
+    // }
 
     const body = await req.json();
     const { title, details, assignedTo, deadline } = body;
@@ -50,7 +50,6 @@ export async function GET() {
   try {
     await connectDB();
     const tasks = await Kanban.find()
-      .populate("assignedTo createdBy", "name email role")
       .sort({ createdAt: -1 });
 
     return NextResponse.json(tasks, { status: 200 });

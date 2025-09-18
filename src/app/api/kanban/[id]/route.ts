@@ -51,7 +51,7 @@ export async function PUT(
 
     const updatedTask = await Kanban.findByIdAndUpdate(id, body, {
       new: true,
-    }).populate("assignedTo createdBy", "name email role");
+    })
 
     if (!updatedTask) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });
@@ -77,12 +77,12 @@ export async function DELETE(
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (user.role !== "admin") {
-      return NextResponse.json(
-        { error: "Only admin allowed" },
-        { status: 403 }
-      );
-    }
+    // if (user.role !== "admin") {
+    //   return NextResponse.json(
+    //     { error: "Only admin allowed" },
+    //     { status: 403 }
+    //   );
+    // }
 
     const { id } = await context.params;
     const deletedTask = await Kanban.findByIdAndDelete(id);

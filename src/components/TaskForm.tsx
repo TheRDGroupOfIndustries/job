@@ -19,6 +19,7 @@ export default function TaskForm({
 }) {
   const [loading, setLoading] = useState(false);
   const { tasks } = useSelector((state: RootState) => state.task);
+  const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   const {
@@ -35,7 +36,7 @@ export default function TaskForm({
 
       if (!task) return;
       setValue("title", task.title);
-      setValue("details", task.details)
+      setValue("details", task.details);
       const deadlineDate = new Date(task.deadline).toISOString().split("T")[0];
       setValue("deadline", deadlineDate);
       setValue("assignedTo", task.assignedTo._id);
@@ -70,10 +71,16 @@ export default function TaskForm({
   const [showDropdown, setShowDropdown] = useState(false);
 
   const onSubmit = (data: any) => {
+    if (userData?.role === "employee") {
+      data.assignedTo = userData.id;
+    }
     console.log("Form Data:", data);
     setLoading(true);
     if (!id) {
-      toast.loading("Assigning Task ...", { id: "task" });
+      toast.loading(
+        userData?.role === "admin" ? "Assigning Task ..." : "Adding Task ...",
+        { id: "task" }
+      );
       dispatch(createTask(data) as any)
         .unwrap()
         .then((res: any) => {
@@ -93,7 +100,7 @@ export default function TaskForm({
         });
     } else {
       toast.loading("Updating Task ...", { id: "task" });
-      dispatch(updateTaskStatus({ newData: data, id}) as any)
+      dispatch(updateTaskStatus({ newData: data, id }) as any)
         .unwrap()
         .then((res: any) => {
           console.log(res);
@@ -143,48 +150,50 @@ export default function TaskForm({
           />
 
           {/* Assign To */}
-          <div className="relative">
-            {/* Visible input */}
-            <input
-              type="text"
-              value={selectedUser}
-              placeholder="Assign To"
-              readOnly
-              onFocus={() => setShowDropdown(true)}
-              className={`w-full border-b-2 focus:border-primary ${
-                errors.assignedTo ? "border-primary" : "border-background"
-              } text-lg outline-0`}
-            />
+          {userData?.role === "admin" && (
+            <div className="relative">
+              {/* Visible input */}
+              <input
+                type="text"
+                value={selectedUser}
+                placeholder="Assign To"
+                readOnly
+                onFocus={() => setShowDropdown(true)}
+                className={`w-full border-b-2 focus:border-primary ${
+                  errors.assignedTo ? "border-primary" : "border-background"
+                } text-lg outline-0`}
+              />
 
-            {/* Hidden field for ID */}
-            <input
-              type="hidden"
-              {...register("assignedTo", {
-                required: "Recipient is required",
-              })}
-            />
+              {/* Hidden field for ID */}
+              <input
+                type="hidden"
+                {...register("assignedTo", {
+                  required: "Recipient is required",
+                })}
+              />
 
-            {/* Dropdown */}
-            {showDropdown && (
-              <div className="absolute top-10 w-full shadow left-0 bg-card rounded-2xl overflow-hidden z-50">
-                <ul className="h-[250px] overflow-y-auto w-full custom-scrollbar">
-                  {users.map((user) => (
-                    <li
-                      key={user.id}
-                      onClick={() => {
-                        setSelectedUser(`${user.name} (${user.email})`);
-                        setValue("assignedTo", user.id);
-                        setShowDropdown(false); // close after select
-                      }}
-                      className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
-                    >
-                      {user.name} ({user.email})
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+              {/* Dropdown */}
+              {showDropdown && (
+                <div className="absolute top-10 w-full shadow left-0 bg-card rounded-2xl overflow-hidden z-50">
+                  <ul className="h-[250px] overflow-y-auto w-full custom-scrollbar">
+                    {users.map((user) => (
+                      <li
+                        key={user.id}
+                        onClick={() => {
+                          setSelectedUser(`${user.name} (${user.email})`);
+                          setValue("assignedTo", user.id);
+                          setShowDropdown(false); // close after select
+                        }}
+                        className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
+                      >
+                        {user.name} ({user.email})
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Deadline */}
           <input
@@ -211,7 +220,11 @@ export default function TaskForm({
           {/* Submit */}
           <div className="w-full flex justify-end py-4">
             <Button type="submit" className="text-card text-lg cursor-pointer">
-              {mode === "Create" ? "Assign" : "Update"}{" "}
+              {mode === "Create"
+                ? userData?.role === "admin"
+                  ? "Assign"
+                  : "Add"
+                : "Update"}{" "}
               {loading ? <BtnLoader /> : <Forward />}
             </Button>
           </div>

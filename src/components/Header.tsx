@@ -13,7 +13,7 @@ import TaskForm from "./TaskForm";
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedMail } = useSelector((state: RootState) => state.mail);
-  const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false)
+  const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
   const dispatch = useDispatch();
   const pathname = usePathname();
 
@@ -60,29 +60,58 @@ export default function Header() {
 
       {pathname.includes("assign-works") && (
         <>
-        <Button onClick={()=>setOpenAssignWorkForm(true)} className="rounded-full text-section cursor-pointer"><CirclePlus /> Assign Work</Button>
-        {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />}
-        </>
-      )}
-      {pathname.includes("applications") && (
-        <>
-        <Button 
-        // onClick={()=>setOpenAssignWorkForm(true)} 
-        className="rounded-full text-section cursor-pointer"><CirclePlus /> Add Application</Button>
-
-        {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
-        </>
-      )}
-      {pathname.includes("all-employee") && (
-        <>
-        <h2 className="text-2xl font-semibold">All Employees</h2>
+          <Button
+            onClick={() => setOpenAssignWorkForm(true)}
+            className="rounded-full text-section cursor-pointer"
+          >
+            <CirclePlus /> Assign Work
+          </Button>
+          {openAssignWorkForm && (
+            <TaskForm
+              mode="Create"
+              close={() => setOpenAssignWorkForm(false)}
+            />
+          )}
         </>
       )}
       {pathname.includes("my-works") && (
         <>
-        <h2 className="text-2xl font-semibold">Your Kanban</h2>
+          <Button
+            onClick={() => setOpenAssignWorkForm(true)}
+            className="rounded-full text-section cursor-pointer"
+          >
+            <CirclePlus /> Add Work
+          </Button>
+          {openAssignWorkForm && (
+            <TaskForm
+              mode="Create"
+              close={() => setOpenAssignWorkForm(false)}
+            />
+          )}
         </>
       )}
+      {pathname.includes("applications") && (
+        <>
+          <Button
+            // onClick={()=>setOpenAssignWorkForm(true)}
+            className="rounded-full text-section cursor-pointer"
+          >
+            <CirclePlus /> Add Application
+          </Button>
+
+          {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
+        </>
+      )}
+      {pathname.includes("all-employee") && (
+        <>
+          <h2 className="text-2xl font-semibold">All Employees</h2>
+        </>
+      )}
+      {/* {pathname.includes("my-works") && (
+        <>
+          <h2 className="text-2xl font-semibold">Your Kanban</h2>
+        </>
+      )} */}
     </header>
   );
 }
