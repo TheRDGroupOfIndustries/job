@@ -29,6 +29,7 @@ import { RootState } from "@/redux/store";
 import { authLogout } from "@/redux/features/authSlice";
 import toast from "react-hot-toast";
 import { JSX, useEffect, useState } from "react";
+import ProfileModal from "./ProfileModal";
 
 interface TOptions {
   label: string;
@@ -41,6 +42,7 @@ export default function Sidebar() {
     (state: RootState) => state.auth
   );
   const [Options, setOptions] = useState<TOptions[] | []>([]);
+  const [openProfileModal, setOpenProfileModal] = useState(false)
   const [tab, setTab] = useState(1);
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -220,7 +222,7 @@ export default function Sidebar() {
           hgg hggfgfhgfhg
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
-          <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
+          <div onClick={()=>setOpenProfileModal(true)} className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
             <Pencil size={18} className="text-secondary " />
           </div>
           <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
@@ -287,6 +289,8 @@ export default function Sidebar() {
           </Button>
         </div>
       </div>
+
+      {openProfileModal && <ProfileModal close={() => setOpenProfileModal(false)} /> }
     </div>
   );
 }

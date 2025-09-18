@@ -7,6 +7,7 @@ interface AuthState {
     email: string;
     role: string;
     name: string;
+    phone?: string;
   } | null;
   isAutheticated: boolean;
   loading: boolean;
@@ -20,7 +21,7 @@ export const fetchUser = createAsyncThunk(
       const data = await res.json();
       // console.log("auth-response: ", data)
 
-      if (data.success === false ) {
+      if (data.success === false) {
         return rejectWithValue("Unauthorized");
       }
       return data;
@@ -133,6 +134,9 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    updateProfile: (state, action: PayloadAction<any>) => {
+      state.userData = action.payload;
+    },
     authLogin: (state, action: PayloadAction<any>) => {
       state.userData = action.payload.user;
       state.isAutheticated = true;
@@ -191,7 +195,7 @@ const authSlice = createSlice({
       .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         toast.error(action.payload, { id: "register" });
-      })
+      });
 
     // register User
     builder
@@ -207,9 +211,9 @@ const authSlice = createSlice({
       .addCase(verifyUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         toast.error(action.payload, { id: "verify" });
-      })
+      });
   },
 });
 
-export const { authLogin, authLogout } = authSlice.actions;
+export const { authLogin, authLogout, updateProfile } = authSlice.actions;
 export default authSlice.reducer;

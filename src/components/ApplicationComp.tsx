@@ -5,6 +5,7 @@ import { Card, CardContent } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 const applications = [
   {
@@ -68,10 +69,10 @@ const ApplicationComp = () => {
             </CardContent>
 
             {/* Button */}
-            <div className="mt-4 flex justify-start w-full">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base rounded-full px-8 sm:px-12 flex items-center gap-2">
+            <div className=" flex justify-start w-full">
+              <Link href={`/admin/applications/${app.id}`} className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base rounded-full px-4 py-2 flex items-center gap-2 w-fit">
                 View <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
-              </Button>
+              </Link>
             </div>
           </Card>
         );

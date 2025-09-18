@@ -27,7 +27,7 @@ export default function AllEmployees() {
   };
 
   return (
-        <div className="w-full  h-[650px] overflow-y-auto rounded-md relative custom-scrollbar">
+        <div className="w-full h-[650px] overflow-y-auto rounded-md relative custom-scrollbar">
           <table className="w-full text-base ">
             <thead className=" bg-card sticky top-0 z-10">
               <tr>

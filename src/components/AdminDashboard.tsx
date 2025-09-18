@@ -25,18 +25,18 @@ const COLORS = ["#8884d8", "#ff7f50", "#82ca9d", "#ffc658", "#0088FE"];
 
 const AdminDashboard = () => {
   return (
-    <div className="p-6 grid grid-cols-1 gap-6">
+    <div className="p-10 grid grid-cols-1 gap-6 custom-scrollbar">
       {/* Top Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <Card className="p-6 text-center bg-white shadow rounded-xl">
+        <Card className="p-6 text-center bg-white shadow-md rounded-xl border-none ">
           <h2 className="text-4xl font-bold">193</h2>
           <p className="text-gray-600 mt-1">Total Employee</p>
         </Card>
-        <Card className="p-6 text-center bg-white shadow rounded-xl">
+        <Card className="p-6 text-center bg-white shadow-md rounded-xl border-none ">
           <h2 className="text-4xl font-bold">20</h2>
           <p className="text-gray-600 mt-1">Registered Applications</p>
         </Card>
-        <Card className="p-6 text-center bg-white shadow rounded-xl">
+        <Card className="p-6 text-center bg-white shadow-md rounded-xl border-none ">
           <h2 className="text-4xl font-bold">102</h2>
           <p className="text-gray-600 mt-1">Total Job Posted</p>
         </Card>
@@ -44,7 +44,7 @@ const AdminDashboard = () => {
 
       {/* Middle Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6 bg-white shadow rounded-xl">
+        <Card className="p-6 bg-white shadow-md rounded-xl border-none ">
           <h3 className="font-semibold mb-4">Mails Sent</h3>
           <PieChart width={300} height={250}>
             <Pie
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
           </p>
         </Card>
 
-        <Card className="p-6 bg-white shadow rounded-xl">
+        <Card className="p-6 bg-white shadow-md rounded-xl border-none">
           <h3 className="font-semibold mb-4">Sheets Created</h3>
           <PieChart width={300} height={250}>
             <Pie

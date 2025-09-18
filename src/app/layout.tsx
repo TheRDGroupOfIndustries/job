@@ -11,7 +11,7 @@ import { Providers } from "@/redux/Providers";
 import { Toaster } from "react-hot-toast";
 import ApplicationComp from "@/components/ApplicationComp";
 import ApplicationDetails from "@/components/ApplicationDetails";
-import ProfileModal from "@/components/ProfileModal ";
+import ProfileModal from "@/components/ProfileModal";
 import AdminDashboard from "@/components/AdminDashboard";
 
 const dmMono = DM_Mono({
