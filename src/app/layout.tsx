@@ -9,6 +9,10 @@ import {
 import "../styles/globals.css";
 import { Providers } from "@/redux/Providers";
 import { Toaster } from "react-hot-toast";
+import ApplicationComp from "@/components/ApplicationComp";
+import ApplicationDetails from "@/components/ApplicationDetails";
+import ProfileModal from "@/components/ProfileModal ";
+import AdminDashboard from "@/components/AdminDashboard";
 
 const dmMono = DM_Mono({
   weight: ["400", "500"],
@@ -43,6 +47,10 @@ export default function RootLayout({
       <body
         className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
       >
+        {/* <ApplicationComp/> */}
+        {/* <ApplicationDetails/> */}
+        {/* <ProfileModal/> */}
+        {/* <AdminDashboard/> */}
         <Providers>{children}</Providers>
         <Toaster
         />
