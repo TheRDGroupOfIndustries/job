@@ -11,6 +11,7 @@ import { Button } from "./ui/button";
 import { removeSheet, setSheet } from "@/redux/features/sheetsSlice";
 import { ISheet } from "@/models/Sheet";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const FileCard = ({
   sheet,
@@ -83,13 +84,12 @@ export default function Home() {
   }, []);
 
   const handleNewSheet = async () => {
-    const res = await fetch("/api/sheets", {
-      method: "POST",
-      body: JSON.stringify({ title: "New Sheet" }),
-      headers: { "Content-Type": "application/json" },
-    });
-    const sheet = await res.json();
-    router.push(`/${userData?.role}/sheets/${sheet._id}`);
+    const req = await axios.post("/api/sheets", { title: "New Sheet", createdBy: userData?.id })
+    if (req.status === 200) {
+      const sheet = req.data;
+      console.log(req);
+      router.push(`/${userData?.role}/sheets/${sheet._id}`);
+    }
   };
 
   return (

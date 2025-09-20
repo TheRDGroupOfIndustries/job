@@ -25,8 +25,56 @@ export async function GET(req: NextRequest) {
     const employees = await User.countDocuments({ role: "employee" });
     const applications = await Application.countDocuments();
     const jobs = await Job.countDocuments();
-    const mails = await Mail.countDocuments();
-    const sheets = await Sheet.countDocuments();
+    const mails = await Mail.aggregate([
+    {
+      $group: {
+        _id: "$createdBy",   
+        value: { $sum: 1 }   
+      }
+    },
+    {
+      $lookup: {
+        from: "users",        
+        localField: "_id",
+        foreignField: "_id",
+        as: "user"
+      }
+    },
+    { $unwind: "$user" },     
+    {
+      $project: {
+        _id: 0,
+        name: "$user.name",  
+        value: 1             
+      }
+    }
+  ]);
+  
+    const sheets = await Sheet.aggregate([
+  { $match: { createdBy: { $exists: true } } }, 
+  {
+    $group: {
+      _id: "$createdBy",
+      value: { $sum: 1 }
+    }
+  },
+  {
+    $lookup: {
+      from: "users",
+      localField: "_id",
+      foreignField: "_id",
+      as: "user"
+    }
+  },
+  { $unwind: "$user" },
+  {
+    $project: {
+      _id: 0,
+      name: "$user.name",
+      value: 1
+    }
+  }
+]);
 
     return NextResponse.json(
       { employees, applications, jobs, mails, sheets },

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import {
   PieChart,
   Pie,
@@ -9,29 +9,59 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { FilePlus, FilePlus2, MessageSquareText, Plus } from "lucide-react";
-
-// Data for charts
-const mailsData = [
-  { name: "Adarsh", value: 10 },
-  { name: "Hrithik", value: 12 },
-  { name: "Prashant", value: 14 },
-  { name: "Aquib", value: 100 },
-];
-
-const sheetsData = [
-  { name: "Adarsh", value: 20 },
-  { name: "Chetan", value: 22 },
-  { name: "Dola", value: 54 },
-  { name: "Sooraj", value: 0 },
-  { name: "Hrithik", value: 100 },
-];
+import axios from "axios"
 
 const COLORS = ["#8884d8", "#ff7f50", "#82ca9d", "#ffc658", "#0088FE"];
 
 const AdminDashboard = () => {
-  const totalMails = mailsData.reduce((acc, cur) => acc + cur.value, 0);
-  const totalSheets = sheetsData.reduce((acc, cur) => acc + cur.value, 0);
+  
+  const [transition, startTransition] = useTransition()
+  const [subData, setSubData] = useState({
+    employee: 0,
+    application: 0,
+    job: 0
+  })
+  const [mailData, setMailData] = useState({
+    mainData: [],
+    totalMails: 0
+  })
 
+  const [sheetsData, setSheetsData] = useState({
+    sheets: [],
+    totalSheets: 0
+  })
+  
+  const getData = () => startTransition(
+    async () => {
+    const req = await axios.get("/api/dashboard")
+    if (req.status === 200) {
+      setSubData(prev => ({...prev, 
+        employee: req.data.employees,
+        application: req.data.applications,
+        job: req.data.jobs
+      }))
+      const totalSheets = req.data.sheets.reduce((acc: any, cur: any) => acc + cur.value, 0);
+      const totalMails = req.data.mails.reduce((acc: any, cur: any) => acc + cur.value, 0);
+      setMailData(prev => ({...prev, 
+        mainData: req.data.mails,
+        totalMails: totalMails
+      }))
+      setSheetsData(prev => ({...prev, 
+        sheets: req.data.sheets,
+        totalSheets: totalSheets
+      }))
+    }
+  })
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  if (transition) {
+    return (
+      <p>Loading...</p>
+    )
+  }
   return (
     <div className="p-4 lg:p-6 bg-background h-screen lg:overflow-hidden overflow-y-auto custom-scrollbar">
       <div className="max-w-7xl mx-auto h-full flex flex-col min-h-screen lg:min-h-0">
@@ -39,13 +69,14 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mb-3 lg:mb-4">
           <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-sm">
             <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2">
-              193
+              {subData.employee ? subData.employee : '0'}
             </h2>
             <p className="text-gray-500 text-sm lg:text-base">Total Employee</p>
           </div>
           <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-sm">
             <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2">
-              20
+                            {subData.application ? subData.application : '0'}
+
             </h2>
             <p className="text-gray-500 text-sm lg:text-base">
               Registered Applications
@@ -53,7 +84,8 @@ const AdminDashboard = () => {
           </div>
           <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-sm">
             <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2">
-              102
+                            {subData.job ? subData.job : '0'}
+
             </h2>
             <p className="text-gray-500 text-sm lg:text-base">
               Total Job Posted
@@ -72,7 +104,7 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height="100%" minHeight={180}>
                 <PieChart>
                   <Pie
-                    data={mailsData}
+                    data={mailData.mainData.length > 0 ? mailData.mainData: []}
                     cx="50%"
                     cy="45%"
                     outerRadius="60%"
@@ -80,7 +112,7 @@ const AdminDashboard = () => {
                     textAnchor="middle"
                     label={({ name, value }) => `${name}\n${value}`}
                   >
-                    {mailsData.map((entry, index) => (
+                    {mailData.mainData.length > 0 && mailData.mainData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -101,7 +133,7 @@ const AdminDashboard = () => {
               </ResponsiveContainer>
             </div>
             <p className="text-center text-sm lg:text-base font-semibold text-gray-900 p-2">
-              Total Sent Mails – {totalMails}
+              Total Sent Mails – {mailData.mainData.length > 0 && mailData.totalMails}
             </p>
           </div>
 
@@ -114,7 +146,7 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height="100%" minHeight={200}>
                 <PieChart>
                   <Pie
-                    data={sheetsData}
+                    data={sheetsData.sheets.length > 0 ? sheetsData.sheets : undefined}
                     cx="55%"
                     cy="50%"
                     innerRadius="35%"
@@ -122,7 +154,7 @@ const AdminDashboard = () => {
                     dataKey="value"
                     label={({ name, value }) => `${name}\n${value}`}
                   >
-                    {sheetsData.map((entry, index) => (
+                    {sheetsData.sheets.length > 0 && sheetsData.sheets.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={COLORS[index % COLORS.length]}
@@ -144,7 +176,7 @@ const AdminDashboard = () => {
               {/* Center total inside donut */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="text-xl lg:text-2xl font-bold text-gray-900">
-                  {totalSheets}
+                  {sheetsData.sheets.length > 0 && sheetsData.totalSheets}
                 </span>
               </div>
             </div>
