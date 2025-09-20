@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const applications = [
   {
@@ -39,6 +41,8 @@ const applications = [
 ];
 
 const ApplicationComp = () => {
+    const { userData } = useSelector((state: RootState) => state.auth);
+
   return (
     <div className="h-[calc(100vh-80px)] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto custom-scrollbar p-4 sm:p-6 md:p-10">
       {applications.map((app) => {
@@ -70,7 +74,7 @@ const ApplicationComp = () => {
 
             {/* Button */}
             <div className=" flex justify-start w-full">
-              <Link href={`/admin/applications/${app.id}`} className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base rounded-full px-4 py-2 flex items-center gap-2 w-fit">
+              <Link href={`/${userData?.role}/applications/${app.id}`} className="bg-orange-500 hover:bg-orange-600 text-white text-sm sm:text-base rounded-full px-4 py-2 flex items-center gap-2 w-fit">
                 View <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
               </Link>
             </div>

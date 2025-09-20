@@ -42,15 +42,18 @@ export default function Luckysheet({ id }: { id: string }) {
       }
 
       console.log("sheetData:", sheetData);
-      const savedCelldata = sheetData?.data?.length > 0 ? sheetData.data.map((cell: any) => ({
-        r: cell.row - 1, // Luckysheet is 0-indexed
-        c: cell.col - 1,
-        v: {
-          v: cell.value, // raw value
-          m: cell.value, // display value
-          ct: { fa: "General", t: "g" }, // cell type
-        },
-      })) : [];
+      const savedCelldata =
+        sheetData?.data?.length > 0
+          ? sheetData.data.map((cell: any) => ({
+              r: cell.row - 1, // Luckysheet is 0-indexed
+              c: cell.col - 1,
+              v: {
+                v: cell.value, // raw value
+                m: cell.value, // display value
+                ct: { fa: "General", t: "g" }, // cell type
+              },
+            }))
+          : [];
       setTimeout(() => {
         luckysheet.create({
           container: "luckysheet",
@@ -108,16 +111,18 @@ export default function Luckysheet({ id }: { id: string }) {
 
     console.log(extracted);
 
-    toast.loading("Saving Sheet...", {id: "sheet-save"})
+    toast.loading("Saving Sheet...", { id: "sheet-save" });
     await fetch(`/api/sheets/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({ title: data[0].name, data: extracted }),
-        headers: { "Content-Type": "application/json" },
-    }).then((res)=> {
-        toast.success("Sheet Saved Successfully", {id: "sheet-save"})
-    }).catch((err)=>{
-        toast.error("Error Saving Sheet", {id: "sheet-save"})
+      method: "PUT",
+      body: JSON.stringify({ title: data[0].name, data: extracted }),
+      headers: { "Content-Type": "application/json" },
     })
+      .then((res) => {
+        toast.success("Sheet Saved Successfully", { id: "sheet-save" });
+      })
+      .catch((err) => {
+        toast.error("Error Saving Sheet", { id: "sheet-save" });
+      });
   };
 
   return (
@@ -126,15 +131,17 @@ export default function Luckysheet({ id }: { id: string }) {
 
       {/* Spreadsheet Container */}
       <div className="flex-1 relative">
-      <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
-        <h1 className="font-bold capitalize">{sheetData?.title ?? "Untitled Sheet"}</h1>
-        <button
-          onClick={saveSheet}
-          className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
-        >
-          Save
-        </button>
-      </div>
+        <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
+          <h1 className="font-bold capitalize">
+            {sheetData?.title ?? "Untitled Sheet"}
+          </h1>
+          <button
+            onClick={saveSheet}
+            className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
+          >
+            Save
+          </button>
+        </div>
         <div
           ref={containerRef}
           id="luckysheet"

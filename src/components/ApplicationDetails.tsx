@@ -80,7 +80,7 @@ const ApplicationDetails = () => {
         <Card className="p-4 flex flex-col gap-3 bg-[#EFEFEF] border-none">
           <h4 className="font-medium text-lg sm:text-xl">Application Status</h4>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full flex-wrap">
             <Button
               variant="outline"
               className="flex-1 border-2 border-red-500 text-red-500 hover:bg-red-50 text-sm sm:text-lg"

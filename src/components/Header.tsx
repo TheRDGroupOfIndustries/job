@@ -1,6 +1,6 @@
 "use client";
 
-import { CirclePlus, MailPlus, Search, Trash2 } from "lucide-react";
+import { ArrowRightToLine, ArrowUpRight, CirclePlus, MailPlus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { deleteSelectedMails } from "@/redux/features/mailSlice";
 import ComposeMailModal from "./ComposeMailModal";
 import { usePathname } from "next/navigation";
 import TaskForm from "./TaskForm";
+import Link from "next/link";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -98,20 +99,24 @@ export default function Header() {
           >
             <CirclePlus /> Add Application
           </Button>
-
-          {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
         </>
       )}
+      {pathname.includes("blogs") && (
+          <Link href="/sanity-studio"
+            // onClick={()=>setOpenAssignWorkForm(true)}
+            className="rounded-full text-section cursor-pointer bg-primary px-4 py-2 flex items-center gap-2 text-sm"
+          >
+            Go To Sanity <ArrowUpRight />
+          </Link>
+      )}
+
       {pathname.includes("all-employee") && (
         <>
           <h2 className="text-2xl font-semibold">All Employees</h2>
         </>
       )}
-      {/* {pathname.includes("my-works") && (
-        <>
-          <h2 className="text-2xl font-semibold">Your Kanban</h2>
-        </>
-      )} */}
+
+
     </header>
   );
 }

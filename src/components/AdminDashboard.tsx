@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   PieChart,
   Pie,
@@ -9,6 +9,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { FilePlus, FilePlus2, MessageSquareText, Plus } from "lucide-react";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import TaskForm from "./TaskForm";
+import { useRouter } from "next/navigation";
+import { route } from "sanity/router";
 
 // Data for charts
 const mailsData = [
@@ -29,6 +34,11 @@ const sheetsData = [
 const COLORS = ["#8884d8", "#ff7f50", "#82ca9d", "#ffc658", "#0088FE"];
 
 const AdminDashboard = () => {
+  const { userData } = useSelector((state: RootState) => state.auth);
+  const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
+
+  const router = useRouter()
+
   const totalMails = mailsData.reduce((acc, cur) => acc + cur.value, 0);
   const totalSheets = sheetsData.reduce((acc, cur) => acc + cur.value, 0);
 
@@ -153,7 +163,7 @@ const AdminDashboard = () => {
 
         {/* Bottom Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4">
-          <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
+          <div onClick={()=>router.push(`/${userData?.role}/blogs`)} className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
             <FilePlus2 className="w-6 h-6 lg:w-8 lg:h-8 text-orange-500 mr-3" />
             <p className="text-lg lg:text-xl text-orange-500">Post a Blog</p>
           </div>
@@ -165,16 +175,21 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
+          <div onClick={() => setOpenAssignWorkForm(true)} className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
             <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border-2 border-orange-500 flex items-center justify-center mb-2">
               <Plus className="w-6 h-6 lg:w-8 lg:h-8 text-orange-500" />
             </div>
             <p className="text-lg lg:text-xl font-medium text-orange-500">
-              Assign Work
+              {userData?.role === "admin" ? "Assign" : "Add"} Work
             </p>
           </div>
         </div>
       </div>
+
+      {openAssignWorkForm && (
+        <TaskForm mode="Create" close={() => setOpenAssignWorkForm(false)} />
+      )}
+
     </div>
   );
 };

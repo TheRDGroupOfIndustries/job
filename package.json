@@ -21,6 +21,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-switch": "^1.2.6",
     "@reduxjs/toolkit": "^2.9.0",
+    "@sanity/client": "^7.11.2",
     "@sanity/icons": "^3.7.4",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.9.0",
@@ -41,7 +42,7 @@
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.1",
     "next": "15.5.2",
-    "next-sanity": "^10.1.4",
+    "next-sanity": "^11.1.1",
     "nodemailer": "^7.0.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -49,6 +50,7 @@
     "react-hot-toast": "^2.6.0",
     "react-redux": "^9.2.0",
     "recharts": "^3.2.1",
+    "rxjs": "^7.8.2",
     "sanity": "^4.9.0",
     "styled-components": "^6.1.19",
     "tailwind-merge": "^3.3.1",
@@ -67,5 +69,9 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "@sanity/client": "7.11.2",
+    "rxjs": "7.8.2"
   }
 }
