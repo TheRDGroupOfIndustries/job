@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
-import Sheet from "@/models/Sheet";
+import { Sheet } from "@/models/Sheet";
 import { NextResponse } from "next/server";
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
