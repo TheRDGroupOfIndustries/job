@@ -3,12 +3,15 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export type UserRole = "user" | "admin" | "employee";
 
 export interface IUser extends Document {
+  _id: string;
   name: string;
   email: string;
   password: string;
   phone?: string;
   role: UserRole;
   profileImage?: string;
+  employeeId?: string;
+  otherDetails?: string;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -22,6 +25,8 @@ const UserSchema = new Schema<IUser>(
       enum: ["user", "admin", "employee"],
       default: "user", 
     },
+    employeeId: { type: String, required: false },
+    otherDetails: { type: String, required: false },
     profileImage: { type: String, required: false },
   },
   {

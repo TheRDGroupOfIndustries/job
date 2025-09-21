@@ -3,12 +3,13 @@ import toast from "react-hot-toast";
 
 interface AuthState {
   userData: {
-    id: string;
+    _id: string;
     email: string;
     role: string;
     name: string;
     phone?: string;
   } | null;
+
   isAutheticated: boolean;
   loading: boolean;
 }
@@ -124,6 +125,65 @@ export const verifyUser = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "user/updateProfile",
+  async ({ details }: { details: any }, { rejectWithValue }) => {
+    try {
+      const res = await fetch("/api/auth/update-profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(details),
+      })
+
+      const data = await res.json()
+      return data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+)
+
+export const updateEmployee = createAsyncThunk(
+  "user/updateEmployee",
+  async ({ details, id }: { details: any; id: string }, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/employees/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({details}),
+      })
+
+      const data = await res.json()
+      return data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+)
+
+export const deleteEmployee = createAsyncThunk(
+  "user/deleteEmployee",
+  async ({ id }: { id: string }, { rejectWithValue }) => {
+    try {
+      const res = await fetch(`/api/employees/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await res.json()
+      return data
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+)
+
 const initialState: AuthState = {
   userData: null,
   isAutheticated: false,
@@ -134,9 +194,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    updateProfile: (state, action: PayloadAction<any>) => {
-      state.userData = action.payload;
-    },
     authLogin: (state, action: PayloadAction<any>) => {
       state.userData = action.payload.user;
       state.isAutheticated = true;
@@ -212,8 +269,53 @@ const authSlice = createSlice({
         state.loading = false;
         toast.error(action.payload, { id: "verify" });
       });
+
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        toast.loading("Updating...", { id: "update" });
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        console.log(action.payload)
+        state.userData = action.payload.user;
+        toast.success(action.payload.message, { id: "update" });
+      })
+      .addCase(updateProfile.rejected, (state, action: PayloadAction<any>) => {
+        // state.loading = false;
+        toast.error(action.payload, { id: "update" });
+      });
+
+    builder
+      .addCase(updateEmployee.pending, (state) => {
+        state.loading = true;
+        toast.loading("Updating...", { id: "updateEmployee" });
+      })
+      .addCase(updateEmployee.fulfilled, (state, action) => {
+        console.log(action.payload)
+        // state.userData = action.payload.user;
+        toast.success(action.payload.message, { id: "updateEmployee" });
+      })
+      .addCase(updateEmployee.rejected, (state, action: PayloadAction<any>) => {
+        // state.loading = false;
+        toast.error(action.payload, { id: "updateEmployee" });
+      });
+
+    builder
+      .addCase(deleteEmployee.pending, (state) => {
+        state.loading = true;
+        toast.loading("Updating...", { id: "deleteEmployee" });
+      })
+      .addCase(deleteEmployee.fulfilled, (state, action) => {
+        console.log(action.payload)
+        // state.userData = action.payload.user;
+        toast.success(action.payload.message, { id: "deleteEmployee" });
+      })
+      .addCase(deleteEmployee.rejected, (state, action: PayloadAction<any>) => {
+        // state.loading = false;
+        toast.error(action.payload, { id: "deleteEmployee" });
+      });
   },
 });
 
-export const { authLogin, authLogout, updateProfile } = authSlice.actions;
+export const { authLogin, authLogout } = authSlice.actions;
 export default authSlice.reducer;

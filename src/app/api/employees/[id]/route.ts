@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  const {id } = await params
   await connectDB();
   const user = authenticate(req as any);
 
@@ -12,12 +13,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (!mongoose.Types.ObjectId.isValid(params.id)) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
   const body = await req.json();
-  const updated = await User.findByIdAndUpdate(params.id, body, { new: true }).select("-password");
+  const updated = await User.findByIdAndUpdate(id, body.details, { new: true }).select("-password");
 
   return NextResponse.json({ message: "Employee updated", employee: updated }, { status: 200 });
 }
@@ -34,7 +35,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  await User.findByIdAndDelete(params.id);
+   const res = await User.findByIdAndDelete(params.id);
 
-  return NextResponse.json({ message: "Employee deleted" }, { status: 200 });
+  return NextResponse.json({ message: "Employee deleted", user: res }, { status: 200 });
 }

@@ -51,7 +51,7 @@ export async function PUT(
 
     const updatedTask = await Kanban.findByIdAndUpdate(id, body, {
       new: true,
-    })
+    }).populate("assignedTo createdBy", "name email role");
 
     if (!updatedTask) {
       return NextResponse.json({ error: "Task not found" }, { status: 404 });

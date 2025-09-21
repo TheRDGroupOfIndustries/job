@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Mail } from "@/models/Mail";
 import { sendEmail } from "@/lib/emailServices";
 import { NextRequest, NextResponse } from "next/server";
+import { User } from "@/models";
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,26 +14,42 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { to, subject, message } = await req.json();
+    const { to, subject, body } = await req.json();
 
-    if (!to || !subject || !message) {
+    if (!to || !subject || !body) {
       return NextResponse.json(
         { error: "All fields required" },
         { status: 400 }
       );
     }
 
-    await sendEmail({ to, subject, text: message, html: `<p>${message}</p>` });
+    const receiver = await User.findOne({email: to});
+
+    if (!receiver) {
+      return NextResponse.json(
+        { error: "Receiver not found" },
+        { status: 404 }
+      );
+    }
+    console.log("receiver ", receiver)
+
+    await sendEmail({ to, subject, text: body, html: `<p>${body}</p>` });
 
     const mail = await Mail.create({
       createdBy: user.id,
-      to,
+      to: String(receiver._id),
       subject,
-      message,
+      message: body,
     });
 
+    const createdMail = await Mail.findById(mail._id).populate(
+      "createdBy to",
+      "name email"
+    );
+
+
     return NextResponse.json(
-      { message: "Mail sent successfully", mail },
+      { message: "Mail sent successfully", mail:createdMail },
       { status: 201 }
     );
   } catch (error: any) {
@@ -50,7 +67,7 @@ export async function GET(req: NextRequest) {
     }
 
     const mails = await Mail.find({ createdBy: user.id })
-      .populate("createdBy", "name email role") 
+      .populate("createdBy to", "name email role") 
       .sort({ createdAt: -1 });
 
     return NextResponse.json({ mails }, { status: 200 });

@@ -217,9 +217,8 @@ export default function Sidebar() {
         <h2 className="text-xl font-semibold leading-tight font-stix-two-math">
           {userData && userData.name ? userData.name : "Username"}
         </h2>
-        <p className="text-sm text-secondary leading-tight font-dm-mono font-thin w-full line-clamp-1  ">
+        <p className="text-sm text-center text-secondary leading-tight font-dm-mono font-thin w-full line-clamp-1  ">
           {userData && userData.email ? userData.email : "username@gmail.com"}
-          hgg hggfgfhgfhg
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
           <div onClick={()=>setOpenProfileModal(true)} className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">

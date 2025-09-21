@@ -31,10 +31,14 @@ export async function POST(req: NextRequest) {
     const newTask = await Kanban.create({
       ...body,
       createdBy: user.id, 
-    });
+    })
+
+const task = await newTask.populate("assignedTo createdBy", "name email role");
+
+
 
     return NextResponse.json(
-      { message: "Task created successfully", task: newTask },
+      { message: "Task created successfully", task },
       { status: 201 }
     );
   } catch (error: any) {
@@ -49,7 +53,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     await connectDB();
-    const tasks = await Kanban.find()
+    const tasks = await Kanban.find().populate("createdBy").populate("assignedTo")
       .sort({ createdAt: -1 });
 
     return NextResponse.json(tasks, { status: 200 });

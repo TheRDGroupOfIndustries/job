@@ -1,6 +1,8 @@
 // app/api/auth/me/route.ts
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { DecodedUser } from "@/lib/auth";
+import { User } from "@/models";
 
 export async function GET(req: Request) {
   const token = req.headers.get("cookie")?.split("job-auth-token=")[1];
@@ -15,11 +17,13 @@ export async function GET(req: Request) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
+    const details = await User.findById(decoded?.id).select("-password");
+
     return NextResponse.json({
       success: true,
       message: "Authorized",
-      user: decoded,
+      user: details,
     });
   } catch (error) {
     console.error("Error verifying token:", error);

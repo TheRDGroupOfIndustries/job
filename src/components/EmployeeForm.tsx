@@ -7,7 +7,7 @@ import { CheckCheck, Phone, Plus, X } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { updateProfile } from "@/redux/features/authSlice";
+import { updateProfile, updateEmployee } from "@/redux/features/authSlice";
 import { IUser } from "@/models/User";
 
 // Define the form data structure
@@ -19,7 +19,15 @@ interface ProfileFormInputs {
   otherDetails?: string;
 }
 
-const ProfileModal = ({ close }: { close: () => void }) => {
+const EmployeeForm = ({
+  employee,
+  setEmployees,
+  close,
+}: {
+  employee: IUser;
+  setEmployees: React.Dispatch<React.SetStateAction<IUser[] | null>>;
+  close: () => void;
+}) => {
   const [profileImage, setProfileImage] = useState<string | null>(
     "/images/profile_picture.jpg"
   );
@@ -28,17 +36,18 @@ const ProfileModal = ({ close }: { close: () => void }) => {
   );
   const dispatch = useDispatch();
 
+  console.log("employee:", employee);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<IUser>({
     defaultValues: {
-      name: userData?.name,
-      email: userData?.email,
-      phone: userData?.phone,
-      employeeId: userData?.employeeId,
-      otherDetails: userData?.otherDetails,
+      name: employee?.name,
+      email: employee?.email,
+      phone: employee?.phone,
+      employeeId: employee?.employeeId,
+      otherDetails: employee?.otherDetails,
     },
   });
 
@@ -51,7 +60,17 @@ const ProfileModal = ({ close }: { close: () => void }) => {
     console.log("Form Data Submitted:", data);
     console.log("New Profile Image:", profileImage);
     // if (userData.role === "admin") {
-      dispatch(updateProfile({details: data})).unwrap().then(()=>close())
+    dispatch(updateEmployee({ details: data, id: employee._id }))
+      .unwrap()
+      .then(() => {
+        setEmployees((prev) => {
+          if (!prev) return prev;
+          return prev.map((emp) =>
+            emp._id === employee._id ? { ...emp, ...data } : emp
+          );
+        });
+        close();
+      });
     // }
 
     // close();
@@ -149,23 +168,18 @@ const ProfileModal = ({ close }: { close: () => void }) => {
                 {errors.phone.message}
               </span>
             )}
-            {userData?.role === "employee" && (
-              <>
-                <input
-                  type="text"
-                  {...register("employeeId")}
-                  readOnly
-                  placeholder="Employee ID"
-                  className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs text-secondary placeholder:text-secondary"
-                />
-                <input
-                  type="text"
-                  placeholder="Other Details"
-                  {...register("otherDetails")}
-                  className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs placeholder:text-secondary"
-                />
-              </>
-            )}
+            <>
+              <input
+                type="text"
+                {...register("employeeId")}
+                className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs "
+              />
+              <input
+                type="text"
+                {...register("otherDetails")}
+                className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs"
+              />
+            </>
           </div>
 
           <div className="w-full flex justify-center">
@@ -182,4 +196,4 @@ const ProfileModal = ({ close }: { close: () => void }) => {
   );
 };
 
-export default ProfileModal;
+export default EmployeeForm;

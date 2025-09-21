@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
@@ -7,6 +9,12 @@ import { createTask, updateTaskStatus } from "@/redux/features/taskSlice";
 import toast from "react-hot-toast";
 import BtnLoader from "./BtnLoader";
 import { RootState } from "@/redux/store";
+
+type User = {
+  _id: string;
+  name: string;
+  email: string;
+};
 
 export default function TaskForm({
   mode = "Create",
@@ -30,93 +38,102 @@ export default function TaskForm({
     setValue,
   } = useForm();
 
+  // 🔹 States for suggestions
+  const [suggestions, setSuggestions] = useState<User[]>([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState("");
+  const [inputValue, setInputValue] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // Prefill when updating task
   useEffect(() => {
     if (id) {
       const task = tasks.find((task) => task._id === id);
-
       if (!task) return;
+
       setValue("title", task.title);
       setValue("details", task.details);
       const deadlineDate = new Date(task.deadline).toISOString().split("T")[0];
       setValue("deadline", deadlineDate);
       setValue("assignedTo", task.assignedTo._id);
-      setSelectedUser(
-        `${(task?.assignedTo as any)?.name} (${
-          (task?.assignedTo as any)?.email
-        }) `
-      );
+
+      setSelectedUser(`${(task as any)?.assignedTo?.name} (${(task as any)?.assignedTo?.email})`);
     }
   }, [id]);
 
-  // dummy users (replace with API later)
-  const users = [
-    {
-      id: "68c1e050450c5ea38e67a836",
-      name: "Dolamani",
-      email: "dolamanirohidas696@gmail.com",
-    },
-    {
-      id: "68c1e050450c5ea38e67a836",
-      name: "Aarav Singh",
-      email: "aarav.singh@example.com",
-    },
-    {
-      id: "68c1e050450c5ea38e67a836",
-      name: "Priya Patel",
-      email: "priya.patel@example.com",
-    },
-  ];
+  // Fetch users (replace with API)
+  useEffect(() => {
+    fetch("/api/mails/mail-users")
+      .then((res) => res.json())
+      .then((res) => {
+        setSuggestions(res.suggetions);
+        setFilteredSuggestions(res.suggetions);
+      });
+  }, []);
 
-  const [selectedUser, setSelectedUser] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
+  // Handle typing in AssignTo input
+  const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value;
+
+    setSelectedUser("");
+    setInputValue(input);
+    setShowDropdown(true);
+
+    if (input.trim()) {
+      setFilteredSuggestions(
+        suggestions.filter(
+          (s) =>
+            s.name.toLowerCase().includes(input.toLowerCase()) ||
+            s.email.toLowerCase().includes(input.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredSuggestions(suggestions); // show all if empty
+    }
+  };
 
   const onSubmit = (data: any) => {
     if (userData?.role === "employee") {
-      data.assignedTo = userData.id;
+      data.assignedTo = userData._id;
     }
-    console.log("Form Data:", data);
+
     setLoading(true);
+
     if (!id) {
-      toast.loading(
-        userData?.role === "admin" ? "Assigning Task ..." : "Adding Task ...",
-        { id: "task" }
-      );
+      toast.loading(userData?.role === "admin" ? "Assigning Task ..." : "Adding Task ...", {
+        id: "task",
+      });
+
       dispatch(createTask(data) as any)
         .unwrap()
         .then((res: any) => {
-          console.log(res);
           toast.success(res.message, { id: "task" });
           close();
           reset();
           setSelectedUser("");
+          setInputValue("");
           setShowDropdown(false);
         })
         .catch((err: any) => {
-          console.log(err);
           toast.error(err.message || "Failed To Assign Task!", { id: "task" });
         })
-        .finally(() => {
-          setLoading(false);
-        });
+        .finally(() => setLoading(false));
     } else {
       toast.loading("Updating Task ...", { id: "task" });
       dispatch(updateTaskStatus({ newData: data, id }) as any)
         .unwrap()
         .then((res: any) => {
-          console.log(res);
           toast.success(res.message, { id: "task" });
           close();
           reset();
           setSelectedUser("");
+          setInputValue("");
           setShowDropdown(false);
         })
         .catch((err: any) => {
-          console.log(err);
-          toast.error(err.message || "Failed To Assign Task!", { id: "task" });
+          toast.error(err.message || "Failed To Update Task!", { id: "task" });
         })
-        .finally(() => {
-          setLoading(false);
-        });
+        .finally(() => setLoading(false));
     }
   };
 
@@ -131,6 +148,7 @@ export default function TaskForm({
               close();
               reset();
               setSelectedUser("");
+              setInputValue("");
               setShowDropdown(false);
             }}
           >
@@ -149,16 +167,18 @@ export default function TaskForm({
             {...register("title", { required: "Title is required" })}
           />
 
-          {/* Assign To */}
+          {/* Assign To (Admin Only) */}
           {userData?.role === "admin" && (
             <div className="relative">
-              {/* Visible input */}
               <input
                 type="text"
-                value={selectedUser}
+                value={selectedUser || inputValue}
                 placeholder="Assign To"
-                readOnly
-                onFocus={() => setShowDropdown(true)}
+                onChange={handleEmailInput}
+                onFocus={() => {
+                  setShowDropdown(true);
+                  setFilteredSuggestions(suggestions); // show all on focus
+                }}
                 className={`w-full border-b-2 focus:border-primary ${
                   errors.assignedTo ? "border-primary" : "border-background"
                 } text-lg outline-0`}
@@ -173,16 +193,17 @@ export default function TaskForm({
               />
 
               {/* Dropdown */}
-              {showDropdown && (
+              {showDropdown && filteredSuggestions?.length > 0 && (
                 <div className="absolute top-10 w-full shadow left-0 bg-card rounded-2xl overflow-hidden z-50">
                   <ul className="h-[250px] overflow-y-auto w-full custom-scrollbar">
-                    {users.map((user) => (
+                    {filteredSuggestions.map((user) => (
                       <li
-                        key={user.id}
+                        key={user._id}
                         onClick={() => {
                           setSelectedUser(`${user.name} (${user.email})`);
-                          setValue("assignedTo", user.id);
-                          setShowDropdown(false); // close after select
+                          setValue("assignedTo", user._id);
+                          setInputValue("");
+                          setShowDropdown(false);
                         }}
                         className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
                       >
@@ -212,9 +233,7 @@ export default function TaskForm({
             className={`w-full border-b-2 focus:border-primary ${
               errors.details ? "border-primary" : "border-background"
             } text-lg outline-0 resize-none`}
-            {...register("details", {
-              required: "Description cannot be empty",
-            })}
+            {...register("details", { required: "Description cannot be empty" })}
           />
 
           {/* Submit */}

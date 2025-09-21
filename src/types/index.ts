@@ -1,9 +1,19 @@
 export type Mail = {
-  id: string;
+  _id: string;
   subject: string;
-  body: string;
-  sender: string;
-  timestamp: string;
+  to: {
+    name: string;
+    email: string;
+    _id: string;
+
+  }
+  message: string;
+  createdBy?: {
+    name: string;
+    email: string;
+    _id: string;
+  };
+  createdAt?: string;
 };
 
 
@@ -12,6 +22,6 @@ export interface Employee{
   name: string;
   email: string;
   employeeID: string;
-  otherDetails: string;
+  otherDetails?: string;
 
 }

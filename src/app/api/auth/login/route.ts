@@ -41,6 +41,10 @@ export async function POST(req: NextRequest) {
         name: user.name,
         email: user.email,
         role: user.role,
+        profileImage: user.profileImage,
+        employeeId: user.employeeId,
+        otherDetails: user.otherDetails,
+        phone: user.phone,
       },
     }, { status: 200 });
     res.cookies.set("job-auth-token", token, { httpOnly: true });

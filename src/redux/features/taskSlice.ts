@@ -52,8 +52,9 @@ export const getEmployeeTasks = createAsyncThunk(
   "task/getEmployeeTasks",
   async (_, { rejectWithValue, getState }) => {
     try {
-      const { auth } = getState() as any; // Cast getState() to 'any' to access auth property
-      const response = await fetch(`/api/kanban/employee/${auth.userData.id}`, {
+      const { auth } = getState() as any; 
+      console.log("auth", auth)
+      const response = await fetch(`/api/kanban/employee/${auth.userData._id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

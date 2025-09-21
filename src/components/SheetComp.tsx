@@ -71,7 +71,7 @@ const FileCard = ({
   );
 };
 
-export default function Home() {
+export default function Sheet() {
   const { userData } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
   const { sheets } = useSelector((state: RootState) => state.sheet);
@@ -84,7 +84,7 @@ export default function Home() {
   }, []);
 
   const handleNewSheet = async () => {
-    const req = await axios.post("/api/sheets", { title: "New Sheet", createdBy: userData?.id })
+    const req = await axios.post("/api/sheets", { title: "New Sheet", createdBy: userData?._id })
     if (req.status === 200) {
       const sheet = req.data;
       console.log(req);

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { deleteSelectedMails } from "@/redux/features/mailSlice";
+import { deleteMails, deleteSelectedMails } from "@/redux/features/mailSlice";
 import ComposeMailModal from "./ComposeMailModal";
 import { usePathname } from "next/navigation";
 import TaskForm from "./TaskForm";
@@ -47,7 +47,7 @@ export default function Header() {
               <Button
                 type="button"
                 className="text-card rounded-full cursor-pointer"
-                onClick={() => dispatch(deleteSelectedMails())}
+                onClick={() => dispatch(deleteMails() as any)}
               >
                 <Trash2 />
               </Button>
