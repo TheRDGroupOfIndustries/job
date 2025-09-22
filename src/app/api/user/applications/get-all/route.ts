@@ -20,7 +20,8 @@ export async function GET(req: NextRequest) {
         .populate("jobId", "designation jobDescription")
         .sort({ createdAt: -1 });
     } else if (user.role === "employee") {
-      applications = await Application.find({ appliedBy: user.id })
+      applications = await Application.find()
+        .populate("appliedBy", "name email")
         .populate("jobId", "designation jobDescription")
         .sort({ createdAt: -1 });
     } else {

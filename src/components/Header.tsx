@@ -105,12 +105,12 @@ export default function Header() {
       )}
       {pathname.includes("applications") && (
         <>
-          <Button
+          {/* <Button
             // onClick={()=>setOpenAssignWorkForm(true)}
             className="rounded-full text-section cursor-pointer"
           >
             <CirclePlus /> Add Application
-          </Button>
+          </Button> */}
 
           {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
         </>

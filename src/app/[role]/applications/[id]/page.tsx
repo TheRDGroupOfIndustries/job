@@ -1,7 +1,9 @@
 import ApplicationDetails from "@/components/ApplicationDetails";
 
-export default function Page () {
+export default async function Page ({ params }: { params: { id: string }}) {
+  const { id } = await params;
+
   return (
-    <ApplicationDetails />
+    <ApplicationDetails id={id} />
   );
 };

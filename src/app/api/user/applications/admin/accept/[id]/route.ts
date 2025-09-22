@@ -16,9 +16,9 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (user.role !== "admin" && user.role !== "employee") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    // if (user.role !== "admin" && user.role !== "employee") {
+    //   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    // }
 
     const applicationId = params.id;
     if (!mongoose.Types.ObjectId.isValid(applicationId)) {

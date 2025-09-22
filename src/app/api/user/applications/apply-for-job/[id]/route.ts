@@ -63,6 +63,8 @@ export async function POST(
           {
             resource_type: "raw",
             public_id: `resumes/${uuidv4()}`,
+            format: 'pdf',
+          access_mode: 'public',
           },
           (error, result) => {
             if (error) reject(error);
@@ -71,6 +73,8 @@ export async function POST(
         )
         .end(buffer);
     });
+
+    console.log("uploadResult", uploadResult);
 
     const application = await Application.create({
       appliedBy: new mongoose.Types.ObjectId(appliedBy),

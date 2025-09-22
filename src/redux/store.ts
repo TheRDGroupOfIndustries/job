@@ -7,6 +7,7 @@ import authSlice from "./features/authSlice"
 import jobSlice from "./features/jobSlice";
 import taskSlice from "./features/taskSlice";
 import sheetsSlice from "./features/sheetsSlice";
+import applicationSlice from "./features/applicationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,7 +15,8 @@ export const store = configureStore({
     auth: authSlice,
     job: jobSlice,
     task: taskSlice,
-    sheet: sheetsSlice
+    sheet: sheetsSlice,
+    applications: applicationSlice,
   },
 });
 
