@@ -15,6 +15,7 @@ import { RootState } from "@/redux/store";
 import TaskForm from "./TaskForm";
 import { useRouter } from "next/navigation";
 import ProfileModal from "./ProfileModal";
+import PageLoader from "./PageLoader";
 
 const COLORS = ["#8884d8", "#ff7f50", "#82ca9d", "#ffc658", "#0088FE"];
 
@@ -76,11 +77,11 @@ const AdminDashboard = () => {
   }, []);
 
   if (transition) {
-    return <p>Loading...</p>;
+    return <PageLoader/>;
   }
   return (
     <div className="p-4 lg:p-6 bg-background h-screen lg:overflow-hidden overflow-y-auto custom-scrollbar">
-      <div className="max-w-7xl mx-auto h-full flex flex-col min-h-screen lg:min-h-0">
+      <div className="max-w-7xl mx-auto h-full flex flex-col ">
         {/* Top Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4 mb-3 lg:mb-4">
           <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-sm">
@@ -108,7 +109,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Middle Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-4 flex-grow mb-3 lg:mb-4">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-3 lg:gap-4 flex-grow mb-3 lg:mb-4">
           {/* Mails Sent Chart */}
           <div className="bg-white rounded-xl lg:rounded-2xl p-2 lg:p-3 shadow-sm col-span-1 lg:col-span-2 flex flex-col">
             <h3 className="text-lg lg:text-xl font-semibold text-gray-900 p-2 lg:p-3">
@@ -206,7 +207,7 @@ const AdminDashboard = () => {
 
         {/* Bottom Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4">
-          <div onClick={() => router.push("/admin/blogs")} className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
+          <div onClick={() => router.push("/sanity-studio")} className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
             <FilePlus2 className="w-6 h-6 lg:w-8 lg:h-8 text-orange-500 mr-3" />
             <p className="text-lg lg:text-xl text-orange-500">Post a Blog</p>
           </div>

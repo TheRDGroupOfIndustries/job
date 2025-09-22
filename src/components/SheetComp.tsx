@@ -12,6 +12,7 @@ import { removeSheet, setSheet } from "@/redux/features/sheetsSlice";
 import { ISheet } from "@/models/Sheet";
 import toast from "react-hot-toast";
 import axios from "axios";
+import PageLoader from "./PageLoader";
 
 const FileCard = ({
   sheet,
@@ -76,6 +77,7 @@ export default function Sheet() {
   const router = useRouter();
   const { sheets } = useSelector((state: RootState) => state.sheet);
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetch("/api/sheets")
@@ -84,13 +86,20 @@ export default function Sheet() {
   }, []);
 
   const handleNewSheet = async () => {
+    if (!userData) return;
+    setLoading(true)
     const req = await axios.post("/api/sheets", { title: "New Sheet", createdBy: userData?._id })
     if (req.status === 200) {
       const sheet = req.data;
       console.log(req);
       router.push(`/${userData?.role}/sheets/${sheet._id}`);
     }
+    setLoading(false)
   };
+
+    if (loading) {
+      return <PageLoader />;
+    }
 
   return (
     <div className="flex-1 h-[calc(100vh-80px)] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pl-20 my-10 pr-10 overflow-y-auto custom-scrollbar">

@@ -27,6 +27,46 @@ import { IJob } from "@/models/Job";
 import { createJob, updateJob } from "@/redux/features/jobSlice";
 import toast from "react-hot-toast";
 
+interface FormData {
+  designation: string;
+  employmentType: string;
+  keySkills: string[];
+  skills: string[];
+  department: string;
+  roleCategory: string;
+  workMode: string;
+  location: string[];
+  willingToRelocate: boolean;
+  workExperience: {
+    min: number;
+    max: number;
+  };
+  annualSalary: {
+    min: number;
+    max: number;
+    currency: string;
+    hideFromCandidates: boolean;
+  };
+  companyIndustry: string;
+  educationQualification: string;
+  candidateIndustry: string;
+  diversityHiring: {
+    women: boolean;
+    womenReturning: boolean;
+    exDefence: boolean;
+    differentlyAbled: boolean;
+  };
+  companyDetails: {
+    name: string;
+    established: number;
+    sector: string;
+    locatedAt: string;
+  };
+  jobDescription: string;
+  vacancy: number;
+  createdBy?: string;
+}
+
 export default function JobForm({
   mode = "create",
   close,
@@ -44,16 +84,17 @@ export default function JobForm({
     watch,
     setValue,
     reset,
-  } = useForm({
+    trigger,
+  } = useForm<FormData>({
     defaultValues: {
       designation: "",
       employmentType: "",
-      keySkills: ["", ""],
-      skills: ["", ""],
+      keySkills: [""],
+      skills: [""],
       department: "",
       roleCategory: "",
       workMode: "",
-      location: ["", "", ""],
+      location: [""],
       willingToRelocate: false,
       workExperience: {
         min: 0,
@@ -83,6 +124,7 @@ export default function JobForm({
       jobDescription: "",
       vacancy: 0,
     },
+    mode: "onChange", // Enable real-time validation
   });
 
   const { userData } = useSelector((state: RootState) => state.auth);
@@ -95,10 +137,12 @@ export default function JobForm({
   useEffect(() => {
     if (mode === "update" && jobId) {
       const job = jobs.find((j) => j._id === jobId);
-      console.log("job", job)
-      reset(job);
+      console.log("job", job);
+      if (job) {
+        reset(job as any);
+      }
     }
-  }, []);
+  }, [mode, jobId, jobs, reset]);
 
   const {
     fields: keySkillsFields,
@@ -127,40 +171,66 @@ export default function JobForm({
     name: "location" as never,
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
-    data.createdBy = userData?.id || "";
+    data.createdBy = userData?._id || "";
+    
+    // Filter out empty strings from arrays
+    data.keySkills = data.keySkills.filter(skill => skill.trim() !== "");
+    data.skills = data.skills.filter(skill => skill.trim() !== "");
+    data.location = data.location.filter(loc => loc.trim() !== "");
+
+    // Additional validation for arrays
+    if (data.keySkills.length === 0) {
+      toast.error("Please add at least one key skill");
+      setLoading(false);
+      return;
+    }
+    
+    if (data.skills.length === 0) {
+      toast.error("Please add at least one skill");
+      setLoading(false);
+      return;
+    }
+    
+    if (data.location.length === 0) {
+      toast.error("Please add at least one location");
+      setLoading(false);
+      return;
+    }
+
     console.log("Job Data:", data);
 
     if (mode === "update" && jobId) {
       console.log("JobId:", jobId);
-      toast.loading("Updating Job...", { id: "update-job" })
-      dispatch(updateJob(data) as any)
-      .unwrap()
-      .then((res: { message: string; job: IJob }) => {
-        console.log("res", res);
-        toast.success("Job Updated Successfully", { id: "update-job" })
-        reset();
-        close();
-        }).catch((err: any) => {
-          toast.error("Error Updating Job", { id: "update-job" })
-          console.log("err", err);
-        }).finally(() => {
-          setLoading(false);
-        });
-        
-    } else {
-      toast.loading("Creating Job...", { id: "create-job" })
-      dispatch(createJob(data) as any)
+      toast.loading("Updating Job...", { id: "update-job" });
+      dispatch(updateJob(data as any) as any)
         .unwrap()
         .then((res: { message: string; job: IJob }) => {
-          toast.success("Job Created Successfully", { id: "create-job" })
+          console.log("res", res);
+          toast.success("Job Updated Successfully", { id: "update-job" });
+          reset();
+          close();
+        })
+        .catch((err: any) => {
+          toast.error("Error Updating Job", { id: "update-job" });
+          console.log("err", err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      toast.loading("Creating Job...", { id: "create-job" });
+      dispatch(createJob(data as any) as any)
+        .unwrap()
+        .then((res: { message: string; job: IJob }) => {
+          toast.success("Job Created Successfully", { id: "create-job" });
           console.log("res", res);
           reset();
           close();
         })
         .catch((err: any) => {
-          toast.error("Error Creating Job", { id: "create-job" })
+          toast.error("Error Creating Job", { id: "create-job" });
           console.log("err", err);
         })
         .finally(() => {
@@ -171,6 +241,13 @@ export default function JobForm({
 
   const watchWillingToRelocate = watch("willingToRelocate");
   const watchDiversityHiring = watch("diversityHiring");
+
+  // Helper function to get error message
+  const getErrorMessage = (error: any): string => {
+    if (typeof error === "string") return error;
+    if (error?.message) return error.message;
+    return "This field is required";
+  };
 
   return (
     <div className="fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]">
@@ -193,9 +270,6 @@ export default function JobForm({
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="grid gap-8 p-6 pt-0">
             <div className="grid gap-4">
-              {/* <h2 className="text-xl font-semibold border-b pb-2">
-                Job Details
-              </h2> */}
               <div className="grid gap-2">
                 <Label htmlFor="designation">Designation</Label>
                 <Input
@@ -203,12 +277,18 @@ export default function JobForm({
                   placeholder="e.g., Senior Frontend Developer"
                   {...register("designation", {
                     required: "Designation is required",
+                    minLength: {
+                      value: 2,
+                      message: "Designation must be at least 2 characters"
+                    }
                   })}
-                  className="rounded-xl bg-gray-100 border-none h-12"
+                  className={`rounded-xl bg-gray-100 border-none h-12 ${
+                    errors.designation ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.designation && (
                   <p className="text-sm text-red-500">
-                    {errors.designation.message}
+                    {getErrorMessage(errors.designation)}
                   </p>
                 )}
               </div>
@@ -240,7 +320,7 @@ export default function JobForm({
                 </div>
                 {errors.employmentType && (
                   <p className="text-sm text-red-500">
-                    {errors.employmentType.message}
+                    {getErrorMessage(errors.employmentType)}
                   </p>
                 )}
               </div>
@@ -270,7 +350,7 @@ export default function JobForm({
                 </div>
                 {errors.workMode && (
                   <p className="text-sm text-red-500">
-                    {errors.workMode.message}
+                    {getErrorMessage(errors.workMode)}
                   </p>
                 )}
               </div>
@@ -283,12 +363,18 @@ export default function JobForm({
                   placeholder="e.g., We are looking for a highly skilled Senior Frontend Developer..."
                   {...register("jobDescription", {
                     required: "Job description is required",
+                    minLength: {
+                      value: 10,
+                      message: "Job description must be at least 10 characters"
+                    }
                   })}
-                  className="rounded-xl bg-gray-100 border-none"
+                  className={`rounded-xl bg-gray-100 border-none ${
+                    errors.jobDescription ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.jobDescription && (
                   <p className="text-sm text-red-500">
-                    {errors.jobDescription.message}
+                    {getErrorMessage(errors.jobDescription)}
                   </p>
                 )}
               </div>
@@ -302,11 +388,13 @@ export default function JobForm({
                     {...register("department", {
                       required: "Department is required",
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.department ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.department && (
                     <p className="text-sm text-red-500">
-                      {errors.department.message}
+                      {getErrorMessage(errors.department)}
                     </p>
                   )}
                 </div>
@@ -318,11 +406,13 @@ export default function JobForm({
                     {...register("roleCategory", {
                       required: "Role category is required",
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.roleCategory ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.roleCategory && (
                     <p className="text-sm text-red-500">
-                      {errors.roleCategory.message}
+                      {getErrorMessage(errors.roleCategory)}
                     </p>
                   )}
                 </div>
@@ -338,11 +428,13 @@ export default function JobForm({
                   {...register("educationQualification", {
                     required: "Education qualification is required",
                   })}
-                  className="rounded-xl bg-gray-100 border-none h-12"
+                  className={`rounded-xl bg-gray-100 border-none h-12 ${
+                    errors.educationQualification ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.educationQualification && (
                   <p className="text-sm text-red-500">
-                    {errors.educationQualification.message}
+                    {getErrorMessage(errors.educationQualification)}
                   </p>
                 )}
               </div>
@@ -359,9 +451,19 @@ export default function JobForm({
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
                       placeholder="e.g., React"
-                      className="rounded-xl bg-gray-100 border-none h-12"
+                      className={`rounded-xl bg-gray-100 border-none h-12 ${
+                        errors.keySkills?.[index] ? "border-red-500" : ""
+                      }`}
                       {...register(`keySkills.${index}`, {
                         required: "Key skill is required",
+                        minLength: {
+                          value: 2,
+                          message: "Skill must be at least 2 characters"
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z0-9\s\-\+\.\#\(\)]+$/,
+                          message: "Please enter a valid skill name"
+                        }
                       })}
                     />
                     <Button
@@ -369,20 +471,29 @@ export default function JobForm({
                       variant="ghost"
                       size="icon"
                       onClick={() => removeKeySkill(index)}
+                      disabled={keySkillsFields.length <= 1}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
+                {keySkillsFields.map((item, index) => 
+                  errors.keySkills?.[index] && (
+                    <p key={`error-${index}`} className="text-sm text-red-500">
+                      {getErrorMessage(errors.keySkills[index])}
+                    </p>
+                  )
+                )}
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full mt-2 rounded-full"
                   onClick={() => appendKeySkill("")}
                 >
+                  <Plus className="h-4 w-4 mr-2" />
                   Add Key Skill
                 </Button>
-                {errors.keySkills && (
+                {errors.keySkills && typeof errors.keySkills === 'object' && !Array.isArray(errors.keySkills) && (
                   <p className="text-sm text-red-500">
                     Please add at least one key skill.
                   </p>
@@ -395,9 +506,19 @@ export default function JobForm({
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
                       placeholder="e.g., Tailwind CSS"
-                      className="rounded-xl bg-gray-100 border-none h-12"
+                      className={`rounded-xl bg-gray-100 border-none h-12 ${
+                        errors.skills?.[index] ? "border-red-500" : ""
+                      }`}
                       {...register(`skills.${index}`, {
                         required: "Skill is required",
+                        minLength: {
+                          value: 2,
+                          message: "Skill must be at least 2 characters"
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z0-9\s\-\+\.\#\(\)]+$/,
+                          message: "Please enter a valid skill name"
+                        }
                       })}
                     />
                     <Button
@@ -405,20 +526,29 @@ export default function JobForm({
                       variant="ghost"
                       size="icon"
                       onClick={() => removeSkill(index)}
+                      disabled={skillsFields.length <= 1}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 ))}
+                {skillsFields.map((item, index) => 
+                  errors.skills?.[index] && (
+                    <p key={`error-${index}`} className="text-sm text-red-500">
+                      {getErrorMessage(errors.skills[index])}
+                    </p>
+                  )
+                )}
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full mt-2 rounded-full"
                   onClick={() => appendSkill("")}
                 >
+                  <Plus className="h-4 w-4 mr-2" />
                   Add Skill
                 </Button>
-                {errors.skills && (
+                {errors.skills && typeof errors.skills === 'object' && !Array.isArray(errors.skills) && (
                   <p className="text-sm text-red-500">
                     Please add at least one skill.
                   </p>
@@ -431,7 +561,9 @@ export default function JobForm({
                   <div key={item.id} className="flex items-center gap-2">
                     <Input
                       placeholder="e.g., Bengaluru"
-                      className="rounded-xl bg-gray-100 border-none h-12"
+                      className={`rounded-xl bg-gray-100 border-none h-12 ${
+                        errors.location?.[index] ? "border-red-500" : ""
+                      }`}
                       {...register(`location.${index}`, {
                         required: "Location is required",
                       })}
@@ -441,6 +573,7 @@ export default function JobForm({
                       variant="ghost"
                       size="icon"
                       onClick={() => removeLocation(index)}
+                      disabled={locationFields.length <= 1}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -453,6 +586,7 @@ export default function JobForm({
                     className="w-full mt-2 rounded-full"
                     onClick={() => appendLocation("")}
                   >
+                    <Plus className="h-4 w-4 mr-2" />
                     Add Location
                   </Button>
                 )}
@@ -492,12 +626,18 @@ export default function JobForm({
                     {...register("workExperience.min", {
                       required: "Min experience is required",
                       valueAsNumber: true,
+                      min: {
+                        value: 0,
+                        message: "Experience cannot be negative"
+                      }
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.workExperience?.min ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.workExperience?.min && (
                     <p className="text-sm text-red-500">
-                      {errors.workExperience.min.message}
+                      {getErrorMessage(errors.workExperience.min)}
                     </p>
                   )}
                 </div>
@@ -512,12 +652,21 @@ export default function JobForm({
                     {...register("workExperience.max", {
                       required: "Max experience is required",
                       valueAsNumber: true,
+                      min: {
+                        value: 0,
+                        message: "Experience cannot be negative"
+                      },
+                      validate: (value, formValues) => 
+                        value >= formValues.workExperience.min || 
+                        "Max experience must be greater than or equal to min experience"
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.workExperience?.max ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.workExperience?.max && (
                     <p className="text-sm text-red-500">
-                      {errors.workExperience.max.message}
+                      {getErrorMessage(errors.workExperience.max)}
                     </p>
                   )}
                 </div>
@@ -533,12 +682,18 @@ export default function JobForm({
                     {...register("annualSalary.min", {
                       required: "Min salary is required",
                       valueAsNumber: true,
+                      min: {
+                        value: 1,
+                        message: "Salary must be greater than 0"
+                      }
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.annualSalary?.min ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.annualSalary?.min && (
                     <p className="text-sm text-red-500">
-                      {errors.annualSalary.min.message}
+                      {getErrorMessage(errors.annualSalary.min)}
                     </p>
                   )}
                 </div>
@@ -551,12 +706,21 @@ export default function JobForm({
                     {...register("annualSalary.max", {
                       required: "Max salary is required",
                       valueAsNumber: true,
+                      min: {
+                        value: 1,
+                        message: "Salary must be greater than 0"
+                      },
+                      validate: (value, formValues) => 
+                        value >= formValues.annualSalary.min || 
+                        "Max salary must be greater than or equal to min salary"
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.annualSalary?.max ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.annualSalary?.max && (
                     <p className="text-sm text-red-500">
-                      {errors.annualSalary.max.message}
+                      {getErrorMessage(errors.annualSalary.max)}
                     </p>
                   )}
                 </div>
@@ -576,11 +740,13 @@ export default function JobForm({
                     {...register("companyDetails.name", {
                       required: "Company name is required",
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.companyDetails?.name ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.companyDetails?.name && (
                     <p className="text-sm text-red-500">
-                      {errors.companyDetails.name.message}
+                      {getErrorMessage(errors.companyDetails.name)}
                     </p>
                   )}
                 </div>
@@ -588,17 +754,27 @@ export default function JobForm({
                   <Label htmlFor="established">Established Year</Label>
                   <Input
                     id="established"
-                    type="text"
+                    type="number"
                     placeholder="e.g., 2010"
                     {...register("companyDetails.established", {
                       required: "Established year is required",
                       valueAsNumber: true,
+                      min: {
+                        value: 1800,
+                        message: "Year must be after 1800"
+                      },
+                      max: {
+                        value: new Date().getFullYear(),
+                        message: "Year cannot be in the future"
+                      }
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.companyDetails?.established ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.companyDetails?.established && (
                     <p className="text-sm text-red-500">
-                      {errors.companyDetails.established.message}
+                      {getErrorMessage(errors.companyDetails.established)}
                     </p>
                   )}
                 </div>
@@ -612,11 +788,13 @@ export default function JobForm({
                     {...register("companyDetails.sector", {
                       required: "Sector is required",
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.companyDetails?.sector ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.companyDetails?.sector && (
                     <p className="text-sm text-red-500">
-                      {errors.companyDetails.sector.message}
+                      {getErrorMessage(errors.companyDetails.sector)}
                     </p>
                   )}
                 </div>
@@ -628,11 +806,13 @@ export default function JobForm({
                     {...register("companyDetails.locatedAt", {
                       required: "Location is required",
                     })}
-                    className="rounded-xl bg-gray-100 border-none h-12"
+                    className={`rounded-xl bg-gray-100 border-none h-12 ${
+                      errors.companyDetails?.locatedAt ? "border-red-500" : ""
+                    }`}
                   />
                   {errors.companyDetails?.locatedAt && (
                     <p className="text-sm text-red-500">
-                      {errors.companyDetails.locatedAt.message}
+                      {getErrorMessage(errors.companyDetails.locatedAt)}
                     </p>
                   )}
                 </div>
@@ -646,11 +826,13 @@ export default function JobForm({
                   {...register("companyIndustry", {
                     required: "Company industry is required",
                   })}
-                  className="rounded-xl bg-gray-100 border-none h-12"
+                  className={`rounded-xl bg-gray-100 border-none h-12 ${
+                    errors.companyIndustry ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.companyIndustry && (
                   <p className="text-sm text-red-500">
-                    {errors.companyIndustry.message}
+                    {getErrorMessage(errors.companyIndustry)}
                   </p>
                 )}
               </div>
@@ -663,11 +845,13 @@ export default function JobForm({
                   {...register("candidateIndustry", {
                     required: "Candidate industry is required",
                   })}
-                  className="rounded-xl bg-gray-100 border-none h-12"
+                  className={`rounded-xl bg-gray-100 border-none h-12 ${
+                    errors.candidateIndustry ? "border-red-500" : ""
+                  }`}
                 />
                 {errors.candidateIndustry && (
                   <p className="text-sm text-red-500">
-                    {errors.candidateIndustry.message}
+                    {getErrorMessage(errors.candidateIndustry)}
                   </p>
                 )}
               </div>
@@ -729,16 +913,24 @@ export default function JobForm({
               <Label htmlFor="vacancy">Vacancy</Label>
               <Input
                 id="vacancy"
-                type="text"
+                type="number"
                 placeholder="e.g., 3"
                 {...register("vacancy", {
                   required: "Vacancy is required",
                   valueAsNumber: true,
+                  min: {
+                    value: 1,
+                    message: "Vacancy must be at least 1"
+                  }
                 })}
-                className="rounded-xl bg-gray-100 border-none h-12"
+                className={`rounded-xl bg-gray-100 border-none h-12 ${
+                  errors.vacancy ? "border-red-500" : ""
+                }`}
               />
               {errors.vacancy && (
-                <p className="text-sm text-red-500">{errors.vacancy.message}</p>
+                <p className="text-sm text-red-500">
+                  {getErrorMessage(errors.vacancy)}
+                </p>
               )}
             </div>
           </CardContent>

@@ -28,19 +28,6 @@ export function middleware(req: NextRequest) {
   if (!token && !pathname.startsWith("/auth"))
     return NextResponse.redirect(new URL("/auth/login", req.url));
 
-  // Protect only specific API routes
-  if (pathname.startsWith("/api/job/create")) {
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-    if (role !== "admin") {
-      return NextResponse.json(
-        { error: "Only admin allowed" },
-        { status: 400 }
-      );
-    }
-  }
-
   // 🔒 Protect /admin → only admin
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
@@ -77,7 +64,6 @@ export const config = {
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
-    "/api/job/create",
     "/",
   ],
 };

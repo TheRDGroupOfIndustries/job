@@ -16,18 +16,24 @@ import toast from "react-hot-toast";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import PageLoader from "./PageLoader";
 
 export default function JobComp() {
   const { mails, selectedMail } = useSelector((state: RootState) => state.mail);
   const { jobs } = useSelector((state: RootState) => state.job); // Ensure jobs is typed as IJob[]
-
+  const { userData } = useSelector((state: RootState) => state.auth);
   const [isOpenForm, setIsOpenForm] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter();
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
-    dispatch(fetchJobs());
+    setLoading(true)
+    if (jobs.length > 0) {
+      setLoading(false)
+    }
+    dispatch(fetchJobs()).then(() => setLoading(false)).catch(() => setLoading(false))
   }, []);
 
   const formatDate = (dateString: Date) => {
@@ -38,6 +44,10 @@ export default function JobComp() {
       year: "numeric",
     });
   };
+
+  if(loading) {
+    return <PageLoader />
+  }
 
   return (
     <>
@@ -76,7 +86,7 @@ export default function JobComp() {
                 </div>
                 <div className="flex justify-end mt-6">
                   <Link
-                    href={`/admin/job-posts/${job?._id}`}
+                    href={`/${userData?.role}/job-posts/${job?._id}`}
                     className="flex items-center justify-center w-10 h-10 rounded-full bg-orange-500 text-white shadow-lg group hover:scale-110 transition-all duration-300 cursor-pointer"
                   >
                     <ArrowUpRight size={20} />

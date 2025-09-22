@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { deleteMails, deleteSelectedMails } from "@/redux/features/mailSlice";
+import { deleteMails, deleteSelectedMails, setFilteredMails } from "@/redux/features/mailSlice";
 import ComposeMailModal from "./ComposeMailModal";
 import { usePathname } from "next/navigation";
 import TaskForm from "./TaskForm";
@@ -14,8 +14,21 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedMail } = useSelector((state: RootState) => state.mail);
   const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
+  const { mails, filteredMails } = useSelector((state: RootState) => state.mail);
   const dispatch = useDispatch();
   const pathname = usePathname();
+
+  const handleSearchMails = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+
+    const query = e.target.value.toLowerCase();
+    const filtered = mails.filter(
+      (mail) =>
+        mail.subject.toLowerCase().includes(query) ||
+        mail.message.toLowerCase().includes(query)
+    );
+    dispatch(setFilteredMails(filtered) as any);
+  }
 
   return (
     <header className="h-[80px] bg-section rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
@@ -31,7 +44,7 @@ export default function Header() {
                 type="text"
                 placeholder="Search for mails..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchMails}
                 className="bg-background rounded-full px-4 py-1 min-w-[300px] outline-secondary "
               />
               <Button

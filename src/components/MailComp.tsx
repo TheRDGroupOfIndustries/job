@@ -5,13 +5,14 @@ import { fetchMails, toggleMailSelection } from "@/redux/features/mailSlice";
 import { RootState } from "@/redux/store";
 import { Mail } from "@/types";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function MailComp() {
-  const { mails, selectedMail } = useSelector((state: RootState) => state.mail);
+  const { mails, filteredMails, selectedMail } = useSelector((state: RootState) => state.mail);
   const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false)
 
   // Format the date to "MM/DD/YYYY"
   const formatDate = (dateString: string) => {
@@ -24,7 +25,7 @@ export default function MailComp() {
   };
 
   useEffect(() => {
-    if (userData) dispatch(fetchMails() as never);
+    if (userData) dispatch(fetchMails() as never)
   }, [userData]);
 
   return (
@@ -33,8 +34,8 @@ export default function MailComp() {
         <h1 className="text-xl font-semibold">Primary Mails</h1>
       </div>
       <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto custom-scrollbar pr-10 pl-10 mb-10 ">
-        {mails.length > 0 &&
-          mails.map((mail: any) => (
+        {filteredMails.length > 0 ?
+          filteredMails.map((mail: any) => (
             <div
               key={mail._id}
               className={`flex items-center justify-between p-4 border-b border-gray-200 transition-colors duration-200 ${
@@ -51,7 +52,7 @@ export default function MailComp() {
                   }}
                   className="cursor-pointer"
                 />
-                <Link href={`/${userData.role}/send-mails/${mail._id}`}>
+                <Link href={`/${userData?.role}/send-mails/${mail._id}`}>
                   <div className="flex flex-col min-w-0 overflow-hidden">
                     <div className=" flex items-center gap-2">
                       <span className="font-semibold text-gray-800 text-sm md:text-base whitespace-nowrap overflow-hidden text-ellipsis">
@@ -73,7 +74,9 @@ export default function MailComp() {
                 {formatDate(mail.createdAt)}
               </span>
             </div>
-          ))}
+          )) : (
+            <p className="text-center text-xl text-gray-500 mt-20">No mails found.</p>
+          )}
       </div>
     </>
   );

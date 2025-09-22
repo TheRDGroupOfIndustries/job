@@ -11,11 +11,13 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Only admin allowed" }, { status: 400 });
-    }
+    // if (user.role !== "admin") {
+    //   return NextResponse.json({ error: "Only admin allowed" }, { status: 400 });
+    // }
 
     const body: IJob = await req.json();
+    console.log(body);
+    
 
     if (
       !body.designation ||

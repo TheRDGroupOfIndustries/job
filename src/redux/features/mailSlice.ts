@@ -8,12 +8,13 @@ import toast from "react-hot-toast";
 
 interface MailState {
   mails: Mail[] | [];
-  filteredMails?: Mail[] | [];
+  filteredMails: Mail[] | [];
   selectedMail: string[] | [];
 }
 
 const initialState: MailState = {
   mails: [],
+  filteredMails: [],
   selectedMail: [],
 };
 
@@ -101,6 +102,9 @@ const mailSlice = createSlice({
       );
       state.selectedMail = [];
     },
+    setFilteredMails: (state, action: PayloadAction<Mail[]>) => {
+      state.filteredMails = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -110,6 +114,7 @@ const mailSlice = createSlice({
     })
     .addCase(createMail.fulfilled, (state, action: PayloadAction<any>) => {
       state.mails.unshift(action.payload.mail as never);
+      state.filteredMails?.unshift(action.payload.mail as never);
       toast.success("Mail sent successfully", { id: "mail" });
     })
     .addCase(createMail.rejected, (state, action: PayloadAction<any>) => {
@@ -140,6 +145,9 @@ const mailSlice = createSlice({
       state.mails = state.mails.filter(
         (mail) => !state.selectedMail.includes(mail._id as never)
       );
+      state.filteredMails = state.filteredMails?.filter(
+        (mail) => !state.selectedMail.includes(mail._id as never)
+      );
       state.selectedMail = [];
       toast.success("Mails deleted successfully", { id: "deleteMail" });
     })
@@ -149,5 +157,5 @@ const mailSlice = createSlice({
   },
 });
 
-export const { toggleMailSelection, deleteSelectedMails } = mailSlice.actions;
+export const { toggleMailSelection, deleteSelectedMails, setFilteredMails } = mailSlice.actions;
 export default mailSlice.reducer;

@@ -9,11 +9,17 @@ import "luckysheet/dist/plugins/plugins.css";
 import "luckysheet/dist/css/luckysheet.css";
 import "luckysheet/dist/assets/iconfont/iconfont.css";
 import toast from "react-hot-toast";
+import { Button } from "./ui/button";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Luckysheet({ id }: { id: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sheetData, setSheetData] = useState<any>(null);
   const [ls, setLs] = useState<any>(null); // ✅ keep luckysheet instance
+  const [sheetTitle, setSheetTitle] = useState("");
+
+  const router = useRouter();
 
   // Load existing sheet data from API
   useEffect(() => {
@@ -42,15 +48,19 @@ export default function Luckysheet({ id }: { id: string }) {
       }
 
       console.log("sheetData:", sheetData);
-      const savedCelldata = sheetData?.data?.length > 0 ? sheetData.data.map((cell: any) => ({
-        r: cell.row - 1, // Luckysheet is 0-indexed
-        c: cell.col - 1,
-        v: {
-          v: cell.value, // raw value
-          m: cell.value, // display value
-          ct: { fa: "General", t: "g" }, // cell type
-        },
-      })) : [];
+      const savedCelldata =
+        sheetData?.data?.length > 0
+          ? sheetData.data.map((cell: any) => ({
+              r: cell.row - 1, // Luckysheet is 0-indexed
+              c: cell.col - 1,
+              v: {
+                v: cell.value, // raw value
+                m: cell.value, // display value
+                ct: { fa: "General", t: "g" }, // cell type
+              },
+            }))
+          : [];
+
       setTimeout(() => {
         luckysheet.create({
           container: "luckysheet",
@@ -77,6 +87,7 @@ export default function Luckysheet({ id }: { id: string }) {
 
         setLs(luckysheet); // ✅ store instance
       }, 100);
+      setSheetTitle(sheetData?.title);
     };
 
     if (sheetData) init();
@@ -108,16 +119,19 @@ export default function Luckysheet({ id }: { id: string }) {
 
     console.log(extracted);
 
-    toast.loading("Saving Sheet...", {id: "sheet-save"})
+    toast.loading("Saving Sheet...", { id: "sheet-save" });
     await fetch(`/api/sheets/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({ title: data[0].name, data: extracted }),
-        headers: { "Content-Type": "application/json" },
-    }).then((res)=> {
-        toast.success("Sheet Saved Successfully", {id: "sheet-save"})
-    }).catch((err)=>{
-        toast.error("Error Saving Sheet", {id: "sheet-save"})
+      method: "PUT",
+      body: JSON.stringify({ title: sheetTitle, data: extracted }),
+      headers: { "Content-Type": "application/json" },
     })
+      .then((res) => {
+        toast.success("Sheet Saved Successfully", { id: "sheet-save" });
+        router.back()
+      })
+      .catch((err) => {
+        toast.error("Error Saving Sheet", { id: "sheet-save" });
+      });
   };
 
   return (
@@ -126,15 +140,28 @@ export default function Luckysheet({ id }: { id: string }) {
 
       {/* Spreadsheet Container */}
       <div className="flex-1 relative">
-      <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
-        <h1 className="font-bold capitalize">{sheetData?.title ?? "Untitled Sheet"}</h1>
-        <button
-          onClick={saveSheet}
-          className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
-        >
-          Save
-        </button>
-      </div>
+        <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
+          <Button
+            variant={"ghost"}
+            onClick={() => router.back()}
+            className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
+          >
+            <ChevronLeft className="w-8 h-8 " />
+          </Button>
+          <input
+            type="text"
+            value={sheetTitle}
+            placeholder="Sheet Title"
+            className="border px-2 py-1 rounded text-center"
+            onChange={(e) => setSheetTitle(e.target.value)}
+          />
+          <button
+            onClick={saveSheet}
+            className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
+          >
+            Save
+          </button>
+        </div>
         <div
           ref={containerRef}
           id="luckysheet"

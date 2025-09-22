@@ -16,9 +16,9 @@ export async function PUT(
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    if (user.role !== "admin") {
-      return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
-    }
+    // if (user.role !== "admin") {
+    //   return NextResponse.json({ error: "Only admin allowed" }, { status: 403 });
+    // }
 
     const { jobId } = await params;
     if (!mongoose.Types.ObjectId.isValid(jobId)) {

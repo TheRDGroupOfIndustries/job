@@ -22,12 +22,15 @@ import { IUser } from "@/models/User";
 import EmployeeForm from "./EmployeeForm";
 import { useDispatch } from "react-redux";
 import { deleteEmployee } from "@/redux/features/authSlice";
+import PageLoader from "./PageLoader";
 
 export default function AllEmployees() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [employees, setEmployees] = useState<IUser[] | null>(null);
-  const [updateEmployee, setUpdateEmployee] = useState<IUser[] | null>(null);
+  const [updateEmployee, setUpdateEmployee] = useState<IUser | null>(null);
   const dispatch = useDispatch();
+
+  const [loading, setLoading] = useState(false)
   
 
   const toggleDropdown = (id: string) => {
@@ -35,34 +38,41 @@ export default function AllEmployees() {
   };
 
   useEffect(() => {
+    setLoading(true);
     fetch("/api/employees")
       .then((res) => res.json())
       .then((data) => {
         console.log("data:", data.employees);
         setEmployees(data.employees);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  if(!employees) {
-    return (
-      <div className="">
-        no employee
-      </div>
-    )
-  }
+ 
 
   const handleDelete = () => {
-    if(!openDropdown) return;
-    dispatch(deleteEmployee({id: openDropdown}) as any)
-    .then(() => {
+    if (!openDropdown) return;
+    dispatch(deleteEmployee({ id: openDropdown }) as any)
+      .then(() => {
       setEmployees((prev) => {
-        if(!prev) return prev;
+        if (!prev) return prev;
         return prev.filter((emp) => emp._id !== openDropdown);
       })
       setOpenDropdown(null)
-    }).catch((err) => {
+    }).catch((err: any) => {
       console.error("Failed to delete employee:", err);
     })
+  }
+
+  if (loading) {
+    return <PageLoader />;
+  }
+  if (!employees || employees.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-160px)]">
+        <p className="text-center text-xl text-gray-500">No employees found.</p>
+      </div>
+    );
   }
 
   return (
@@ -127,7 +137,7 @@ export default function AllEmployees() {
                       <div className="py-1" role="none">
                         <button
                           onClick={() => {
-                            setUpdateEmployee(employee);
+                            setUpdateEmployee(employee as any);
                             setOpenDropdown(null);
                           }}
                           className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-background w-full "

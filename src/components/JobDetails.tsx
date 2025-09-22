@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge";
 import { Separator } from "@radix-ui/react-separator";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Eye, X } from "lucide-react";
+import { ChevronLeft, Eye, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import toast from "react-hot-toast";
@@ -19,9 +19,9 @@ export default function JobDetails({ jobId }: { jobId: string }) {
   const [updateId, setUpdateId] = useState<string | null>(null);
   const [deletingJob, setDeletingJob] = useState(false);
   const [isOpenForm, setIsOpenForm] = useState(false);
-  
+
   const dispatch = useDispatch<any>();
-  const router = useRouter()
+  const router = useRouter();
 
   const { jobs } = useSelector((state: RootState) => state.job);
   if (!jobs) {
@@ -29,7 +29,6 @@ export default function JobDetails({ jobId }: { jobId: string }) {
   }
   const job = jobs.find((job: IJob) => job._id === jobId) as IJob;
   console.log("job: ", job);
-
 
   // Format the date to "MM/DD/YYYY"
   const formatDate = (dateString: string) => {
@@ -48,7 +47,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
       .unwrap()
       .then(() => {
         toast.success("Job Deleted Successfully", { id: "delete-job" });
-        router.push("/admin/job-posts")
+        router.push("/admin/job-posts");
       })
       .catch((err: any) => {
         toast.error("Error Deleting Job", { id: "delete-job" });
@@ -63,7 +62,30 @@ export default function JobDetails({ jobId }: { jobId: string }) {
 
   return (
     <>
-      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto pl-20 pr-10 my-10 custom-scrollbar">
+      <div className="sticky top-0 pl-20 pr-10 pt-10 pb-4 flex items-center justify-between z-10">
+         <Button
+            variant={"ghost"}
+            onClick={() => router.back()}
+            className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
+          >
+            <ChevronLeft className="w-8 h-8 " />
+          </Button>
+        <div className="flex items-center gap-5">
+          <Button
+            className="text-card cursor-pointer"
+            onClick={() => {
+              setUpdateId(job._id);
+              setIsOpenForm(true);
+            }}
+          >
+            Edit
+          </Button>
+          <Button className="text-card cursor-pointer" onClick={() => handleDelete(job._id)}>
+            Delete
+          </Button>
+        </div>
+      </div>
+      <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto pl-20 pr-10 mb-10 custom-scrollbar">
         <p className="text-sm text-secondary">{job._id}</p>
         <div className="flex justify-between items-center text-3xl font-bold text-gray-800">
           <div className="flex items-center gap-5">
@@ -74,18 +96,6 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             >
               {job.employmentType}
             </Badge>
-          </div>
-          <div className="flex items-center gap-5">
-            <Button
-            className="text-card"
-              onClick={() => {
-                setUpdateId(job._id);
-                setIsOpenForm(true);
-              }}
-            >
-              Edit
-            </Button>
-            <Button className="text-card" onClick={()=>handleDelete(job._id)}>Delete</Button>
           </div>
         </div>
         <div className="text-sm text-gray-500">
@@ -104,7 +114,9 @@ export default function JobDetails({ jobId }: { jobId: string }) {
                 Job Description
               </h3>
               <p className="text-gray-600">
-                {job.jobDescription} {job.jobDescription.length < 100 && "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat, perspiciatis nesciunt fugit aliquam beatae quam maiores eligendi eos at? Dicta magni doloribus illum corporis alias! Perspiciatis magnam officia ex, inventore eaque officiis error perferendis at. Laudantium nisi omnis, earum quam exercitationem minus, ex impedit in dolorum itaque necessitatibus? Illo vero aliquam repellat recusandae cum quasi perspiciatis adipisci itaque eveniet corporis! Accusamus ipsum mollitia, quae nostrum, soluta nesciunt molestias, saepe ipsa earum laboriosam eligendi expedita laborum voluptates ea dolorum ex nulla qui explicabo vel officia alias tempora in numquam maiores! Quas aspernatur voluptas corporis dicta placeat officiis minus eum sequi magni."}
+                {job.jobDescription}{" "}
+                {job.jobDescription.length < 100 &&
+                  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat, perspiciatis nesciunt fugit aliquam beatae quam maiores eligendi eos at? Dicta magni doloribus illum corporis alias! Perspiciatis magnam officia ex, inventore eaque officiis error perferendis at. Laudantium nisi omnis, earum quam exercitationem minus, ex impedit in dolorum itaque necessitatibus? Illo vero aliquam repellat recusandae cum quasi perspiciatis adipisci itaque eveniet corporis! Accusamus ipsum mollitia, quae nostrum, soluta nesciunt molestias, saepe ipsa earum laboriosam eligendi expedita laborum voluptates ea dolorum ex nulla qui explicabo vel officia alias tempora in numquam maiores! Quas aspernatur voluptas corporis dicta placeat officiis minus eum sequi magni."}
               </p>
             </div>
             <div>

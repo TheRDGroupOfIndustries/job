@@ -30,6 +30,8 @@ import { authLogout } from "@/redux/features/authSlice";
 import toast from "react-hot-toast";
 import { JSX, useEffect, useState } from "react";
 import ProfileModal from "./ProfileModal";
+import { getTasks } from "@/redux/features/taskSlice";
+import { fetchMails } from "@/redux/features/mailSlice";
 
 interface TOptions {
   label: string;
@@ -41,6 +43,8 @@ export default function Sidebar() {
   const { userData, isAutheticated } = useSelector(
     (state: RootState) => state.auth
   );
+  const { tasks } = useSelector((state: RootState) => state.task);
+  const { mails } = useSelector((state: RootState) => state.mail);
   const [Options, setOptions] = useState<TOptions[] | []>([]);
   const [openProfileModal, setOpenProfileModal] = useState(false)
   const [tab, setTab] = useState(1);
@@ -82,7 +86,7 @@ export default function Sidebar() {
     {
       label: "Blogs",
       icon: <Layers className="w-5 h-5" />,
-      path: "blogs",
+      path: "/sanity-studio",
     },
     {
       label: "Assign Works",
@@ -125,7 +129,7 @@ export default function Sidebar() {
     {
       label: "Blogs",
       icon: <Layers className="w-5 h-5" />,
-      path: "blogs",
+      path: "/sanity-studio",
     },
     {
       label: "My Works",
@@ -184,8 +188,13 @@ export default function Sidebar() {
         ? setOptions(UserOptions)
         : setOptions([]);
     }
+
+    dispatch(getTasks() as any);
+    dispatch(fetchMails() as any);
     // console.log(userData);
   }, [userData]);
+
+
 
   const handleLogout = async () => {
     toast.loading("Logging Out...", { id: "logout" });
@@ -227,13 +236,13 @@ export default function Sidebar() {
           <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
             <Target size={18} className="text-secondary " />
             <Badge className="rounded-full bg-primary text-card absolute -top-2 -right-2 shadow-badge">
-              2
+              { tasks?.length}
             </Badge>
           </div>
           <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
             <BellRing size={18} className="text-secondary " />
             <Badge className="rounded-full bg-primary text-card absolute -top-2 -right-2 shadow-badge">
-              20
+              {mails?.length}
             </Badge>
           </div>
         </div>
@@ -244,11 +253,11 @@ export default function Sidebar() {
         <Badge className="rounded-full bg-primary text-card absolute top-0 left-6 -translate-y-1/2 ">
           Options
         </Badge>
-        <div className=" w-full h-[calc(100vh-500px)] overflow-y-auto custom-scrollbar">
+        <div className=" w-full h-[calc(100vh-470px)] overflow-y-auto custom-scrollbar">
           <ul className="flex flex-col h-full justify-between ">
             {Options.map((option) => (
               <Link
-                href={`/${userData?.role}/${option.path}`}
+                href={`${option.label === "Blogs" ? `${option.path}` : `/${userData?.role}/${option.path}`}`}
                 key={option.label}
                 className={`flex items-center gap-2 p-2 ${
                   pathname === `/${userData?.role}/${option.path}` ||
@@ -271,18 +280,18 @@ export default function Sidebar() {
           Settings
         </Badge>
         <div className=" w-full h-full ">
-          <Label
+          {/* <Label
             htmlFor="notification"
             className="flex items-center gap-2 w-full justify-between cursor-pointer px-3"
           >
             <span className=" text-lg">Notification</span>
             <Switch id="notification" className="shadow-md" />
-          </Label>
+          </Label> */}
           <Button
             type="button"
             onClick={handleLogout}
             variant={"ghost"}
-            className="text-lg text-primary cursor-pointer"
+            className="text-lg text-primary cursor-pointer w-full  "
           >
             <DoorOpen size={24} /> Logout
           </Button>
