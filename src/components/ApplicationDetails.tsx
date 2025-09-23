@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { ArrowDownToLine, ChevronLeft, Download } from "lucide-react";
+import { ArrowDownToLine, ChevronLeft, Download, FileText } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -13,6 +13,8 @@ import {
   rejectApplication,
 } from "@/redux/features/applicationSlice";
 import { useRouter } from "next/navigation";
+import { fetchApplications } from "@/redux/features/applicationSlice";
+
 
 const ApplicationDetails = ({ id }: { id: string }) => {
   const { applications, loading, error } = useSelector(
@@ -21,6 +23,14 @@ const ApplicationDetails = ({ id }: { id: string }) => {
   const [application, setApplication] = useState<any>(null);
   const dispatch = useDispatch();
   const router = useRouter();
+
+    useEffect(() => {
+      dispatch(fetchApplications() as any)
+        .unwrap()
+        .catch((err: any) => {
+          console.error("Failed to fetch applications: ", err);
+        });
+    }, []);
 
   useEffect(() => {
     const app = applications?.find((app) => app._id === id);
@@ -176,7 +186,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
 
                 <div className="w-full aspect-[3/4] rounded-lg overflow-hidden bg-white shadow-sm">
                   <Image
-                    src="/images/Demo_resume.jpg"
+                    src="/images/resume-placeholder.webp"
                     width={400}
                     height={533}
                     alt="Resume Preview"
@@ -194,6 +204,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                     width="100%"
                     height="500px"
                   /> */}
+                  {/* <FileText size={100} /> */}
                 </div>
 
                 <div className="space-y-3 ">
@@ -252,7 +263,8 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                   )}{" "}
                 </h3>
 
-                <div className="flex flex-col sm:flex-row gap-3">
+               {application.status === "pending" && (
+                <div className="flex gap-4">
                   <Button
                     variant="outline"
                     className="flex-1 border-2 border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg transition-colors cursor-pointer"
@@ -274,7 +286,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                   >
                     Approve
                   </Button>
-                </div>
+                </div>)}
               </div>
             </Card>
 
