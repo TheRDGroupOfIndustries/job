@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { updateProfile } from "@/redux/features/authSlice";
 import { IUser } from "@/models/User";
+import axios from "axios";
+import { LoaderCircle } from "lucide-react";
 
 // Define the form data structure
 interface ProfileFormInputs {
@@ -17,15 +19,16 @@ interface ProfileFormInputs {
   phone: string;
   employeeId?: string;
   otherDetails?: string;
+  profileImage?: string;
 }
 
 const ProfileModal = ({ close }: { close: () => void }) => {
-  const [profileImage, setProfileImage] = useState<string | null>(
-    "/images/profile_picture.jpg"
-  );
-  const { userData, isAutheticated } = useSelector(
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const { userData, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
+  const [profileImage, setProfileImage] = useState<string | null>(userData?.profileImage || null);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const {
@@ -34,31 +37,65 @@ const ProfileModal = ({ close }: { close: () => void }) => {
     formState: { errors },
   } = useForm<IUser>({
     defaultValues: {
-      name: userData?.name,
-      email: userData?.email,
-      phone: userData?.phone,
-      employeeId: userData?.employeeId,
-      otherDetails: userData?.otherDetails,
+      name: userData?.name || "",
+      email: userData?.email || "",
+      phone: userData?.phone || "",
+      employeeId: userData?.employeeId || "",
+      otherDetails: userData?.otherDetails || "",
     },
   });
 
   const initials = userData?.name
-    .split(" ")
+    ?.split(" ")
     .map((n) => n[0])
-    .join("");
+    .join("") || "U";
 
-  const handleProfileUpdate = (data: ProfileFormInputs) => {
-    console.log("Form Data Submitted:", data);
-    console.log("New Profile Image:", profileImage);
-    // if (userData.role === "admin") {
-      dispatch(updateProfile({details: data})).unwrap().then(()=>close())
-    // }
+  const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
+  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
-    // close();
+  const handleProfileUpdate = async (data: ProfileFormInputs) => {
+    try {
+      setLoading(true);
+      console.log("Form Data Submitted:", data);
+
+      // Only upload image if a new image file was selected
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append("file", imageFile);
+        formData.append("upload_preset", UPLOAD_PRESET || "");
+        
+        const response = await axios.post(CLOUDINARY_URL, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        data.profileImage = response.data.secure_url;
+        console.log("Upload successful:", response.data);
+        setLoading(false);
+      } else {
+        // Keep existing profile image if no new image was uploaded
+        // data.profileImage = "/images/profile_picture.jpg";
+      }
+
+      // Only dispatch update if user is admin
+      // if (userData?.role === "admin") {
+        await dispatch(updateProfile({ details: data })).unwrap();
+      // }
+
+      close();
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      // Handle error appropriately - maybe show a toast notification
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setImageFile(file || null);
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -77,6 +114,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
           <Button
             className="text-black hover:bg-orange-600 rounded-full p-2 cursor-pointer"
             onClick={close}
+            disabled={loading}
           >
             <X />
           </Button>
@@ -93,24 +131,30 @@ const ProfileModal = ({ close }: { close: () => void }) => {
                 accept="image/*"
                 className="hidden"
                 onChange={handleImageChange}
+                disabled={loading}
               />
               <Avatar className="w-full h-full">
                 <AvatarImage src={profileImage || undefined} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
               <div className="h-full w-full opacity-0 absolute top-0 left-0 bg-secondary/50 group-hover:opacity-100 duration-300 transition-opacity flex items-center justify-center rounded-full">
-                <Plus size={30} className="text-white" />
+                {loading ? (
+                  <LoaderCircle size={20} className="text-white animate-spin" />
+                ) : (
+                  <Plus size={30} className="text-white" />
+                )}
               </div>
             </label>
 
             {/* Editable name input */}
             <input
               type="text"
-              {...register("name", { required: true })}
+              {...register("name", { required: "Name is required" })}
               className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-fit text-2xl"
+              disabled={loading}
             />
             {errors.name && (
-              <span className="text-red-500 text-sm">Name is required</span>
+              <span className="text-red-500 text-sm">{errors.name.message}</span>
             )}
           </div>
 
@@ -119,12 +163,18 @@ const ProfileModal = ({ close }: { close: () => void }) => {
             <input
               type="text"
               readOnly
-              {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+              {...register("email", { 
+                required: "Email is required", 
+                pattern: {
+                  value: /^\S+@\S+$/i,
+                  message: "Please enter a valid email"
+                }
+              })}
               className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs text-secondary"
             />
             {errors.email && (
               <span className="text-red-500 text-sm">
-                Valid email is required
+                {errors.email.message}
               </span>
             )}
             <div className="flex justify-center items-center border-b-2 border-gray-300 focus-within:border-primary w-full max-w-xs mx-auto">
@@ -132,6 +182,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
               <input
                 type="text"
                 {...register("phone", {
+                  required: "Phone number is required",
                   minLength: {
                     value: 10,
                     message: "Phone number must be 10 digits",
@@ -142,6 +193,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
                   },
                 })}
                 className="w-fit outline-0 text-muted-foreground bg-transparent text-center"
+                disabled={loading}
               />
             </div>
             {errors.phone && (
@@ -163,6 +215,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
                   placeholder="Other Details"
                   {...register("otherDetails")}
                   className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs placeholder:text-secondary"
+                  disabled={loading}
                 />
               </>
             )}
@@ -172,8 +225,17 @@ const ProfileModal = ({ close }: { close: () => void }) => {
             <Button
               type="submit"
               className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 text-base cursor-pointer"
+              disabled={loading}
             >
-              Update <CheckCheck className="ml-2" />
+              {loading ? (
+                <>
+                  Updating... <LoaderCircle className="ml-2 animate-spin" size={16} />
+                </>
+              ) : (
+                <>
+                  Update <CheckCheck className="ml-2" />
+                </>
+              )}
             </Button>
           </div>
         </form>

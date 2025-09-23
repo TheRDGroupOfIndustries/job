@@ -115,8 +115,8 @@ export default function JobDetails({ jobId }: { jobId: string }) {
               </h3>
               <p className="text-gray-600">
                 {job.jobDescription}{" "}
-                {job.jobDescription.length < 100 &&
-                  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat, perspiciatis nesciunt fugit aliquam beatae quam maiores eligendi eos at? Dicta magni doloribus illum corporis alias! Perspiciatis magnam officia ex, inventore eaque officiis error perferendis at. Laudantium nisi omnis, earum quam exercitationem minus, ex impedit in dolorum itaque necessitatibus? Illo vero aliquam repellat recusandae cum quasi perspiciatis adipisci itaque eveniet corporis! Accusamus ipsum mollitia, quae nostrum, soluta nesciunt molestias, saepe ipsa earum laboriosam eligendi expedita laborum voluptates ea dolorum ex nulla qui explicabo vel officia alias tempora in numquam maiores! Quas aspernatur voluptas corporis dicta placeat officiis minus eum sequi magni."}
+                {/* {job.jobDescription.length < 100 &&
+                  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat, perspiciatis nesciunt fugit aliquam beatae quam maiores eligendi eos at? Dicta magni doloribus illum corporis alias! Perspiciatis magnam officia ex, inventore eaque officiis error perferendis at. Laudantium nisi omnis, earum quam exercitationem minus, ex impedit in dolorum itaque necessitatibus? Illo vero aliquam repellat recusandae cum quasi perspiciatis adipisci itaque eveniet corporis! Accusamus ipsum mollitia, quae nostrum, soluta nesciunt molestias, saepe ipsa earum laboriosam eligendi expedita laborum voluptates ea dolorum ex nulla qui explicabo vel officia alias tempora in numquam maiores! Quas aspernatur voluptas corporis dicta placeat officiis minus eum sequi magni."} */}
               </p>
             </div>
             <div>

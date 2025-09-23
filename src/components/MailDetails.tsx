@@ -103,7 +103,7 @@ export default function MailDetails({ id }: { id: string }) {
               {formatTimestamp(mail.createdAt || "")}
             </p>
           </CardHeader>
-          <Separator className="my-4" />
+          {/* <Separator className="my-4" /> */}
           <CardContent>
             <p className="text-foreground leading-relaxed whitespace-pre-wrap">
               {mail.message}

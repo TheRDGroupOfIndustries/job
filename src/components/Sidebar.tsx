@@ -215,7 +215,7 @@ export default function Sidebar() {
         </Badge>
         <div className=" w-20 h-20 rounded-full mb-2">
           <Image
-            src={"/images/profile_picture.jpg"}
+            src={userData && userData.profileImage ? userData.profileImage : "/images/profile_picture.jpg"}
             alt="Profile Picture"
             priority={true}
             width={80}
