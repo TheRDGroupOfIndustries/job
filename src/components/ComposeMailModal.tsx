@@ -51,17 +51,23 @@ export default function ComposeMailModal() {
   }, [isOpen]);
 
   const onSubmit = (data: any) => {
-    console.log("Form Data:", data);
-    dispatch(createMail(data) as any).unwrap().then(() => {
-      setIsOpen(false);
-      reset();
-    })
+    console.log("Form Data:", data, selectedUser, inputValue);
+    dispatch(createMail(data) as any)
+      .unwrap()
+      .then(() => {
+        setIsOpen(false);
+        setSelectedUser("");
+        setInputValue("");
+        setShowDropdown(false);
+        reset();
+      });
   };
 
   const handleEmailInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
 
     setSelectedUser("");
+    setValue("to", input);
     setInputValue(input);
     setShowDropdown(true);
 
@@ -109,7 +115,8 @@ export default function ComposeMailModal() {
 
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
               <div className="italic">
-                <strong>FROM: </strong>{userData?.email}
+                <strong>FROM: </strong>
+                {userData?.email}
               </div>
 
               {/* To field with search + dropdown */}
@@ -140,13 +147,22 @@ export default function ComposeMailModal() {
                 {/* Dropdown */}
                 {showDropdown && filteredSuggestions?.length > 0 && (
                   <div className="absolute top-10 w-full shadow left-0 bg-card rounded-2xl overflow-hidden z-50">
+                    <Button
+                      variant={"ghost"}
+                      className="text-card bg-secondary hover:bg-secondary/50 rounded-full cursor-pointer absolute top-2 right-2 p-1"
+                      onClick={() => {
+                        setShowDropdown(false);
+                      }}
+                    >
+                      <X />
+                    </Button>
                     <ul className="h-[250px] overflow-y-auto w-full custom-scrollbar">
                       {filteredSuggestions.map((user) => (
                         <li
                           key={user._id}
                           onClick={() => {
                             setSelectedUser(`${user.name} (${user.email})`);
-                            setValue("to", user.email); 
+                            setValue("to", user.email);
                             setInputValue("");
                             setShowDropdown(false);
                           }}

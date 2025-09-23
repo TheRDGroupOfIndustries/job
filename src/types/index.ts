@@ -1,12 +1,7 @@
 export type Mail = {
   _id: string;
   subject: string;
-  to: {
-    name: string;
-    email: string;
-    _id: string;
-
-  }
+  to: string;
   message: string;
   createdBy?: {
     name: string;

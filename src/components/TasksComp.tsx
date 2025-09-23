@@ -241,21 +241,7 @@ const AdminTasksCard = ({ task }: { task: any }) => {
           }`}
         >
           {task.details}
-          <br />
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Animi,
-          vitae! Voluptates autem quia illo assumenda accusantium non
-          voluptatibus odit blanditiis consequatur dolorum. Dolorem quo neque
-          velit, laudantium hic quam in! Rem quia explicabo accusantium non
-          ducimus consequuntur. Quasi laboriosam facere libero sunt ea unde,
-          laudantium, quam, officia optio hic itaque numquam pariatur similique.
-          Vel repellat iusto veritatis corporis, tenetur sed! Ea, ipsam
-          explicabo earum cupiditate illum asperiores ducimus consectetur
-          mollitia distinctio veniam tenetur pariatur commodi, aliquam
-          molestias, dolorum unde odit? Alias doloribus sequi eveniet itaque
-          autem tempora magni fuga reprehenderit. Quasi officiis, recusandae
-          cupiditate nisi quaerat totam illum ab facilis asperiores. Sed
-          pariatur itaque harum! Fuga sequi veniam quidem officiis? Non dolorem
-          laboriosam tenetur, ipsam quis laudantium veniam? Velit, dolor?
+          
         </p>
       </div>
 

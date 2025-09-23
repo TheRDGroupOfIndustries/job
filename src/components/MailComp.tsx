@@ -59,7 +59,7 @@ export default function MailComp() {
                         {mail.subject}
                       </span>
                       <span className="text-xs font-medium text-gray-500 whitespace-nowrap overflow-hidden text-ellipsis">
-                        ({mail?.to?.email || "No recipient" })
+                        ({mail?.to || "No recipient" })
                       </span>
                     </div>
                     <div className="">

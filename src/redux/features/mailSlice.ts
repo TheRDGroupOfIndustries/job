@@ -114,7 +114,7 @@ const mailSlice = createSlice({
     })
     .addCase(createMail.fulfilled, (state, action: PayloadAction<any>) => {
       state.mails.unshift(action.payload.mail as never);
-      state.filteredMails?.unshift(action.payload.mail as never);
+      state.filteredMails.unshift(action.payload.mail as never);
       toast.success("Mail sent successfully", { id: "mail" });
     })
     .addCase(createMail.rejected, (state, action: PayloadAction<any>) => {

@@ -25,7 +25,8 @@ export default function Header() {
     const filtered = mails.filter(
       (mail) =>
         mail.subject.toLowerCase().includes(query) ||
-        mail.message.toLowerCase().includes(query)
+        mail.message.toLowerCase().includes(query) ||
+        mail.to.toLowerCase().includes(query)
     );
     dispatch(setFilteredMails(filtered) as any);
   }

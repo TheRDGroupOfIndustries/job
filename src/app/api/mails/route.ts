@@ -23,27 +23,27 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const receiver = await User.findOne({email: to});
+    // const receiver = await User.findOne({email: to});
 
-    if (!receiver) {
-      return NextResponse.json(
-        { error: "Receiver not found" },
-        { status: 404 }
-      );
-    }
-    console.log("receiver ", receiver)
+    // if (!receiver) {
+    //   return NextResponse.json(
+    //     { error: "Receiver not found" },
+    //     { status: 404 }
+    //   );
+    // }
+    // console.log("receiver ", receiver)
 
     await sendEmail({ to, subject, text: body, html: `<p>${body}</p>` });
 
     const mail = await Mail.create({
       createdBy: user.id,
-      to: String(receiver._id),
+      to,
       subject,
       message: body,
     });
 
     const createdMail = await Mail.findById(mail._id).populate(
-      "createdBy to",
+      "createdBy",
       "name email"
     );
 
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: any) {
+    console.error(error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -67,7 +68,7 @@ export async function GET(req: NextRequest) {
     }
 
     const mails = await Mail.find({ createdBy: user.id })
-      .populate("createdBy to", "name email role") 
+      .populate("createdBy", "name email role") 
       .sort({ createdAt: -1 });
 
     return NextResponse.json({ mails }, { status: 200 });

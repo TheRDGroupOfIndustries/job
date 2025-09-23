@@ -50,8 +50,8 @@ export default function MailDetails({ id }: { id: string }) {
 
 
   // const currentMail = sampleMail;
-  const senderInitial = mail?.to?.email
-    ? mail?.to?.email[0].toUpperCase()
+  const senderInitial = mail?.to
+    ? mail?.to[0].toUpperCase()
     : "?";
 
   // Function to format the timestamp
@@ -95,7 +95,7 @@ export default function MailDetails({ id }: { id: string }) {
                 </CardTitle>
                 <CardDescription className="text-secondary">
                   <span className="font-medium text-gray-700">To:</span>{" "}
-                  {mail.to ? (mail.to as any).email : "Unknown"}
+                  {mail.to ? mail.to : "Unknown"}
                 </CardDescription>
               </div>
             </div>
