@@ -186,8 +186,19 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             <div className=" text-gray-500">
               <p>Vacancy: {job.vacancy}</p>
               <p>
-                Hiring for:{" "}
-                <span className="text-purple-600 font-medium">Women</span>
+                Hiring for: 
+                <span className="text-purple-600 font-medium">
+                  {Object.entries(job.diversityHiring)
+                    .filter(([, value]) => value)
+                    .map(([key]) => {
+                      if (key === "womenReturning") return "Women Returning";
+                      if (key === "exDefence") return "Ex-Defence";
+                      if (key === "differentlyAbled")
+                        return "Differently Abled";
+                      return key;
+                    })
+                    .join(", ") || " All"}
+                </span>
               </p>
             </div>
           </div>
