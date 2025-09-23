@@ -9,11 +9,13 @@ import { deleteMails, deleteSelectedMails, setFilteredMails } from "@/redux/feat
 import ComposeMailModal from "./ComposeMailModal";
 import { usePathname } from "next/navigation";
 import TaskForm from "./TaskForm";
+import ApplicationForm from "./ApplicationForm";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedMail } = useSelector((state: RootState) => state.mail);
   const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
+  const [openApplicationForm, setOpenApplicationForm] = useState(false)
   const { mails, filteredMails } = useSelector((state: RootState) => state.mail);
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -107,7 +109,7 @@ export default function Header() {
       {pathname.includes("applications") && (
         <>
           {/* <Button
-            // onClick={()=>setOpenAssignWorkForm(true)}
+            onClick={()=>setOpenApplicationForm(true)}
             className="rounded-full text-section cursor-pointer"
           >
             <CirclePlus /> Add Application
@@ -126,6 +128,7 @@ export default function Header() {
           <h2 className="text-2xl font-semibold">Your Kanban</h2>
         </>
       )} */}
+      {openApplicationForm && <ApplicationForm close={() => setOpenApplicationForm(false)} />}
     </header>
   );
 }

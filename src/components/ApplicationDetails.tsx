@@ -212,7 +212,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                     Download Resume
                   </Button> */}
                   <a
-                    href={application?.resume}
+                    href={`${application?.resume}?fl_attachment:resume.pdf`}
                     download="Resume.pdf"
                     target="_blank"
                     rel="noopener noreferrer"

@@ -68,3 +68,28 @@
 *{
 
 }
+
+.chat-bubble {
+  background-color: #ff6600; /* Orange color */
+  color: #fff; /* White text */
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
+
+/* Style the markdown elements rendered inside the bubble */
+.chat-bubble h3 {
+  /* This is an example if you had h3 tags. */
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.chat-bubble p {
+  line-height: 1.6;
+}
+
+.chat-bubble strong {
+  /* This will target the bolded text from the markdown */
+  font-weight: bold;
+}

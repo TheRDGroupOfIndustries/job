@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Send } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
+
 
 export default function Page() {
-  const [selectedEmployee, setSelectedEmployee] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -15,18 +16,50 @@ export default function Page() {
   ]);
   const [newMessage, setNewMessage] = useState("");
 
-  const employees = [
-    "Adarsh Pandit (adarshpanditdev@gmail.com)",
-    "Sarah Johnson (sarah.johnson@company.com)",
-    "Michael Chen (michael.chen@company.com)",
-    "Emily Rodriguez (emily.rodriguez@company.com)",
-    "David Wilson (david.wilson@company.com)",
-    "Lisa Thompson (lisa.thompson@company.com)",
-    "James Brown (james.brown@company.com)",
-    "Anna Davis (anna.davis@company.com)",
-    "Robert Garcia (robert.garcia@company.com)",
-    "Jessica Miller (jessica.miller@company.com)",
-  ];
+  // const employees = [
+  //   "Adarsh Pandit (adarshpanditdev@gmail.com)",
+  //   "Sarah Johnson (sarah.johnson@company.com)",
+  //   "Michael Chen (michael.chen@company.com)",
+  //   "Emily Rodriguez (emily.rodriguez@company.com)",
+  //   "David Wilson (david.wilson@company.com)",
+  //   "Lisa Thompson (lisa.thompson@company.com)",
+  //   "James Brown (james.brown@company.com)",
+  //   "Anna Davis (anna.davis@company.com)",
+  //   "Robert Garcia (robert.garcia@company.com)",
+  //   "Jessica Miller (jessica.miller@company.com)",
+  // ];
+
+  const [users, setUsers] = useState<any[]>([]);
+  const [selectedEmployee, setSelectedEmployee] = useState<any>(null);
+  const [report, setReport] = useState<any>(null);
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/mails/mail-users")
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setUsers(res.suggetions);
+      });
+  }, []);
+
+  const fetchEmployeeDetails = (id: string) => {
+    // Fetch employee details based on email
+    setLoading(true);
+    fetch(`/api/admin/reports/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setReport(data);
+      }).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (selectedEmployee) {
+      console.log(selectedEmployee);
+      fetchEmployeeDetails(selectedEmployee._id);
+    }
+  }, [selectedEmployee?._id ]);
 
   const handleEmployeeSelect = (employee: string) => {
     setSelectedEmployee(employee);
@@ -46,50 +79,74 @@ export default function Page() {
     }
   };
 
-  const handleKeyPress = (e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
+  // const handleKeyPress = (e: {
+  //   key: string;
+  //   shiftKey: any;
+  //   preventDefault: () => void;
+  // }) => {
+  //   if (e.key === "Enter" && !e.shiftKey) {
+  //     e.preventDefault();
+  //     handleSendMessage();
+  //   }
+  // };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 overflow-hidden ">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4 pl-20">
+      {/* <div className="bg-white border-b border-gray-200 p-4 pl-20">
         <div className="flex justify-end items-center">
           {selectedEmployee && (
             <div className="bg-gray-500 text-white px-4 py-2 rounded-full text-sm ">
-              {selectedEmployee}
+              {selectedEmployee.name} ({selectedEmployee.email})
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Chat Messages Area */}
       <div className="flex-1 p-4 space-y-4 overflow-y-auto custom-scrollbar pl-20">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${
-              message.sender === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-2xl ${
-                message.sender === "user"
-                  ? "bg-blue-500 text-white ml-auto"
-                  : "bg-orange-500 text-white"
-              } break-words whitespace-pre-wrap`}
-            >
-              <p className="text-sm leading-relaxed">{message.text}</p>
+        {selectedEmployee && (
+          <div className="flex justify-end items-center mb-4">
+            <div className="bg-gray-500 text-white px-4 py-2 rounded-full text-sm w-fit  ">
+              {selectedEmployee.name} ({selectedEmployee.email})
             </div>
+            </div>
+          )}
+        {loading ? (
+          <div className="text-center text-gray-500 flex items-center justify-center *:">
+             <div className="animate-spin rounded-full h-16 w-16 border-4 border-secondary border-b-transparent mt-20"></div>
           </div>
-        ))}
+        ) : report && report.employee ? (
+          // messages.map((message) => (
+            <div
+              key={report.employee._id}
+              className={`flex ${
+                // message.sender === "user" ? "justify-end" : "justify-start"
+                "justify-start"
+              }`}
+            >
+              <div
+                className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-3 rounded-2xl ${
+                  // message.sender === "user"
+                  //   ? "bg-blue-500 text-white ml-auto"
+                     "bg-orange-500 text-white"
+                } break-words whitespace-pre-wrap`}
+              >
+                <ReactMarkdown>{report.summary}</ReactMarkdown>
+              </div>
+            </div>
+          // ))
+        ) : report?.message ? (
+          <div className="text-center text-gray-500">{report.message}</div>
+        ) : (
+          <div className="text-center text-gray-500">
+            Please select an employee to view the chat.
+          </div>
+        )}
       </div>
 
       {/* Message Input Area*/}
-      <div className="bg-white border-t border-gray-200 p-3">
+      {/* <div className="bg-white border-t border-gray-200 p-3">
         <div className="flex items-center space-x-3">
           <div className="flex-1">
             <textarea
@@ -110,7 +167,7 @@ export default function Page() {
             <Send className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Employee List at Bottom */}
       <div className="bg-white border-t border-gray-200 p-4 relative">
@@ -120,7 +177,7 @@ export default function Page() {
       bg-orange-100 border border-gray-200 rounded-2xl shadow-lg z-10 
       max-h-64 overflow-y-auto overflow-x-hidden custom-scrollbar"
           >
-            {employees.map((employee, index) => (
+            {users.map((employee, index) => (
               <button
                 key={index}
                 onClick={() => handleEmployeeSelect(employee)}
@@ -130,7 +187,7 @@ export default function Page() {
                     : "text-orange-600 hover:bg-orange-200"
                 }`}
               >
-                {employee}
+                {employee.name} ({employee.email})
               </button>
             ))}
           </div>

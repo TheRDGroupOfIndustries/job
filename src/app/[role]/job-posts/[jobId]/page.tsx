@@ -1,7 +1,7 @@
 import JobDetails from "@/components/JobDetails";
 
-export default function Page ({params}: {params: {jobId: string}}) {
-    const {jobId} = params;
+export default async function Page ({params}: {params: {jobId: string}}) {
+    const {jobId} = await params;
     console.log("params", params);
     console.log("jobId", jobId);
     

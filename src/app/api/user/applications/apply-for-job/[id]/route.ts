@@ -1,11 +1,8 @@
-import { adminOnly } from "@/app/api/middleware/adminOnly";
 import { authenticate } from "@/lib/auth";
-import cloudinary from "@/lib/cloudinary";
 import { connectDB } from "@/lib/mongodb";
 import { Application } from "@/models/Application";
 import mongoose from "mongoose";
 import { NextResponse, NextRequest } from "next/server";
-import { v4 as uuidv4 } from "uuid";
 
 export async function POST(
   req: NextRequest,
@@ -20,8 +17,6 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
     }
 
-    console.log(user.role);
-    
     if (user.role !== "user") {
       return NextResponse.json(
         { error: "Only users can apply" },
@@ -32,7 +27,6 @@ export async function POST(
     const formData = await req.formData();
     const appliedBy = formData.get("appliedBy") as string;
     const jobDesignation = formData.get("jobDesignation") as string;
-    const userEmail = user.email;
     const resumeFile = formData.get("resume") as File;
 
     if (!resumeFile) {
@@ -50,40 +44,55 @@ export async function POST(
     if (existingApplication) {
       return NextResponse.json(
         { error: "You have already applied for this job." },
-        { status: 409 } 
+        { status: 409 }
       );
     }
 
+    // 🔹 Convert File to Buffer
     const arrayBuffer = await resumeFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const uploadResult: any = await new Promise((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            resource_type: "raw",
-            public_id: `resumes/${uuidv4()}`,
-            format: 'pdf',
-          access_mode: 'public',
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        )
-        .end(buffer);
-    });
+    // 🔹 Prepare formData for Cloudinary unsigned upload
+    const cloudForm = new FormData();
+    cloudForm.append(
+      "file",
+      new Blob([buffer], { type: resumeFile.type }), // <-- correct MIME
+      resumeFile.name
+    );
+    cloudForm.append("upload_preset", "unsigned_raw"); // your preset
+    cloudForm.append("folder", "resumes");
 
-    console.log("uploadResult", uploadResult);
+    // 🔹 Upload to Cloudinary (unsigned)
+    const cloudRes = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/raw/upload`,
+      {
+        method: "POST",
+        body: cloudForm,
+      }
+    );
 
+    const uploadResult = await cloudRes.json();
+
+    console.log("Cloudinary upload result:", uploadResult);
+
+    if (!uploadResult.secure_url) {
+      return NextResponse.json(
+        { error: "Cloudinary upload failed", details: uploadResult },
+        { status: 500 }
+      );
+    }
+
+    // 🔹 Save application in DB
     const application = await Application.create({
       appliedBy: new mongoose.Types.ObjectId(appliedBy),
       jobId: new mongoose.Types.ObjectId(id),
       jobDesignation,
-      userEmail,
+      userEmail: user.email,
       resume: uploadResult.secure_url,
-      status: "pending"
+      status: "pending",
     });
+
+    console.log("Application saved in DB:", application);
 
     return NextResponse.json(
       { message: "Application submitted successfully", application },
