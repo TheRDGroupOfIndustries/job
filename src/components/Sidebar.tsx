@@ -217,9 +217,12 @@ export default function Sidebar() {
           Profile
         </Badge>
         <div className=" w-20 h-20 rounded-full mb-2">
-          <img
+          <Image
             src={userData?.profileImage || "/images/profile_picture.jpg"}
             alt="Profile Picture"
+            // layout="fill"
+            // objectFit="cover"
+            priority={true}
             width={80}
             height={80}
             className=" rounded-full"
