@@ -235,12 +235,12 @@ export default function Luckysheet({ id }: { id: string }) {
                   const canvas = container.querySelector('canvas');
                   const table = container.querySelector('.luckysheet-cell-main');
                   
-                  if (canvas) {
-                    canvas.style.pointerEvents = 'auto';
-                  }
-                  if (table) {
-                    table.style.pointerEvents = 'auto';
-                  }
+                  // if (canvas) {
+                  //   canvas.style.pointerEvents = 'auto';
+                  // }
+                  // if (table) {
+                  //   table.style.pointerEvents = 'auto';
+                  // }
                   
                   // Force focus
                   container.focus();

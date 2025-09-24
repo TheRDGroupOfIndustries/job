@@ -275,7 +275,7 @@ const authSlice = createSlice({
     builder
       .addCase(updateProfile.pending, (state) => {
         state.loading = true;
-        toast.loading("Updating...", { id: "update" });
+        
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         console.log(action.payload)
@@ -290,7 +290,7 @@ const authSlice = createSlice({
     builder
       .addCase(updateEmployee.pending, (state) => {
         state.loading = true;
-        toast.loading("Updating...", { id: "updateEmployee" });
+        
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
         console.log(action.payload)

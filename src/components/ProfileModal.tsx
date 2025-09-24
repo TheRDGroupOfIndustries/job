@@ -11,6 +11,7 @@ import { updateProfile } from "@/redux/features/authSlice";
 import { IUser } from "@/models/User";
 import axios from "axios";
 import { LoaderCircle } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 // Define the form data structure
 interface ProfileFormInputs {
@@ -55,7 +56,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
 
   const handleProfileUpdate = async (data: ProfileFormInputs) => {
     try {
-      setLoading(true);
+      toast.loading("Updating...", { id: "update" });
       console.log("Form Data Submitted:", data);
 
       // Only upload image if a new image file was selected
@@ -72,7 +73,6 @@ const ProfileModal = ({ close }: { close: () => void }) => {
 
         data.profileImage = response.data.secure_url;
         console.log("Upload successful:", response.data);
-        setLoading(false);
       } else {
         // Keep existing profile image if no new image was uploaded
         // data.profileImage = "/images/profile_picture.jpg";

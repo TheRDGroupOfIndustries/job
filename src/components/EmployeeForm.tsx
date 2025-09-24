@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { updateProfile, updateEmployee } from "@/redux/features/authSlice";
 import { IUser } from "@/models/User";
+import axios from "axios";
+import { LoaderCircle } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 // Define the form data structure
 interface ProfileFormInputs {
@@ -28,12 +31,14 @@ const EmployeeForm = ({
   setEmployees: React.Dispatch<React.SetStateAction<IUser[] | null>>;
   close: () => void;
 }) => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(
-    "/images/profile_picture.jpg"
+    employee?.profileImage || null
   );
   const { userData, isAutheticated } = useSelector(
     (state: RootState) => state.auth
   );
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   console.log("employee:", employee);
@@ -48,17 +53,39 @@ const EmployeeForm = ({
       phone: employee?.phone,
       employeeId: employee?.employeeId,
       otherDetails: employee?.otherDetails,
+      // profileImage: employee?.profileImage,
     },
   });
 
-  const initials = userData?.name
+  const initials = employee?.name
     .split(" ")
     .map((n) => n[0])
     .join("");
 
-  const handleProfileUpdate = (data: ProfileFormInputs) => {
+  const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
+  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+  const handleProfileUpdate = async (data: ProfileFormInputs) => {
     console.log("Form Data Submitted:", data);
     console.log("New Profile Image:", profileImage);
+    toast.loading("Updating...", { id: "updateEmployee" });
+
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      formData.append("upload_preset", UPLOAD_PRESET || "");
+
+      const response = await axios.post(CLOUDINARY_URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      data.profileImage = response.data.secure_url;
+      console.log("Upload successful:", response.data);
+      setLoading(false);
+    }
+
     // if (userData.role === "admin") {
     dispatch(updateEmployee({ details: data, id: employee._id }))
       .unwrap()
@@ -78,6 +105,8 @@ const EmployeeForm = ({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setImageFile(file || null);
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {

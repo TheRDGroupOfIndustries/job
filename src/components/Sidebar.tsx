@@ -231,7 +231,7 @@ export default function Sidebar() {
         <h2 className="text-xl font-semibold leading-tight font-stix-two-math">
           {userData && userData.name ? userData.name : "Username"}
         </h2>
-        <p className="text-sm text-center text-secondary leading-tight font-dm-mono font-thin w-full line-clamp-1  ">
+        <p className="text-sm text-center text-secondary leading-tight font-dm-mono font-thin w-full max-w-[200px] line-clamp-1 break-words">
           {userData && userData.email ? userData.email : "username@gmail.com"}
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
