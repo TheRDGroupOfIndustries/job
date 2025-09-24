@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 
-// @ts-ignore
+// @ts-expect-error
 import "luckysheet/dist/plugins/css/pluginsCss.css";
-// @ts-ignore
+// @ts-expect-error
 import "luckysheet/dist/plugins/plugins.css";
-// @ts-ignore
+// @ts-expect-error
 import "luckysheet/dist/css/luckysheet.css";
-// @ts-ignore
+// @ts-expect-error
 import "luckysheet/dist/assets/iconfont/iconfont.css";
 
 import toast from "react-hot-toast";
