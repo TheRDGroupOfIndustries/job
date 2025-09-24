@@ -8,6 +8,7 @@ interface AuthState {
     role: string;
     name: string;
     phone?: string;
+    profileImage?: string;
   } | null;
 
   isAutheticated: boolean;
@@ -199,7 +200,7 @@ const authSlice = createSlice({
       state.userData = action.payload.user;
       state.isAutheticated = true;
     },
-    authLogout: (state) => {
+    logout: (state) => {
       state.userData = null;
       state.isAutheticated = false;
     },
@@ -318,5 +319,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { authLogin, authLogout } = authSlice.actions;
+export const { authLogin, logout } = authSlice.actions;
 export default authSlice.reducer;

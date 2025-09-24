@@ -77,7 +77,7 @@ const AdminDashboard = () => {
   }, []);
 
   if (transition) {
-    return <PageLoader/>;
+    return <PageLoader />;
   }
   return (
     <div className="p-4 lg:p-6 bg-background h-screen lg:overflow-hidden overflow-y-auto custom-scrollbar">
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
                     outerRadius="60%"
                     dataKey="value"
                     textAnchor="middle"
-                    label={({ name, value }) => `${name}\n${value}`}
+                    // label={({ name, value }) => `${name}\n${value}`}
                   >
                     {mailData.mainData.length > 0 &&
                       mailData.mainData.map((entry, index) => (
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
                     innerRadius="35%"
                     outerRadius="65%"
                     dataKey="value"
-                    label={({ name, value }) => `${name}\n${value}`}
+                    // label={({ name, value }) => `${name}\n${value}`}
                   >
                     {sheetsData.sheets.length > 0 &&
                       sheetsData.sheets.map((entry, index) => (
@@ -183,7 +183,9 @@ const AdminDashboard = () => {
                         />
                       ))}
                   </Pie>
-                  <Tooltip />
+                  <div className="relative z-50">
+                    <Tooltip />
+                  </div>
                   <Legend
                     layout="vertical"
                     verticalAlign="middle"
@@ -196,18 +198,25 @@ const AdminDashboard = () => {
                 </PieChart>
               </ResponsiveContainer>
               {/* Center total inside donut */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="text-xl lg:text-2xl font-bold text-gray-900">
                   {sheetsData.sheets.length > 0 && sheetsData.totalSheets}
                 </span>
-              </div>
+              </div> */}
             </div>
+              <p className="text-center capitalize text-sm lg:text-base font-semibold text-gray-900 p-2">
+                Total sheet created –{" "}
+                {sheetsData.sheets.length > 0 && sheetsData.totalSheets}
+              </p>
           </div>
         </div>
 
         {/* Bottom Action Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 lg:gap-4">
-          <div onClick={() => router.push("/sanity-studio")} className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group">
+          <div
+            onClick={() => router.push("/sanity-studio")}
+            className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-5 flex items-center justify-center cursor-pointer hover:bg-orange-50 transition-colors duration-200 shadow-sm group"
+          >
             <FilePlus2 className="w-6 h-6 lg:w-8 lg:h-8 text-orange-500 mr-3" />
             <p className="text-lg lg:text-xl text-orange-500">Post a Blog</p>
           </div>

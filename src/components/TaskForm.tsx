@@ -219,6 +219,7 @@ export default function TaskForm({
           {/* Deadline */}
           <input
             type="date"
+            min={new Date().toISOString().split("T")[0]}
             placeholder="Deadline"
             className={`w-full border-b-2 focus:border-primary ${
               errors.deadline ? "border-primary" : "border-background"

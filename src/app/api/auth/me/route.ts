@@ -26,7 +26,7 @@ export async function GET(req: Request) {
       user: details,
     });
   } catch (error) {
-    console.error("Error verifying token:", error);
+    // console.error("Error verifying token:", error);
     const res = NextResponse.json({
       success: false,
       message: "Unauthorized",

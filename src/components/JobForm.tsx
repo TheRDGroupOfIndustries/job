@@ -58,7 +58,7 @@ interface FormData {
   };
   companyDetails: {
     name: string;
-    established: number;
+    established: string;
     sector: string;
     locatedAt: string;
   };
@@ -117,7 +117,7 @@ export default function JobForm({
       },
       companyDetails: {
         name: "",
-        established: 0,
+        established: "",
         sector: "",
         locatedAt: "",
       },

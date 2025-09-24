@@ -188,7 +188,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
               <p>
                 Hiring for: 
                 <span className="text-purple-600 font-medium">
-                  {Object.entries(job.diversityHiring)
+                  {Object.entries(job.diversityHiring as any)
                     .filter(([, value]) => value)
                     .map(([key]) => {
                       if (key === "womenReturning") return "Women Returning";

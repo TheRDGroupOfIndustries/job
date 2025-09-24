@@ -340,27 +340,7 @@ const EmployeeTasksCard = ({ task }: { task: any }) => {
             isExpanded ? "" : "line-clamp-4"
           }`}
         >
-          {task.details} Lorem ipsum dolor sit amet consectetur adipisicing
-          elit. Asperiores ipsa suscipit accusamus veniam repellendus. Dolorem
-          odio maiores maxime culpa necessitatibus alias ipsa provident!
-          Possimus temporibus ad doloribus accusamus nam aliquam? Voluptates,
-          alias explicabo, voluptatibus dolorem mollitia sint distinctio, ut
-          libero error animi quibusdam delectus provident reprehenderit nisi
-          dolore ipsum nostrum officiis totam a quis eligendi voluptas modi
-          aliquid cupiditate. Magnam. Deleniti dolore ipsam voluptate qui ea
-          illo eos soluta obcaecati commodi necessitatibus unde tempora ab nulla
-          voluptatem repellendus saepe, blanditiis magnam perspiciatis
-          perferendis, iure, est nobis quae reiciendis? Adipisci, sed. Nam
-          similique vero iusto ducimus aut at ullam totam odio a accusamus,
-          quibusdam, explicabo dolores quidem? Quas ratione vitae reiciendis,
-          odit at distinctio provident est quibusdam ab, ipsum porro asperiores.
-          Ex debitis reprehenderit sequi magni, animi iusto quos quibusdam eum
-          hic, officiis sed. Cum odio ad voluptates quisquam animi accusamus,
-          dolores voluptas dolor magnam ratione, sint hic modi fugiat qui?
-          Tenetur, eligendi quod eaque illum, quaerat praesentium architecto
-          cumque, at sequi laudantium dolores quos atque ipsam consectetur
-          tempora sunt voluptatibus obcaecati quo! Maxime, sint libero doloribus
-          id odit odio error!
+          {task.details}
         </p>
       </div>
 

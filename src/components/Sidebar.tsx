@@ -26,12 +26,12 @@ import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { authLogout } from "@/redux/features/authSlice";
 import toast from "react-hot-toast";
 import { JSX, useEffect, useState } from "react";
 import ProfileModal from "./ProfileModal";
-import { getTasks } from "@/redux/features/taskSlice";
+import { getEmployeeTasks, getTasks } from "@/redux/features/taskSlice";
 import { fetchMails } from "@/redux/features/mailSlice";
+import { logout } from "@/redux/features/authSlice";
 
 interface TOptions {
   label: string;
@@ -46,7 +46,7 @@ export default function Sidebar() {
   const { tasks } = useSelector((state: RootState) => state.task);
   const { mails } = useSelector((state: RootState) => state.mail);
   const [Options, setOptions] = useState<TOptions[] | []>([]);
-  const [openProfileModal, setOpenProfileModal] = useState(false)
+  const [openProfileModal, setOpenProfileModal] = useState(false);
   const [tab, setTab] = useState(1);
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -179,7 +179,14 @@ export default function Sidebar() {
   useEffect(() => {}, [tab]);
 
   useEffect(() => {
+    if (userData && userData.role === "admin") {
+          dispatch(getTasks() as any);
+        } else if (userData && userData.role === "employee") {
+          dispatch(getEmployeeTasks() as any);
+        }
     if (userData) {
+      dispatch(fetchMails() as any);
+
       userData.role === "admin"
         ? setOptions(AdminOptions)
         : userData.role === "employee"
@@ -189,19 +196,15 @@ export default function Sidebar() {
         : setOptions([]);
     }
 
-    dispatch(getTasks() as any);
-    dispatch(fetchMails() as any);
     // console.log(userData);
   }, [userData]);
-
-
 
   const handleLogout = async () => {
     toast.loading("Logging Out...", { id: "logout" });
     const res = await fetch("/api/auth/logout", { method: "POST" });
     const data = await res.json();
     // console.log(data);
-    dispatch(authLogout());
+    dispatch(logout());
     toast.success("Logged out", { id: "logout" });
     router.push("/auth/login");
   };
@@ -214,10 +217,9 @@ export default function Sidebar() {
           Profile
         </Badge>
         <div className=" w-20 h-20 rounded-full mb-2">
-          <Image
-            src={userData && userData.profileImage ? userData.profileImage : "/images/profile_picture.jpg"}
+          <img
+            src={userData?.profileImage || "/images/profile_picture.jpg"}
             alt="Profile Picture"
-            priority={true}
             width={80}
             height={80}
             className=" rounded-full"
@@ -230,16 +232,19 @@ export default function Sidebar() {
           {userData && userData.email ? userData.email : "username@gmail.com"}
         </p>
         <div className="flex items-center justify-center gap-3 mt-4">
-          <div onClick={()=>setOpenProfileModal(true)} className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
+          <div
+            onClick={() => setOpenProfileModal(true)}
+            className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative"
+          >
             <Pencil size={18} className="text-secondary " />
           </div>
-          <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
+          <div className="flex items-center justify-center p-3 rounded-full border border-secondary relative">
             <Target size={18} className="text-secondary " />
             <Badge className="rounded-full bg-primary text-card absolute -top-2 -right-2 shadow-badge">
-              { tasks?.length}
+              {tasks?.length}
             </Badge>
           </div>
-          <div className="flex items-center justify-center cursor-pointer p-3 rounded-full border border-secondary relative">
+          <div className="flex items-center justify-center p-3 rounded-full border border-secondary relative">
             <BellRing size={18} className="text-secondary " />
             <Badge className="rounded-full bg-primary text-card absolute -top-2 -right-2 shadow-badge">
               {mails?.length}
@@ -257,7 +262,11 @@ export default function Sidebar() {
           <ul className="flex flex-col h-full justify-between ">
             {Options.map((option) => (
               <Link
-                href={`${option.label === "Blogs" ? `${option.path}` : `/${userData?.role}/${option.path}`}`}
+                href={`${
+                  option.label === "Blogs"
+                    ? `${option.path}`
+                    : `/${userData?.role}/${option.path}`
+                }`}
                 key={option.label}
                 className={`flex items-center gap-2 p-2 ${
                   pathname === `/${userData?.role}/${option.path}` ||
@@ -298,7 +307,9 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {openProfileModal && <ProfileModal close={() => setOpenProfileModal(false)} /> }
+      {openProfileModal && (
+        <ProfileModal close={() => setOpenProfileModal(false)} />
+      )}
     </div>
   );
 }

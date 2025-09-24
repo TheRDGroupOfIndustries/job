@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 
-// ✅ Import Luckysheet styles
+// @ts-ignore
 import "luckysheet/dist/plugins/css/pluginsCss.css";
+// @ts-ignore
 import "luckysheet/dist/plugins/plugins.css";
+// @ts-ignore
 import "luckysheet/dist/css/luckysheet.css";
+// @ts-ignore
 import "luckysheet/dist/assets/iconfont/iconfont.css";
+
 import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -16,7 +20,8 @@ import { useRouter } from "next/navigation";
 export default function Luckysheet({ id }: { id: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [sheetData, setSheetData] = useState<any>(null);
-  const [ls, setLs] = useState<any>(null); // ✅ keep luckysheet instance
+  // 🛑 FIX 1: Use a ref to hold the luckysheet API/instance to ensure it's available for cleanup.
+  const lsRef = useRef<any>(null); 
   const [sheetTitle, setSheetTitle] = useState("");
 
   const router = useRouter();
@@ -39,6 +44,7 @@ export default function Luckysheet({ id }: { id: string }) {
   // Init Luckysheet once script + data are ready
   useEffect(() => {
     const init = async () => {
+      // Import the module
       const mod = await import("luckysheet");
       const luckysheet = (mod as any).default || mod;
 
@@ -51,12 +57,12 @@ export default function Luckysheet({ id }: { id: string }) {
       const savedCelldata =
         sheetData?.data?.length > 0
           ? sheetData.data.map((cell: any) => ({
-              r: cell.row - 1, // Luckysheet is 0-indexed
+              r: cell.row - 1,
               c: cell.col - 1,
               v: {
-                v: cell.value, // raw value
-                m: cell.value, // display value
-                ct: { fa: "General", t: "g" }, // cell type
+                v: cell.value,
+                m: cell.value,
+                ct: { fa: "General", t: "g" },
               },
             }))
           : [];
@@ -85,7 +91,9 @@ export default function Luckysheet({ id }: { id: string }) {
                 ],
         });
 
-        setLs(luckysheet); // ✅ store instance
+        // 🛑 FIX 2: Store the luckysheet API object in the ref for unmount cleanup
+        lsRef.current = luckysheet; 
+
       }, 100);
       setSheetTitle(sheetData?.title);
     };
@@ -93,9 +101,32 @@ export default function Luckysheet({ id }: { id: string }) {
     if (sheetData) init();
   }, [sheetData]);
 
+  // 🛑 FIX 3: Cleanup function now correctly uses lsRef.current
+  useEffect(() => {
+    return () => {
+      if (lsRef.current && lsRef.current.exit) {
+        console.log("Luckysheet Component Unmounting: Calling luckysheet.exit()");
+        // luckysheet.exit() clears the DOM elements created by the library
+        lsRef.current.exit(); 
+        
+        // Optional: Ensure the container is truly empty
+        if (containerRef.current) {
+          containerRef.current.innerHTML = "";
+        }
+      }
+    };
+  }, []);
+
   // Save sheet data
   const saveSheet = async () => {
+    // 🛑 FIX 4: Use the ref to access the luckysheet API for saving
+    const ls = lsRef.current;
     if (!ls) return alert("⚠ Luckysheet not ready yet!");
+
+    if (ls.exitEditMode) {
+      ls.exitEditMode(); 
+      console.log("Input committed from active cell editor.");
+    }
 
     const data = ls.getLuckysheetfile();
     console.log("📄 Saving data:", data);
@@ -134,38 +165,48 @@ export default function Luckysheet({ id }: { id: string }) {
       });
   };
 
+  const closeSheet = () => {
+    router.back();
+
+    const ls = lsRef.current;
+    if (ls.exitEditMode) {
+      ls.exitEditMode(); 
+      console.log("Input committed from active cell editor.");
+    }
+  }
+
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col relative">
       {/* Header */}
+      <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
+        <Button
+          variant={"ghost"}
+          onClick={closeSheet}
+          className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
+        >
+          <ChevronLeft className="w-8 h-8 " />
+        </Button>
+        <input
+          type="text"
+          value={sheetTitle}
+          placeholder="New Sheet"
+          className="border px-2 py-1 rounded text-center"
+          onChange={(e) => setSheetTitle(e.target.value)}
+        />
+        <button
+          onClick={saveSheet}
+          className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
+        >
+          Save
+        </button>
+      </div>
 
       {/* Spreadsheet Container */}
-      <div className="flex-1 relative">
-        <div className="flex justify-between items-center absolute top-0 left-0 right-0 px-10 py-2 pl-20 border-b z-20 bg-card">
-          <Button
-            variant={"ghost"}
-            onClick={() => router.back()}
-            className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
-          >
-            <ChevronLeft className="w-8 h-8 " />
-          </Button>
-          <input
-            type="text"
-            value={sheetTitle}
-            placeholder="Sheet Title"
-            className="border px-2 py-1 rounded text-center"
-            onChange={(e) => setSheetTitle(e.target.value)}
-          />
-          <button
-            onClick={saveSheet}
-            className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer"
-          >
-            Save
-          </button>
-        </div>
+      <div className="flex-1 relative"> 
         <div
           ref={containerRef}
           id="luckysheet"
-          className="absolute top-0 left-0 right-0 bottom-0"
+          className="absolute top-0 left-0 right-0 bottom-0 h-[calc(100vh-160px)] "
           suppressHydrationWarning={true}
         />
       </div>
