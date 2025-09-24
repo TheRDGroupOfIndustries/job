@@ -4,6 +4,12 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import { authenticate } from "@/lib/auth";
 import { usePathname } from "next/navigation";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "@/redux/features/authSlice";
+import { RootState } from "@/redux/store";
+import PageLoader from "@/components/PageLoader";
+import MainLoader from "@/components/MainLoader";
 
 export default function AdminLayout({
   children,
@@ -12,6 +18,9 @@ export default function AdminLayout({
 }>) {
   const pathname = usePathname();
   const isAdminRoot = pathname === "/admin";
+  const { loading, isAutheticated, userData } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   return (
     <div className=" bg-background w-full min-h-screen px-4 md:px-10 flex gap-5">
@@ -30,6 +39,8 @@ export default function AdminLayout({
         )}
       </div>
       <AuthInitializer />
+      {loading && <MainLoader />}
+      {/* <MainLoader /> */}
     </div>
   );
 }

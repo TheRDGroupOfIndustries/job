@@ -215,6 +215,9 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch User
     builder
+      .addCase(fetchUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.userData = action.payload.user;
         state.isAutheticated = true;
@@ -227,7 +230,7 @@ const authSlice = createSlice({
     // Login User
     builder
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         toast.loading("Logging in...", { id: "login" });
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -236,14 +239,14 @@ const authSlice = createSlice({
         toast.success("Logged in successfully", { id: "login" });
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        // state.loading = false;
         toast.error(action.payload, { id: "login" });
       });
 
     // register User
     builder
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         toast.loading("Registering...", { id: "register" });
       })
       .addCase(registerUser.fulfilled, (state, action) => {
@@ -252,14 +255,14 @@ const authSlice = createSlice({
         toast.success(action.payload.message, { id: "register" });
       })
       .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        // state.loading = false;
         toast.error(action.payload, { id: "register" });
       });
 
     // register User
     builder
       .addCase(verifyUser.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         toast.loading("Verifying...", { id: "verify" });
       })
       .addCase(verifyUser.fulfilled, (state, action) => {
@@ -268,14 +271,13 @@ const authSlice = createSlice({
         toast.success(action.payload.message, { id: "verify" });
       })
       .addCase(verifyUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        // state.loading = false;
         toast.error(action.payload, { id: "verify" });
       });
 
     builder
       .addCase(updateProfile.pending, (state) => {
-        state.loading = true;
-        
+        // state.loading = true;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         console.log(action.payload)
@@ -289,7 +291,7 @@ const authSlice = createSlice({
 
     builder
       .addCase(updateEmployee.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
@@ -304,7 +306,7 @@ const authSlice = createSlice({
 
     builder
       .addCase(deleteEmployee.pending, (state) => {
-        state.loading = true;
+        // state.loading = true;
         toast.loading("Updating...", { id: "deleteEmployee" });
       })
       .addCase(deleteEmployee.fulfilled, (state, action) => {
