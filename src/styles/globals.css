@@ -93,15 +93,3 @@
   /* This will target the bolded text from the markdown */
   font-weight: bold;
 }
-
-/* GLOBAL CSS FIX for Luckysheet cleanup issue */
-/* This targets the specific elements (like the cell editor input) 
-   that Luckysheet often leaves behind in the DOM. */
-#luckysheet-cell-main,
-#luckysheet-row-count-input,
-#luckysheet-cell-formula-input,
-#luckysheet-formula-functionrange,
-#luckysheet-wa-editor {
-    display: none !important;
-    visibility: hidden !important;
-}
