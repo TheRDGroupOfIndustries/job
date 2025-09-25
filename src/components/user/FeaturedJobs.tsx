@@ -135,7 +135,7 @@ const FeaturedJobs = () => {
         </p>
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-16">
+        <div className="flex flex-wrap justify-center space-x-2 sm:space-x-4">
           {FILTER_TABS.map((tab) => (
             <button
               key={tab}
@@ -152,7 +152,7 @@ const FeaturedJobs = () => {
         </div>
 
         {/* Job Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-16">
           {filteredJobs.slice(0, 6).map((job) => (
             <JobCard key={job.id} job={job} />
           ))}

@@ -23,6 +23,9 @@ const Navbar = () => {
             For Employers
           </Link>
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
+            Blogs
+          </Link>
+          <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             About
           </Link>
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">

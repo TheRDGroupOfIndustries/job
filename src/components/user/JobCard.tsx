@@ -53,7 +53,7 @@ const JobCard = ({ job }: { job: Job }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg flex flex-col h-full relative hover:-translate-y-2 duration-200 transition-all">
+    <div className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg flex flex-col h-full relative hover:-translate-y-2 duration-200 transition-all group">
       {/* Company Info & Save Icon */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start">
@@ -63,7 +63,7 @@ const JobCard = ({ job }: { job: Job }) => {
             className="w-12 h-12 rounded-lg object-cover mr-3"
           />
           <div className="flex flex-col items-start max-w-[80%]">
-            <h3 className="text-xl text-start font-bold text-gray-900 ">
+            <h3 className="text-xl text-start font-bold text-gray-900 group-hover:text-primary transition-all duration-200 mb-1 line-clamp-2">
               {title}
             </h3>
             <h4 className="text-base font-medium text-gray-600">{company}</h4>

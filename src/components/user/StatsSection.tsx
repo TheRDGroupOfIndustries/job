@@ -22,7 +22,7 @@ const StatsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-hero">
+    <section className="py-20  bg-gray-50">
       <div className="container mx-auto px-6 text-center">
         {/* Header */}
         <div className="mb-16">
@@ -39,24 +39,14 @@ const StatsSection = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
-              <div className="text-4xl md:text-6xl font-bold text-primary mb-2">
+              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
                 {stat.number}
               </div>
-              <div className="text-lg md:text-xl text-muted-foreground">
+              <div className="text-lg text-muted-foreground">
                 {stat.label}
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Why Choose Section Header */}
-        <div className="mt-24 mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Why Choose JobConnect?
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            We provide comprehensive solutions for both job seekers and employers
-          </p>
         </div>
       </div>
     </section>
