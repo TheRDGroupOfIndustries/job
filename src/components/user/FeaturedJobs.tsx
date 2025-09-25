@@ -104,7 +104,7 @@ const ALL_JOBS = [
     posted: "1 day ago",
     contractType: "Part-time",
     color: "orange",
-    logoUrl: "/images/logo-blogcorp.png",
+    logoUrl: "/images/jobs/product-manager.jpg",
     tags: ["Writing", "Editing"],
     filterTags: ["Part-time", "Remote"],
   },
