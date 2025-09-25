@@ -1,77 +1,98 @@
-// components/Footer.jsx
-"use client"; // This makes it a client component
+"use client";
 
-import React from 'react';
-// Import icons from Lucide React
-import { Facebook, Twitter, Linkedin, Instagram, MessageSquare } from 'lucide-react';
+import Link from "next/link";
+import React from "react";
+
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
+  MessageSquare,
+} from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1C212B] text-gray-300 py-10 px-4 md:px-8 relative">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700">
+    <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700 ">
         {/* Company Info Section */}
         <div className="flex flex-col items-start">
-          <h3 className="text-[#FF7F3F] text-2xl font-bold mb-4">Alpran HR Services</h3>
+          <h3 className="text-primary text-2xl font-bold mb-4">
+            Alpran HR Services
+          </h3>
           <p className="text-gray-400 leading-relaxed max-w-sm mb-6">
-            Connecting talented professionals with amazing opportunities. Your next career move starts here.
+            Connecting talented professionals with amazing opportunities. Your
+            next career move starts here.
           </p>
           <div className="flex space-x-4">
             {/* Facebook Icon */}
-            <a
-              href="#"
+            <Link
+              href="/"
               aria-label="Facebook"
-              className="w-10 h-10 flex items-center justify-center bg-[#FF7F3F] text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Facebook size={20} />
-            </a>
+            </Link>
             {/* Twitter Icon */}
-            <a
-              href="#"
+            <Link
+              href="/"
               aria-label="Twitter"
-              className="w-10 h-10 flex items-center justify-center bg-[#FF7F3F] text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Twitter size={20} />
-            </a>
+            </Link>
             {/* LinkedIn Icon */}
-            <a
-              href="#"
+            <Link
+              href="/"
               aria-label="LinkedIn"
-              className="w-10 h-10 flex items-center justify-center bg-[#FF7F3F] text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Linkedin size={20} />
-            </a>
+            </Link>
             {/* Instagram Icon */}
-            <a
-              href="#"
+            <Link
+              href="/"
               aria-label="Instagram"
-              className="w-10 h-10 flex items-center justify-center bg-[#FF7F3F] text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Instagram size={20} />
-            </a>
+            </Link>
           </div>
         </div>
 
         {/* Quick Links Section */}
-        <div>
+        <div className="flex flex-col items-center w-full">
           <h4 className="text-white text-lg font-semibold mb-4">Quick Links</h4>
-          <ul className="space-y-3">
+          <ul className="space-y-3"> 
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Browse Jobs
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 For Employers
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 About Us
               </a>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Contact
               </a>
             </li>
@@ -81,26 +102,38 @@ const Footer = () => {
         {/* Support Section */}
         <div>
           <h4 className="text-white text-lg font-semibold mb-4">Support</h4>
-          <ul className="space-y-3">
+          <ul className="space-y-3"> 
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Help Center
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Privacy Policy
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Terms of Service
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 Cookie Policy
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -113,7 +146,7 @@ const Footer = () => {
 
       {/* "Talk with Us" Button (Floating) */}
       <div className="fixed bottom-6 right-6 z-50">
-        <button className="bg-[#FF7F3F] text-white font-medium py-3 px-6 rounded-full shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
+        <button className="bg-primary text-white font-medium py-3 px-6 rounded-full shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
           {/* Using MessageSquare icon from Lucide React */}
           <MessageSquare size={20} />
           <span>Talk with Us</span>
