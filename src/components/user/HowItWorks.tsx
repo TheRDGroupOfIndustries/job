@@ -102,7 +102,7 @@ const HowItWorks = () => {
         </div>
         
         {/* CTA Button */}
-        <button className="inline-flex items-center bg-primary text-white font-semibold py-4 px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-8 hover:scale-[1.05] transform mx-auto duration-200 cursor-pointer">
+        <button className="inline-flex items-center bg-primary text-white font-semibold py-4 px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-8 hover:scale-[1.05] transform mx-auto duration-200 cursor-pointer text-lg">
           Get Started Today
           <ArrowRight size={20} className="ml-3" />
         </button>

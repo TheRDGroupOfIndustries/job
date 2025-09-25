@@ -30,7 +30,7 @@ const ArticleCard = ({ article }: { article: Article }) => {
 
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-all duration-200 mb-3 line-clamp-2">
           {title}
         </h3>
         <p className="text-gray-600 mb-4 flex-grow line-clamp-3">
