@@ -9,7 +9,7 @@ const CtaBanner = () => {
       className=""
       style={{
         backgroundImage:
-          "url('https://tse4.mm.bing.net/th/id/OIP.1TGKRd7D7vAru4dIz48ncQHaDd?rs=1&pid=ImgDetMain&o=7&rm=3')",
+          "url('/images/bgImage-HeroSection.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

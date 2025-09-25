@@ -1,7 +1,17 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
 
-const ArticleCard = ({ article }) => {
+interface Article {
+  imageUrl: string;
+  category: string;
+  title: string;
+  summary: string;
+  author: string;
+  date: string;
+  readTime: string;
+}
+
+const ArticleCard = ({ article }: { article: Article }) => {
   const { imageUrl, category, title, summary, author, date, readTime } = article;
 
   return (

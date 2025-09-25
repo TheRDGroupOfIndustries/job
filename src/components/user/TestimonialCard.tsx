@@ -1,6 +1,15 @@
 import React from 'react';
 
-const TestimonialCard = ({ review }) => {
+interface Review {
+  name: string;
+  title: string;
+  company: string;
+  avatarUrl: string;
+  stars: number;
+  quote: string;
+}
+
+const TestimonialCard = ({ review }: { review: Review }) => {
   const { name, title, company, avatarUrl, stars, quote } = review;
 
   const renderStars = () => {
