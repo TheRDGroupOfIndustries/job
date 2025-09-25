@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
+  const router = useRouter()
   return (
     <nav className="fixed w-full z-50 bg-white shadow-sm py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -31,11 +33,11 @@ const Navbar = () => {
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             Contact
           </Link>
-          <button className="px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium">
+          <button onClick={() => router.push('/auth/login')} className="px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium cursor-pointer">
             Sign In
           </button>
           {/* Post a Job filled button */}
-          <button className="px-5 py-2 bg-[#e66d31] text-white rounded-md hover:bg-orange-600 transition-colors duration-200 font-medium shadow-sm">
+          <button className="px-5 py-2 bg-[#e66d31] text-white rounded-md hover:bg-orange-600 transition-colors duration-200 font-medium shadow-sm cursor-pointer">
             Post a Job
           </button>
 

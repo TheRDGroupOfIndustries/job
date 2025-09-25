@@ -51,7 +51,7 @@ export function middleware(req: NextRequest) {
     } else if (role === "user") {
       return NextResponse.redirect(new URL("/", req.url));
     } else {
-      // return NextResponse.redirect(new URL("/auth/login", req.url));
+      return NextResponse.redirect(new URL("/auth/login", req.url));
     }
   }
 
@@ -64,5 +64,6 @@ export const config = {
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
+    // "/",
   ],
 };

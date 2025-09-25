@@ -26,6 +26,8 @@ import { useRouter } from "next/navigation";
 import BtnLoader from "./BtnLoader";
 import { useDispatch } from "react-redux";
 import { authLogin, loginUser } from "@/redux/features/authSlice";
+import { X } from "lucide-react";
+
 
 interface LoginFormData {
   email: string;
@@ -73,14 +75,22 @@ export default function Login() {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg rounded-2xl border-none">
-      <CardHeader>
+    <Card className="w-full max-w-md shadow-lg rounded-2xl border-none relative">
+      <CardHeader className="">
         <CardTitle className="text-2xl text-center">
           Login to your account
         </CardTitle>
         <CardDescription className="text-center">
           Enter your email below to login to your account.
         </CardDescription>
+
+        <Button
+          className="text-black hover:bg-orange-600 rounded-full p-2 cursor-pointer absolute top-4 right-4 bg-background"
+          variant="ghost"
+          onClick={()=> router.push('/')}
+        >
+          <X />
+        </Button>
       </CardHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <CardContent className="grid gap-4">
