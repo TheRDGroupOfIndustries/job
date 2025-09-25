@@ -32,7 +32,7 @@ export async function PUT(
     const immutableFields: (keyof IJob)[] = [
       "createdBy",
       "designation",
-      "employmentType",
+      // "employmentType",  //this is the changes
     ];
 
     immutableFields.forEach((field) => {
