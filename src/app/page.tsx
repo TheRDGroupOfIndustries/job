@@ -5,11 +5,22 @@ import Footer from "@/components/user/Footer";
 import Image from "next/image";
 import HowItWorks from "@/components/user/HowItWorks";
 import FeaturedJobs from "@/components/user/FeaturedJobs";
+import Navbar from "@/components/user/NavBar";
+import HeroSection from "@/components/user/HeroSection";
+import StatsSection from "@/components/user/StatsSection";
+import FeaturesSection from "@/components/user/FeaturesSection";
+import FeaturedJobsSection from "@/components/user/FeaturedJobsSection";
 
 export default function Home() {
   return (
     <>
       <main className="">
+        <Navbar/>
+        <HeroSection/>
+        <StatsSection/>
+        <FeaturesSection />
+        {/* <FeaturedJobsSection /> */}
+
         <FeaturedJobs/>
         <HowItWorks />
         <Testimonials />
