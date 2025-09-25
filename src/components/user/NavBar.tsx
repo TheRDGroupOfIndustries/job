@@ -9,7 +9,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="text-2xl font-bold text-gray-800">
+          <Link href="/" className="text-2xl font-bold text-orange-600">
             Alpran HR Services
           </Link>
         </div>
@@ -28,12 +28,14 @@ const Navbar = () => {
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             Contact
           </Link>
-          <button className="px-5 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+          <button className="px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium">
             Sign In
           </button>
-          <button className="px-5 py-2 bg-[#FF7F3F] text-white rounded-full hover:bg-orange-600 transition-colors duration-200">
+          {/* Post a Job filled button */}
+          <button className="px-5 py-2 bg-[#e66d31] text-white rounded-md hover:bg-orange-600 transition-colors duration-200 font-medium shadow-sm">
             Post a Job
           </button>
+
         </div>
 
         {/* Mobile menu button (you might want to add a hamburger icon and dropdown) */}
