@@ -89,13 +89,15 @@ export default function Sidebar() {
     if (userData) {
       dispatch(fetchMails() as any);
 
-      userData.role === "admin"
-        ? setOptions(AdminOptions)
-        : userData.role === "employee"
-        ? setOptions(EmployeeOptions)
-        : userData.role === "user"
-        ? setOptions(UserOptions)
-        : setOptions([]);
+      if (userData.role === "admin") {
+        setOptions(AdminOptions);
+      } else if (userData.role === "employee") {
+        setOptions(EmployeeOptions);
+      } else if (userData.role === "user") {
+        setOptions(UserOptions);
+      } else {
+        setOptions([]);
+      }
     }
   }, [userData]);
 

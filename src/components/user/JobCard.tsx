@@ -1,6 +1,7 @@
 // components/JobCard.jsx
 import React from "react";
 import { Heart, MapPin, Briefcase, DollarSign, Clock } from "lucide-react";
+import Image from "next/image";
 
 interface Job {
   title: string;
@@ -57,7 +58,9 @@ const JobCard = ({ job }: { job: Job }) => {
       {/* Company Info & Save Icon */}
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start">
-          <img
+          <Image
+            width={40}
+            height={40}
             src={logoUrl}
             alt={`${company} logo`}
             className="w-12 h-12 rounded-lg object-cover mr-3"

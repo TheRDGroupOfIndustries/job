@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock } from 'lucide-react';
+import Image from 'next/image';
 
 interface Article {
   imageUrl: string;
@@ -18,9 +19,10 @@ const ArticleCard = ({ article }: { article: Article }) => {
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:scale-[1.02] group">
       {/* Image Container with Category Badge */}
       <div className="relative h-48 overflow-hidden">
-        <img
+        <Image
           src={imageUrl}
           alt={title}
+          layout="fill"
           className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
         />
         <div className="absolute top-4 left-4 bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">

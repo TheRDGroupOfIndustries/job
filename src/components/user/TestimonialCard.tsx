@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 interface Review {
@@ -25,7 +26,9 @@ const TestimonialCard = ({ review }: { review: Review }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-xl h-full flex flex-col transition-shadow duration-300 text-left">
       <div className="flex items-center mb-4">
-        <img
+        <Image
+          width={64}
+          height={64}
           src={avatarUrl}
           alt={name}
           className="w-16 h-16 rounded-full object-cover mr-4"
@@ -40,7 +43,7 @@ const TestimonialCard = ({ review }: { review: Review }) => {
       {renderStars()}
 
       <p className="text-gray-700 leading-relaxed italic flex-grow">
-        "{quote}"
+        {`"${quote}"`}
       </p>
     </div>
   );
