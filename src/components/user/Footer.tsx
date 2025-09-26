@@ -21,9 +21,9 @@ const Footer = () => {
     }
   return (
     <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700 ">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700">
         {/* Company Info Section */}
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start text-center sm:text-left">
           <h3 className="text-primary text-2xl font-bold mb-4">
             Alpran HR Services
           </h3>
@@ -31,8 +31,7 @@ const Footer = () => {
             Connecting talented professionals with amazing opportunities. Your
             next career move starts here.
           </p>
-          <div className="flex space-x-4">
-            {/* Facebook Icon */}
+          <div className="flex space-x-4 justify-center sm:justify-start">
             <Link
               href="/"
               aria-label="Facebook"
@@ -40,7 +39,6 @@ const Footer = () => {
             >
               <Facebook size={20} />
             </Link>
-            {/* Twitter Icon */}
             <Link
               href="/"
               aria-label="Twitter"
@@ -48,7 +46,6 @@ const Footer = () => {
             >
               <Twitter size={20} />
             </Link>
-            {/* LinkedIn Icon */}
             <Link
               href="/"
               aria-label="LinkedIn"
@@ -56,7 +53,6 @@ const Footer = () => {
             >
               <Linkedin size={20} />
             </Link>
-            {/* Instagram Icon */}
             <Link
               href="/"
               aria-label="Instagram"
@@ -68,9 +64,9 @@ const Footer = () => {
         </div>
 
         {/* Quick Links Section */}
-        <div className="flex flex-col items-center w-full">
+        <div className="flex flex-col items-center sm:items-start">
           <h4 className="text-white text-lg font-semibold mb-4">Quick Links</h4>
-          <ul className="space-y-3"> 
+          <ul className="space-y-3 text-center sm:text-left">
             <li>
               <Link
                 href="/"
@@ -80,39 +76,39 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                href="/candidates"
                 className="text-gray-400 hover:text-white transition-colors"
               >
-                For Employers
-              </a>
+                Candidates
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                href="/about"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                href="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Contact
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
 
         {/* Support Section */}
-        <div>
+        <div className="flex flex-col items-center sm:items-start">
           <h4 className="text-white text-lg font-semibold mb-4">Support</h4>
-          <ul className="space-y-3"> 
+          <ul className="space-y-3 text-center sm:text-left">
             <li>
               <Link
-                href="/"
+                href="/contact"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Help Center
@@ -120,7 +116,7 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="/"
+                href="/privacy-policy"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Privacy Policy
@@ -128,7 +124,7 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="/"
+                href="/t&c"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Terms of Service
@@ -136,7 +132,7 @@ const Footer = () => {
             </li>
             <li>
               <Link
-                href="/"
+                href="/cookie-policy"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 Cookie Policy
@@ -147,18 +143,17 @@ const Footer = () => {
       </div>
 
       {/* Copyright Section */}
-      <div className="max-w-7xl mx-auto pt-6 text-center md:text-left text-gray-500 text-sm">
+      <div className="max-w-7xl mx-auto pt-6 text-center text-gray-500 text-sm">
         <p>&copy; 2024 Alpran HR Services. All rights reserved.</p>
       </div>
 
       {/* "Talk with Us" Button (Floating) */}
       <div className="fixed bottom-6 right-6 z-50">
-        <button className="bg-primary text-white font-medium py-3 px-6 rounded-full shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2">
-          {/* Using MessageSquare icon from Lucide React */}
-          <MessageSquare size={20} />
-          <span>Talk with Us</span>
-        </button>
-      </div>
+  <button className="bg-primary text-white font-medium py-2 px-4 rounded-full shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]">
+    <MessageSquare size={16} />
+    <span>Talk with Us</span>
+  </button>
+</div>
     </footer>
   );
 };
