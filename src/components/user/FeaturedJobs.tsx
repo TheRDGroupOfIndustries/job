@@ -1,126 +1,148 @@
 // components/FeaturedJobs.jsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import JobCard from "./JobCard";
 import { ArrowRight } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchJobs } from "@/redux/features/jobSlice";
 
 // Data Mockup - Including the filter type (Full-time, Contract, Remote, etc.)
-const ALL_JOBS = [
-  // First Row
-  {
-    id: 1,
-    title: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "San Francisco, CA",
-    type: "Full-time",
-    salary: "$120k - $150k",
-    posted: "2 days ago",
-    contractType: "Full-time", // Assuming 'white' means default
-    color: "default",
-    logoUrl: "/images/jobs/Senior-frontend-developer.jpg",
-    tags: ["React", "TypeScript", "Node.js"],
-    filterTags: ["Full-time"],
-  },
-  {
-    id: 2,
-    title: "Product Manager",
-    company: "InnovateLab",
-    location: "New York, NY",
-    type: "Full-time",
-    salary: "$130k - $160k",
-    posted: "1 day ago",
-    contractType: "Full-time",
-    color: "orange",
-    logoUrl: "/images/jobs/product-manager.jpg",
-    tags: ["Strategy", "Analytics", "Leadership"],
-    filterTags: ["Full-time"],
-  },
-  {
-    id: 3,
-    title: "UX/UI Designer",
-    company: "DesignStudio",
-    location: "Remote",
-    type: "Full-time",
-    salary: "$80k - $100k",
-    posted: "3 days ago",
-    contractType: "Contract",
-    color: "orange",
-    logoUrl: "/images/jobs/ui-ux-designer.jpg",
-    tags: ["Figma", "Prototyping", "User Research"],
-    filterTags: ["Remote", "Contract", "Full-time"],
-  },
-  // Second Row
-  {
-    id: 4,
-    title: "Data Scientist",
-    company: "DataFlow Analytics",
-    location: "Austin, TX",
-    type: "Full-time",
-    salary: "$110k - $140k",
-    posted: "1 week ago",
-    contractType: "Full-time",
-    color: "orange",
-    logoUrl: "/images/jobs/data-scientist.jpg",
-    tags: ["Python", "Machine Learning", "SQL"],
-    filterTags: ["Full-time"],
-  },
-  {
-    id: 5,
-    title: "DevOps Engineer",
-    company: "CloudTech Solutions",
-    location: "Seattle, WA",
-    type: "Full-time",
-    salary: "$125k - $155k",
-    posted: "4 days ago",
-    contractType: "Full-time",
-    color: "orange",
-    logoUrl: "/images/jobs/devops-engg.jpg",
-    tags: ["AWS", "Docker", "Kubernetes"],
-    filterTags: ["Full-time"],
-  },
-  {
-    id: 6,
-    title: "Marketing Director",
-    company: "Growthtrackers",
-    location: "Los Angeles, CA",
-    type: "Full-time",
-    salary: "$140k - $170k",
-    posted: "5 days ago",
-    contractType: "Full-time",
-    color: "orange",
-    logoUrl: "/images/jobs/marketing-director.jpg",
-    tags: ["Digital Marketing", "Growth", "Analytics"],
-    filterTags: ["Full-time"],
-  },
-  // Additional Job for "Part-time" and "Contract" filtering demonstration
-  {
-    id: 7,
-    title: "Junior Writer",
-    company: "BlogCorp",
-    location: "Remote",
-    type: "Part-time",
-    salary: "$25/hr - $35/hr",
-    posted: "1 day ago",
-    contractType: "Part-time",
-    color: "orange",
-    logoUrl: "/images/jobs/product-manager.jpg",
-    tags: ["Writing", "Editing"],
-    filterTags: ["Part-time", "Remote"],
-  },
-];
+// const ALL_JOBS = [
+//   // First Row
+//   {
+//     id: 1,
+//     title: "Senior Frontend Developer",
+//     company: "TechCorp Inc.",
+//     location: "San Francisco, CA",
+//     type: "Full-time",
+//     salary: "$120k - $150k",
+//     posted: "2 days ago",
+//     contractType: "Full-time", // Assuming 'white' means default
+//     color: "default",
+//     logoUrl: "/images/jobs/Senior-frontend-developer.jpg",
+//     tags: ["React", "TypeScript", "Node.js"],
+//     filterTags: ["Full-time"],
+//   },
+//   {
+//     id: 2,
+//     title: "Product Manager",
+//     company: "InnovateLab",
+//     location: "New York, NY",
+//     type: "Full-time",
+//     salary: "$130k - $160k",
+//     posted: "1 day ago",
+//     contractType: "Full-time",
+//     color: "orange",
+//     logoUrl: "/images/jobs/product-manager.jpg",
+//     tags: ["Strategy", "Analytics", "Leadership"],
+//     filterTags: ["Full-time"],
+//   },
+//   {
+//     id: 3,
+//     title: "UX/UI Designer",
+//     company: "DesignStudio",
+//     location: "Remote",
+//     type: "Full-time",
+//     salary: "$80k - $100k",
+//     posted: "3 days ago",
+//     contractType: "Contract",
+//     color: "orange",
+//     logoUrl: "/images/jobs/ui-ux-designer.jpg",
+//     tags: ["Figma", "Prototyping", "User Research"],
+//     filterTags: ["Remote", "Contract", "Full-time"],
+//   },
+//   // Second Row
+//   {
+//     id: 4,
+//     title: "Data Scientist",
+//     company: "DataFlow Analytics",
+//     location: "Austin, TX",
+//     type: "Full-time",
+//     salary: "$110k - $140k",
+//     posted: "1 week ago",
+//     contractType: "Full-time",
+//     color: "orange",
+//     logoUrl: "/images/jobs/data-scientist.jpg",
+//     tags: ["Python", "Machine Learning", "SQL"],
+//     filterTags: ["Full-time"],
+//   },
+//   {
+//     id: 5,
+//     title: "DevOps Engineer",
+//     company: "CloudTech Solutions",
+//     location: "Seattle, WA",
+//     type: "Full-time",
+//     salary: "$125k - $155k",
+//     posted: "4 days ago",
+//     contractType: "Full-time",
+//     color: "orange",
+//     logoUrl: "/images/jobs/devops-engg.jpg",
+//     tags: ["AWS", "Docker", "Kubernetes"],
+//     filterTags: ["Full-time"],
+//   },
+//   {
+//     id: 6,
+//     title: "Marketing Director",
+//     company: "Growthtrackers",
+//     location: "Los Angeles, CA",
+//     type: "Full-time",
+//     salary: "$140k - $170k",
+//     posted: "5 days ago",
+//     contractType: "Full-time",
+//     color: "orange",
+//     logoUrl: "/images/jobs/marketing-director.jpg",
+//     tags: ["Digital Marketing", "Growth", "Analytics"],
+//     filterTags: ["Full-time"],
+//   },
+//   // Additional Job for "Part-time" and "Contract" filtering demonstration
+//   {
+//     id: 7,
+//     title: "Junior Writer",
+//     company: "BlogCorp",
+//     location: "Remote",
+//     type: "Part-time",
+//     salary: "$25/hr - $35/hr",
+//     posted: "1 day ago",
+//     contractType: "Part-time",
+//     color: "orange",
+//     logoUrl: "/images/jobs/product-manager.jpg",
+//     tags: ["Writing", "Editing"],
+//     filterTags: ["Part-time", "Remote"],
+//   },
+// ];
 
 const FILTER_TABS = ["All", "Full-time", "Part-time", "Contract", "Remote"];
 
 const FeaturedJobs = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+ const dispatch = useDispatch();
+   const { jobs } = useSelector((state: RootState) => state.job);
+  const [loading, setLoading] = useState(false);
+    const fetchAllJobs = async () => {
+      setLoading(true);
+      // fetch jobs from backend
+      dispatch(fetchJobs() as any)
+        .unwrap()
+        .then((data: any) => {
+          console.log("JOBS DATA: ", data);
+        })
+        .catch((err: any) => console.log(err))
+        .finally(() => setLoading(false));
+    };
+  
+    // fetching jobs from backend
+    useEffect(() => {
+      fetchAllJobs();
+    }, []);
 
-  const filteredJobs = ALL_JOBS.filter((job) => {
+  const filteredJobs = jobs.filter((job) => {
     if (activeFilter === "All") {
       return true;
     }
     // Check if the job's filterTags array includes the active filter
-    return job.filterTags.includes(activeFilter);
+    return job.employmentType.includes(activeFilter);
   });
 
   return (
@@ -154,7 +176,7 @@ const FeaturedJobs = () => {
         {/* Job Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-16">
           {filteredJobs.slice(0, 6).map((job) => (
-            <JobCard key={job.id} job={job} />
+            <JobCard key={job._id} job={job as any} />
           ))}
         </div>
 

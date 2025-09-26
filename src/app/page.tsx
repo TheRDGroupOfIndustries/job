@@ -12,9 +12,7 @@ import FeaturedJobs from "@/components/user/FeaturedJobs";
 
 export default function Home() {
   return (
-    <>
       <main className="">
-        <Navbar/>
         <HeroSection/>
         <StatsSection/>
         <FeaturesSection />
@@ -24,7 +22,5 @@ export default function Home() {
         <CareerInsights />
         <CtaBanner />
       </main>
-      <Footer />
-    </>
   );
 }

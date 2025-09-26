@@ -9,6 +9,8 @@ import {
 import "../styles/globals.css";
 import { Providers } from "@/redux/Providers";
 import { Toaster } from "react-hot-toast";
+import Navbar from "@/components/user/NavBar";
+import Footer from "@/components/user/Footer";
 
 const dmMono = DM_Mono({
   weight: ["400", "500"],
@@ -43,9 +45,14 @@ export default function RootLayout({
       <body
         className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
       >
-        <Providers>{children}</Providers>
-        <Toaster
-        />
+        <Providers>
+          <>
+            <Navbar />
+            {children}
+            <Footer />
+          </>
+        </Providers>
+        <Toaster />
       </body>
     </html>
   );

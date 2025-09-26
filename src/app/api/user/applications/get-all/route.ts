@@ -6,30 +6,35 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const user = authenticate(req as any);
+    // const user = authenticate(req as any);
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (!user) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     let applications;
 
-    if (user.role === "admin") {
-      applications = await Application.find()
+    // if (user.role === "admin") {
+    //   applications = await Application.find()
+    //     .populate("appliedBy", "name email")
+    //     .populate("jobId", "designation jobDescription")
+    //     .sort({ createdAt: -1 });
+    // } else if (user.role === "employee") {
+    //   applications = await Application.find()
+    //     .populate("appliedBy", "name email")
+    //     .populate("jobId", "designation jobDescription")
+    //     .sort({ createdAt: -1 });
+    // } else {
+    //   return NextResponse.json(
+    //     { error: "You are not allowed to view applications" },
+    //     { status: 403 }
+    //   );
+    // } 
+
+    applications = await Application.find()
         .populate("appliedBy", "name email")
         .populate("jobId", "designation jobDescription")
         .sort({ createdAt: -1 });
-    } else if (user.role === "employee") {
-      applications = await Application.find()
-        .populate("appliedBy", "name email")
-        .populate("jobId", "designation jobDescription")
-        .sort({ createdAt: -1 });
-    } else {
-      return NextResponse.json(
-        { error: "You are not allowed to view applications" },
-        { status: 403 }
-      );
-    } 
 
     return NextResponse.json(
       { message: "Applications fetched successfully", applications },

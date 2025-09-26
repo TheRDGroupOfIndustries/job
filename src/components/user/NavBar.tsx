@@ -2,10 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const router = useRouter()
+  const pathname = usePathname()
+  // console.log(pathname)
+
+  if( pathname.includes("sanity-studio")){
+    return null
+  }
   return (
     <nav className="fixed w-full z-50 bg-white shadow-sm py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -18,13 +24,13 @@ const Navbar = () => {
 
         {/* Navigation Links (Desktop) */}
         <div className="hidden md:flex space-x-8 items-center">
-          <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
+          <Link href="browse-jobs" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             Browse Jobs
           </Link>
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             For Employers
           </Link>
-          <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
+          <Link href="/blogs" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">
             Blogs
           </Link>
           <Link href="#" className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200">

@@ -10,8 +10,15 @@ import {
   Instagram,
   MessageSquare,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
+    const pathname = usePathname()
+    // console.log(pathname)
+  
+    if( pathname.includes("sanity-studio")){
+      return null
+    }
   return (
     <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700 ">
