@@ -10,6 +10,8 @@ import ComposeMailModal from "./ComposeMailModal";
 import { usePathname } from "next/navigation";
 import TaskForm from "./TaskForm";
 import ApplicationForm from "./ApplicationForm";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +19,7 @@ export default function Header() {
   const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
   const [openApplicationForm, setOpenApplicationForm] = useState(false)
   const { mails, filteredMails } = useSelector((state: RootState) => state.mail);
+  const { userData } = useSelector((state: RootState) => state.auth)
   const dispatch = useDispatch();
   const pathname = usePathname();
 
@@ -35,7 +38,19 @@ export default function Header() {
 
   return (
     <header className="h-[80px] bg-section rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
-      <h1 className="text-2xl font-bold mr-10">LOGO</h1>
+      <div className="flex-shrink-0 flex items-center space-x-2">
+          <Link href={`/${userData?.role}`} className="flex items-center">
+            <Image
+              src="/images/alplogo.webp"
+              alt="logo"
+              width={40}
+              height={40}
+            />
+            <span className="text-2xl font-bold text-orange-600 ml-2">
+              Alpran HR Services
+            </span>
+          </Link>
+        </div>
       {pathname.includes("send-mails") && (
         <>
           <div className="flex flex-1 items-center">

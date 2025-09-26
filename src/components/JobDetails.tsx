@@ -63,13 +63,13 @@ export default function JobDetails({ jobId }: { jobId: string }) {
   return (
     <>
       <div className="sticky top-0 pl-20 pr-10 pt-10 pb-4 flex items-center justify-between z-10">
-         <Button
-            variant={"ghost"}
-            onClick={() => router.back()}
-            className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
-          >
-            <ChevronLeft className="w-8 h-8 " />
-          </Button>
+        <Button
+          variant={"ghost"}
+          onClick={() => router.back()}
+          className="rounded-full cursor-pointer bg-background hover:bg-background/80 transition"
+        >
+          <ChevronLeft className="w-8 h-8 " />
+        </Button>
         <div className="flex items-center gap-5">
           <Button
             className="text-card cursor-pointer"
@@ -80,13 +80,22 @@ export default function JobDetails({ jobId }: { jobId: string }) {
           >
             Edit
           </Button>
-          <Button className="text-card cursor-pointer" onClick={() => handleDelete(job._id)}>
+          <Button
+            className="text-card cursor-pointer"
+            onClick={() => handleDelete(job._id)}
+          >
             Delete
           </Button>
         </div>
       </div>
+
       <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto pl-20 pr-10 mb-10 custom-scrollbar">
-        <p className="text-sm text-secondary">{job._id}</p>
+       
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 mt-6">
+          <div className="space-y-4">
+            <div className="">
+               <p className="text-sm text-secondary">{job._id}</p>
         <div className="flex justify-between items-center text-3xl font-bold text-gray-800">
           <div className="flex items-center gap-5">
             <span>{job.designation}</span>
@@ -106,9 +115,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             Work Mode: <span className="capitalize">{job.workMode}</span>
           </p>
         </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 mt-6">
-          <div className="space-y-4">
+            </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-700">
                 Job Description
@@ -186,7 +193,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             <div className=" text-gray-500">
               <p>Vacancy: {job.vacancy}</p>
               <p>
-                Hiring for: 
+                Hiring for:
                 <span className="text-purple-600 font-medium">
                   {Object.entries(job.diversityHiring as any)
                     .filter(([, value]) => value)
@@ -205,6 +212,8 @@ export default function JobDetails({ jobId }: { jobId: string }) {
         </div>
         <Separator className="my-6" />
       </div>
+
+
       {isOpenForm && updateId && (
         <JobForm
           mode="update"

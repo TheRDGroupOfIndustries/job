@@ -156,7 +156,7 @@ export default function Sidebar() {
             </Badge>
           </button>
 
-          <button
+          {/* <button
             type="button"
             onClick={() => router.push(`/${userData?.role}/send-mails`)}
             className="flex items-center justify-center p-3 rounded-full border border-secondary relative focus:outline-none"
@@ -166,7 +166,7 @@ export default function Sidebar() {
             <Badge className="rounded-full bg-primary text-card absolute -top-2 -right-2 shadow-badge">
               {mails?.length ?? 0}
             </Badge>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -205,7 +205,7 @@ export default function Sidebar() {
         </Badge>
         <div className="w-full h-full space-y-4">
           {/* Notification Toggle */}
-          <Label
+          {/* <Label
             htmlFor="notification"
             className="flex items-center gap-2 w-full justify-between cursor-pointer px-3"
           >
@@ -216,7 +216,7 @@ export default function Sidebar() {
               onCheckedChange={(val: boolean) => setNotificationsEnabled(val)}
               className="shadow-md"
             />
-          </Label>
+          </Label> */}
 
           <Button
             type="button"

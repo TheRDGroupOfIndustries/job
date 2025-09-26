@@ -129,10 +129,10 @@ const Blogs: React.FC = () => {
         </div>
 
         {/* Load More Button */}
-        <button className="inline-flex items-center text-[#FF7F3F] border-2 border-[#FF7F3F] font-semibold py-3 px-8 rounded-lg transition-colors hover:bg-[#FF7F3F] hover:text-white">
+        {/* <button className="inline-flex items-center text-[#FF7F3F] border-2 border-[#FF7F3F] font-semibold py-3 px-8 rounded-lg transition-colors hover:bg-[#FF7F3F] hover:text-white">
           Load More Articles
           <ArrowRight size={20} className="ml-3" />
-        </button>
+        </button> */}
       </div>
     </div>
   );

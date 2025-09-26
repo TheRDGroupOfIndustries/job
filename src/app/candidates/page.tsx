@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/user/NavBar';
 import Footer from '@/components/user/Footer';
 
@@ -13,6 +14,7 @@ type ResumeApplication = {
   skills: string[];
   location: string;
   experience: string;
+  jobId: string;
   resumeFileName: string;
 };
 
@@ -24,6 +26,24 @@ const statusStyles = {
   'Offer Extended': 'bg-blue-100 text-blue-800',
 };
 
+// 🔄 Convert backend status -> frontend status
+function mapStatus(status: string): ResumeApplication['status'] {
+  switch (status.toLowerCase()) {
+    case 'submitted':
+      return 'Submitted';
+    case 'under_review':
+      return 'Under Review';
+    case 'interview':
+      return 'Interview Scheduled';
+    case 'rejected':
+      return 'Rejected';
+    case 'accepted':
+      return 'Offer Extended';
+    default:
+      return 'Submitted';
+  }
+}
+
 export default function CandidateApplicationsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [applications, setApplications] = useState<ResumeApplication[]>([]);
@@ -34,8 +54,24 @@ export default function CandidateApplicationsPage() {
       try {
         const res = await fetch('http://localhost:3000/api/user/applications/get-all');
         if (!res.ok) throw new Error('Failed to fetch applications');
-        const data: ResumeApplication[] = await res.json();
-        setApplications(data);
+        const data = await res.json();
+        console.log('API Data:', data);
+
+        // 🛠 Map backend fields -> frontend ResumeApplication
+        const mappedApps: ResumeApplication[] = data.applications.map((app: any) => ({
+          id: app._id,
+          jobTitle: app.jobId?.designation || app.jobDesignation || 'Not specified',
+          company: app.appliedBy?.name || 'Unknown Company',
+          appliedDate: new Date(app.createdAt).toLocaleDateString(),
+          status: mapStatus(app.status),
+          skills: [], // update if backend provides skills
+          location: 'Remote / On-site', // update if backend provides location
+          experience: 'N/A', // update if backend provides
+          jobId: app.jobId?._id || '',
+          resumeFileName: app.resume,
+        }));
+
+        setApplications(mappedApps);
       } catch (err) {
         console.error(err);
       } finally {
@@ -46,7 +82,7 @@ export default function CandidateApplicationsPage() {
   }, []);
 
   const filteredApps = useMemo(() => {
-    return applications.filter(
+    return applications?.filter(
       (app) =>
         app.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -54,11 +90,6 @@ export default function CandidateApplicationsPage() {
         app.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, applications]);
-
-  const handleViewClick = (id: string) => {
-    // Replace with real navigation or modal display logic
-    alert(`View details for application ID: ${id}`);
-  };
 
   return (
     <>
@@ -117,21 +148,32 @@ export default function CandidateApplicationsPage() {
                     {app.status}
                   </span>
 
-                  <button
-                    onClick={() => handleViewClick(app.id)}
-                    className="w-full px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium shadow-sm"
+                  <Link
+                    href={`/browse-jobs/${app.jobId}`}
+                    className="w-full px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium shadow-sm text-center"
                     aria-label={`View details for ${app.jobTitle} application`}
                   >
                     View
-                  </button>
+                  </Link>
+
+                  {/* 📄 Download Resume */}
+                  {app.resumeFileName && (
+                    <a
+                      href={app.resumeFileName}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-medium shadow-sm text-center"
+                    >
+                      Download Resume
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         )}
       </main>
-
-      <Footer />
     </>
   );
 }
