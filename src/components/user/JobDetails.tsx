@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { fetchJobs } from "@/redux/features/jobSlice";
 import JobApplicationForm from "./JobApplicationForm";
+import Image from "next/image";
 
 interface Job {
   _id: string;
@@ -178,7 +179,9 @@ const JobDetails: React.FC<{ id: string }> = ({ id }) => {
         <div className="bg-white p-6 md:p-8 rounded-xl shadow-md border border-gray-200 flex flex-col lg:flex-row items-start justify-between gap-6">
           <div className="flex flex-col md:flex-row items-center md:items-start text-center lg:text-left gap-4 md:gap-6 flex-grow">
             {/* Company Logo */}
-            <img
+            <Image
+              height={50}
+              width={50}
               src={job?.logoUrl || "/images/jobs/devops-engg.jpg"}
               alt={`${companyName} logo`}
               className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border border-gray-100 p-1 bg-white flex-shrink-0"

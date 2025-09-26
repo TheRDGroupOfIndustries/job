@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Image from "next/image";
 import { Search, Briefcase } from "lucide-react";
 import JobSearchBar from "./JobSearchBar";
@@ -48,7 +48,9 @@ const HeroSection = () => {
 
         {/* Job Search Bar */}
       </div>
-        <JobSearchBar />
+      <Suspense fallback={<div>Loading jobs...</div>}>
+         <JobSearchBar />
+      </Suspense>
     </section>
   );
 };

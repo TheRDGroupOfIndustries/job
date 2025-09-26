@@ -6,6 +6,8 @@ import { PortableText } from '@portabletext/react';
 import { POST_QUERY } from "@/lib/sanityQueries";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
+import Image from "next/image";
+import Link from "next/link";
 
 // --- UPDATED TYPESCRIPT INTERFACES START ---
 
@@ -141,8 +143,9 @@ const BlogDetails = ({ slug }: { slug: string }) => {
             {/* Header / Hero Image */}
             <div className="relative h-96 overflow-hidden">
                 {imageUrl && (
-                    <img
-                        src={urlFor(imageUrl) as any}
+                    <Image
+                        layout="fill"
+                        src={urlFor(imageUrl).url()}
                         alt={mainImage?.alt || title} 
                         className="w-full h-full object-cover brightness-75"
                     />
@@ -161,13 +164,13 @@ const BlogDetails = ({ slug }: { slug: string }) => {
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
                 {/* Back Link */}
-                <a
+                <Link
                     href="/blogs" 
                     className="inline-flex items-center text-[#FF7F3F] font-semibold transition-colors hover:text-orange-600 mb-8"
                 >
                     <ArrowLeft size={20} className="mr-2" />
                     Back to all articles
-                </a>
+                </Link>
 
                 {/* Metadata */}
                 <div className="flex flex-wrap items-center text-gray-600 text-sm md:text-base border-b border-gray-200 pb-5 mb-10">

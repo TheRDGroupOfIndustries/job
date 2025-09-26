@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     // }
 
-    let applications;
+    // let applications;
 
     // if (user.role === "admin") {
     //   applications = await Application.find()
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     //   );
     // } 
 
-    applications = await Application.find()
+    const applications = await Application.find()
         .populate("appliedBy", "name email")
         .populate("jobId", "designation jobDescription")
         .sort({ createdAt: -1 });

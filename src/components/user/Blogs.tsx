@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Clock, User, ArrowRight } from "lucide-react";
 import { POSTS_QUERY } from "@/lib/sanityQueries";
 import { client } from "@/sanity/lib/client";
+import Link from "next/link";
+import Image from "next/image";
 
 type Category = {
   title: string;
@@ -38,7 +40,8 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
     <div className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full">
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
-        <img
+        <Image
+          layout="fill"
           src={post.mainImage?.asset?.url || "/images/placeholder-image.jpg"}
           alt={post.title}
           className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
@@ -73,13 +76,13 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
 
         {/* Read More */}
         <div>
-          <a
+          <Link
             href={postUrl}
             className="inline-flex items-center text-[#FF7F3F] font-semibold transition-colors hover:text-orange-600"
           >
             Read Article
             <ArrowRight size={18} className="ml-2" />
-          </a>
+          </Link>
         </div>
       </div>
     </div>

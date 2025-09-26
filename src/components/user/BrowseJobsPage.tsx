@@ -1,7 +1,7 @@
 // app/browse-jobs/page.jsx (or components/BrowseJobsPage.jsx)
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import JobSearchBar from "./JobSearchBar";
@@ -42,52 +42,60 @@ const BrowseJobsPage = () => {
   }, []);
 
   // Helper function to map employment type to filter tags
-  const mapEmploymentTypeToFilter = (employmentType: string, workMode: string) => {
+  const mapEmploymentTypeToFilter = (
+    employmentType: string,
+    workMode: string
+  ) => {
     const filters = [];
-    
+
     // Map employment type
     switch (employmentType?.toLowerCase()) {
-      case 'full-time':
-        filters.push('Full-time');
+      case "full-time":
+        filters.push("Full-time");
         break;
-      case 'part-time':
-        filters.push('Part-time');
+      case "part-time":
+        filters.push("Part-time");
         break;
-      case 'contract':
-        filters.push('Contract');
+      case "contract":
+        filters.push("Contract");
         break;
     }
-    
+
     // Add remote if work mode is remote
-    if (workMode?.toLowerCase() === 'remote') {
-      filters.push('Remote');
+    if (workMode?.toLowerCase() === "remote") {
+      filters.push("Remote");
     }
-    
+
     return filters;
   };
 
   // 1. Filter by tabs (All, Full-time, etc.)
   const tabFilteredJobs = jobs.filter((job) => {
     if (activeFilter === "All") return true;
-    
-    const jobFilters = mapEmploymentTypeToFilter(job.employmentType, job.workMode);
+
+    const jobFilters = mapEmploymentTypeToFilter(
+      job.employmentType,
+      job.workMode
+    );
     return jobFilters.includes(activeFilter);
   });
 
   // 2. Further filter by URL search parameters
   const finalFilteredJobs = tabFilteredJobs.filter((job) => {
-    const jobTitleLower = job.designation?.toLowerCase() || '';
-    const jobLocationLower = job.location?.[0]?.toLowerCase() || '';
-    const jobTypeLower = job.employmentType?.toLowerCase() || '';
+    const jobTitleLower = job.designation?.toLowerCase() || "";
+    const jobLocationLower = job.location?.[0]?.toLowerCase() || "";
+    const jobTypeLower = job.employmentType?.toLowerCase() || "";
 
     // Filter by title/keyword (search in designation)
     const matchesTitle = !searchTitle || jobTitleLower.includes(searchTitle);
 
     // Filter by location (search in first location)
-    const matchesLocation = !searchLocation || jobLocationLower.includes(searchLocation);
+    const matchesLocation =
+      !searchLocation || jobLocationLower.includes(searchLocation);
 
     // Filter by type (employment type)
-    const matchesType = !searchType || searchType === "all" || jobTypeLower === searchType;
+    const matchesType =
+      !searchType || searchType === "all" || jobTypeLower === searchType;
 
     return matchesTitle && matchesLocation && matchesType;
   });
@@ -115,7 +123,9 @@ const BrowseJobsPage = () => {
         </div>
         {/* 2. Job Search Form (Floating over the hero section) */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 ">
-          <JobSearchBar />
+          <Suspense fallback={<div>Loading jobs...</div>}>
+            <JobSearchBar />
+          </Suspense>
         </div>
       </div>
 
@@ -155,7 +165,9 @@ const BrowseJobsPage = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No jobs found matching your criteria.</p>
+              <p className="text-gray-500 text-lg">
+                No jobs found matching your criteria.
+              </p>
             </div>
           )}
 

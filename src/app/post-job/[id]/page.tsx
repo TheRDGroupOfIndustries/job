@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Navbar from '@/components/user/NavBar';
 import Footer from '@/components/user/Footer';
+import Image from 'next/image';
 
 type Job = {
   id: string;
@@ -236,7 +237,9 @@ export default function PostJobPage() {
             >
               <div className="flex-grow min-w-[250px]">
                 <div className="flex items-center mb-2">
-                  <img
+                  <Image
+                    height={40}
+                    width={40}
                     src={job.logoUrl}
                     alt={`${job.company} logo`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
@@ -311,7 +314,9 @@ export default function PostJobPage() {
               &times;
             </button>
             <div className="flex items-center mb-4">
-              <img
+              <Image
+                height={40}
+                width={40}
                 src={modalJob.logoUrl}
                 alt={`${modalJob.company} logo`}
                 className="w-10 h-10 rounded-full mr-3 object-cover"
