@@ -3,17 +3,24 @@ import { Clock } from 'lucide-react';
 import Image from 'next/image';
 
 interface Article {
+  id: number; 
   imageUrl: string;
   category: string;
   title: string;
   summary: string;
+  content: string;
   author: string;
   date: string;
   readTime: string;
 }
 
-const ArticleCard = ({ article }: { article: Article }) => {
-  const { imageUrl, category, title, summary, author, date, readTime } = article;
+interface ArticleCardProps {
+  article: Article;
+  onReadMore?: (id: number) => void; 
+}
+
+const ArticleCard = ({ article, onReadMore }: ArticleCardProps) => {
+  const { id, imageUrl, category, title, summary, author, date, readTime } = article;
 
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-2 hover:scale-[1.02] group">
@@ -22,8 +29,9 @@ const ArticleCard = ({ article }: { article: Article }) => {
         <Image
           src={imageUrl}
           alt={title}
-          layout="fill"
-          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+          fill
+          style={{ objectFit: 'cover' }}
+          className="w-full h-full transform group-hover:scale-110 transition-transform duration-500"
         />
         <div className="absolute top-4 left-4 bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
           {category}
@@ -50,14 +58,16 @@ const ArticleCard = ({ article }: { article: Article }) => {
         </div>
 
         {/* Read More Button */}
-        <div className="w-full group-hover:bg-primary py-2 px-4 rounded-lg text-center  flex justify-center items-center border-2 border-primary transition-all duration-300">
-          <a
-            href="#" 
+        <button
+          onClick={() => onReadMore && onReadMore(id)}
+          className="w-full group-hover:bg-primary py-2 px-4 rounded-lg text-center flex justify-center items-center border-2 border-primary transition-all duration-300"
+        >
+          <span 
             className="inline-flex items-center text-primary font-semibold transition-colors group-hover:text-white"
           >
             Read More
             <svg
-              className="ml-2 w-4 h-4 transform transition-transform duration-200"
+              className="ml-2 w-4 h-4 transform transition-transform duration-200 group-hover:translate-x-1" 
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -65,8 +75,8 @@ const ArticleCard = ({ article }: { article: Article }) => {
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </a>
-        </div>
+          </span>
+        </button>
       </div>
     </div>
   );

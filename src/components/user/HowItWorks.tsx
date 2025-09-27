@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link"; 
 import { User, Search, Trophy, ArrowRight } from "lucide-react";
 
 const STEPS = [
@@ -86,11 +87,13 @@ const HowItWorks = () => {
           ))}
         </div>
 
-        {/* CTA Button */}
-        <button className="inline-flex items-center bg-primary text-white font-semibold py-3 sm:py-4 px-6 sm:px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-6 sm:mt-8 hover:scale-[1.05] transform mx-auto duration-200 cursor-pointer text-base sm:text-lg">
+        <Link 
+          href="/browse-jobs" 
+          className="inline-flex items-center bg-primary text-white font-semibold py-3 sm:py-4 px-6 sm:px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-6 sm:mt-8 hover:scale-[1.05] transform mx-auto duration-200 text-base sm:text-lg"
+        >
           Get Started Today
           <ArrowRight size={20} className="ml-3" />
-        </button>
+        </Link>
       </div>
     </section>
   );

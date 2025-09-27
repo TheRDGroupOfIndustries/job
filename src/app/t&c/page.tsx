@@ -84,7 +84,6 @@ const PrivacyPolicyPage = () => {
               </Button>
         </section>
       </div>
-      <Footer />
     </>
   );
 };

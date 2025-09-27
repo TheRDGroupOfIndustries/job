@@ -24,7 +24,7 @@ const Navbar = () => {
   };
 
   const handlePostJobClick = () => {
-    router.push("/post-job"); // Change as needed
+    router.push("/post-job"); 
   };
 
   return (
@@ -51,8 +51,9 @@ const Navbar = () => {
             href="/browse-jobs"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
-            Browse Jobs
+            Jobs
           </Link>
+          
           <Link
             href="/candidates"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
@@ -81,13 +82,7 @@ const Navbar = () => {
             onClick={() => router.push("/auth/login")}
             className="px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium cursor-pointer"
           >
-            Sign In
-          </button>
-          <button
-            onClick={handlePostJobClick}
-            className="px-5 py-2 bg-[#e66d31] text-white rounded-md hover:bg-orange-600 transition-colors duration-200 font-medium shadow-sm cursor-pointer"
-          >
-            Job Posts
+            Register
           </button>
         </div>
 
@@ -161,13 +156,7 @@ const Navbar = () => {
             onClick={() => router.push("/auth/login")}
             className="w-full text-left px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium"
           >
-            Sign In
-          </button>
-          <button
-            onClick={handlePostJobClick}
-            className="w-full px-5 py-2 bg-[#e66d31] text-white rounded-md hover:bg-orange-600 transition-colors duration-200 font-medium shadow-sm"
-          >
-            Job Posts
+            Register
           </button>
         </div>
       )}

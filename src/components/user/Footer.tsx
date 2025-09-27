@@ -2,28 +2,34 @@
 
 import Link from "next/link";
 import React from "react";
-
+import { useState, useEffect } from "react";
 import {
   Facebook,
   Twitter,
   Linkedin,
   Instagram,
   MessageSquare,
+  Award,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const Footer = () => {
-    const pathname = usePathname()
-    // console.log(pathname)
-  
+  const pathname = usePathname();
+  const [currentYear, setCurrentYear] = useState(2025);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
   if (
     pathname.includes("sanity-studio") ||
     pathname.includes("auth") ||
     pathname.includes("admin") ||
     pathname.includes("employee")
-   ) {
+  ) {
     return null;
   }
+
   return (
     <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700">
@@ -38,29 +44,37 @@ const Footer = () => {
           </p>
           <div className="flex space-x-4 justify-center sm:justify-start">
             <Link
-              href="/"
+              href="https://www.facebook.com/AlpranHRServices"
               aria-label="Facebook"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Facebook size={20} />
             </Link>
             <Link
-              href="/"
+              href="https://twitter.com/AlpranHR"
               aria-label="Twitter"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Twitter size={20} />
             </Link>
             <Link
-              href="/"
+              href="https://www.linkedin.com/company/alpran-hr-services"
               aria-label="LinkedIn"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Linkedin size={20} />
             </Link>
             <Link
-              href="/"
+              href="https://www.instagram.com/alpranhrservices"
               aria-label="Instagram"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Instagram size={20} />
@@ -149,16 +163,29 @@ const Footer = () => {
 
       {/* Copyright Section */}
       <div className="max-w-7xl mx-auto pt-6 text-center text-gray-500 text-sm">
-        <p>&copy; 2024 Alpran HR Services. All rights reserved.</p>
+        <p>&copy; {currentYear} Alpran HR Services. All rights reserved.</p>
+      </div>
+
+      <div className="fixed bottom-6 left-6 z-50">
+        <Link
+          href="/bni-link"
+          className="bg-orange-500 text-white font-medium py-3 px-6 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-3 text-sm"
+        >
+          <Award size={20} className="text-white" />
+          <span>Proud Member of BNI</span>
+        </Link>
       </div>
 
       {/* "Talk with Us" Button (Floating) */}
       <div className="fixed bottom-6 right-6 z-50">
-  <button className="bg-primary text-white font-medium py-2 px-4 rounded-full shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]">
-    <MessageSquare size={16} />
-    <span>Talk with Us</span>
-  </button>
-</div>
+        <Link
+          href="/contact"
+          className="bg-primary text-white font-medium py-2 px-4 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]"
+        >
+          <MessageSquare size={16} />
+          <span>Talk with Us</span>
+        </Link>
+      </div>
     </footer>
   );
 };

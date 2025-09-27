@@ -3,7 +3,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/user/NavBar";
-import Footer from "@/components/user/Footer";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle,
@@ -51,7 +50,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       {/* Hero Section */}
@@ -59,13 +58,9 @@ const About = () => {
         <div className="absolute inset-0 bg-gradient-hero opacity-10"></div>
         <div className="relative container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <p className="text-primary font-medium mb-4">Our Company</p>
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
-              About Alpran HR Services
+              Our Story
             </h1>
-            <p className="text-xl text-muted-foreground">
-              Delivering smart HR solutions for modern businesses
-            </p>
           </div>
         </div>
       </section>
@@ -73,13 +68,11 @@ const About = () => {
       {/* Our Story Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div>
-              <h2 className="text-3xl font-heading font-bold text-foreground mb-8">
-                Our Story
-              </h2>
-              <div className="space-y-6 text-muted-foreground">
-                <p>
+              <div className="space-y-6 text-xl">
+                {/* 🟢 FIX: The "Founded with a vision" paragraph now has corrected spacing and size */}
+                <p className="mb-8"> 
                   Founded with a vision to transform the HR landscape, Alpran HR
                   Services has been at the forefront of providing innovative
                   human resource solutions to businesses of all sizes. Our
@@ -92,22 +85,27 @@ const About = () => {
                   positive work environments.
                 </p>
               </div>
+              
+              {/* 🟢 FIX: Contact Us Button - Increased Size */}
               <Button
-                className="mt-8 bg-white shadow-2xl outline-orange-500 hover:bg-orange-300 text-primary-foreground"
+                className="mt-8 bg-white shadow-2xl 
+                px-10 py-4 text-lg font-bold 
+                outline-2 outline-offset-2 outline-orange-500 
+                text-gray-900 hover:bg-orange-300 hover:text-black 
+                transition-colors duration-300"
                 onClick={() => router.push("/contact")}
               >
                 Contact Us
               </Button>
             </div>
-            <div className="relative">
-              <div className="bg-accent rounded-lg p-8 text-center">
-                <div className="text-6xl font-bold text-primary mb-4">500+</div>
-                <p className="text-foreground font-medium mb-2">
-                  Companies Served
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  Trusted by organizations worldwide
-                </p>
+            
+            <div className="flex justify-center lg:justify-end">
+              {/* 🟢 FIX: 500+ Companies Served Stat Box with bg-[#f2f2f2] */}
+              <div className="bg-[#f2f2f2] p-8 rounded-xl shadow-lg w-full max-w-xs text-center 
+                            transform hover:scale-[1.03] transition-transform duration-300 border border-gray-100">
+                <h3 className="text-6xl font-extrabold text-orange-600">500+</h3>
+                <p className="text-xl font-semibold text-gray-900 mt-4">Companies Served</p>
+                <p className="text-sm text-gray-600 mt-2">Trusted by organizations worldwide</p>
               </div>
             </div>
           </div>
@@ -183,8 +181,6 @@ const About = () => {
           </div>
         </div>
       </section>
-
-      {/* <Footer /> */}
     </div>
   );
 };
