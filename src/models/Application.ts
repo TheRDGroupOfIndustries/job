@@ -9,6 +9,11 @@ export interface IApplication extends Document {
   userEmail: string;
   resume: string;
   status: "rejected" | "accepted" | "pending";
+  // New fields
+  skills: string[];
+  image?: string; // Optional field
+  ratings: number;
+  location: string;
 }
 
 const ApplicationSchema = new Schema<IApplication>(
@@ -21,10 +26,15 @@ const ApplicationSchema = new Schema<IApplication>(
 
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"], 
+      enum: ["pending", "accepted", "rejected"],
       default: "pending",
       required: true,
     },
+
+    skills: { type: [String], required: true }, 
+    image: { type: String }, 
+    ratings: { type: Number, min: 0, max: 5, required: true },
+    location: { type: String, required: true },
   },
   { timestamps: true }
 );
