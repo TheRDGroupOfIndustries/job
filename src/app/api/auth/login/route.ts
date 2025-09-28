@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials" },
-        { status: 401 }
+        { status: 400 }
       );
     }
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     if (!isValid) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials" },
-        { status: 401 }
+        { status: 400 }
       );
     }
     const token = generateToken(user);
