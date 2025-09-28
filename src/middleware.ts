@@ -10,10 +10,6 @@ interface IUser {
   name: string;
 }
 
-const allowedOrigins = [
-  "http://localhost:5173"
-];
-
 function getRoleFromToken(token?: string): string | null {
   if (!token) return null;
   try {
@@ -26,15 +22,25 @@ function getRoleFromToken(token?: string): string | null {
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-    const origin = req.headers.get("origin");
 
-  const isApi = pathname.startsWith("/api");
-  const isTrustedOrigin = origin && allowedOrigins.includes(origin);
+  // -----------------------
+  // ✅ Add CORS headers
+  // -----------------------
+  const res = NextResponse.next();
+  const allowedOrigin = "http://localhost:5173"; // 🔑 change to "*" if you want to allow all
 
-  if (isApi && isTrustedOrigin) {
-    return NextResponse.next();
+  res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Handle preflight request quickly
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 204, headers: res.headers });
   }
-  
+
+  // -----------------------
+  // 🔒 Authentication logic
+  // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
 
@@ -51,11 +57,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // 🔒 Protect /user → only user
-  // if (pathname === "/" && role !== "user") {
-  //   return NextResponse.redirect(new URL("/auth/login", req.url));
-  // }
-
+  // 🔒 If authenticated user visits /auth routes → redirect them
   if (pathname.startsWith("/auth") && token) {
     if (role === "admin") {
       return NextResponse.redirect(new URL("/admin", req.url));
@@ -68,15 +70,15 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // ✅ Everything else → public
-  return NextResponse.next();
+  // ✅ Continue with response (with CORS headers included)
+  return res;
 }
 
 export const config = {
   matcher: [
+    "/api/:path*", // 👈 added so CORS applies to all API routes
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
-    // "/",
   ],
 };
