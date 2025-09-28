@@ -90,6 +90,9 @@ export default function AllEmployees() {
               Email
             </th>
             <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">
+              Role
+            </th>
+            <th className="h-12 px-4 text-left align-middle font-medium text-gray-700">
               Employee ID
             </th>
             <th className="h-12 px-4 align-middle font-medium text-gray-700 text-left">
@@ -106,11 +109,12 @@ export default function AllEmployees() {
               key={employee._id}
               className=" transition-colors hover:bg-gray-100 "
             >
-              <td className="p-4  pl-14 font-medium">
+              <td className="p-4 pl-14 font-medium">
                 {index <= 9 ? `0${index}` : index}
               </td>
-              <td className="p-4">{employee.name}</td>
+              <td className="p-4">{employee.name} </td>
               <td className="p-4">{employee.email}</td>
+              <td className="p-4 capitalize">{employee.role}</td>
               <td className="p-4">{employee.employeeId}</td>
               <td className="p-4">{employee.otherDetails}</td>
               <td className="p-4 text-center">

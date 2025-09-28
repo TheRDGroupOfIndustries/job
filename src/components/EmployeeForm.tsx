@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "./ui/button";
-import { CheckCheck, Phone, Plus, X } from "lucide-react";
+import { CheckCheck, Phone, Plus, X, ChevronDown } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -17,6 +17,7 @@ import { toast } from "react-hot-toast";
 interface ProfileFormInputs {
   name: string;
   email: string;
+  role: string;
   phone: string;
   employeeId?: string;
   otherDetails?: string;
@@ -35,6 +36,7 @@ const EmployeeForm = ({
   const [profileImage, setProfileImage] = useState<string | null>(
     employee?.profileImage || null
   );
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
   const { userData, isAutheticated } = useSelector(
     (state: RootState) => state.auth
   );
@@ -46,16 +48,26 @@ const EmployeeForm = ({
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm<IUser>({
     defaultValues: {
       name: employee?.name,
       email: employee?.email,
+      role: employee?.role || "user",
       phone: employee?.phone,
       employeeId: employee?.employeeId,
       otherDetails: employee?.otherDetails,
       // profileImage: employee?.profileImage,
     },
   });
+
+  const selectedRole = watch("role");
+  const roleOptions = [
+    { value: "user", label: "User" },
+    { value: "employee", label: "Employee" },
+    { value: "admin", label: "Admin" },
+  ];
 
   const initials = employee?.name
     .split(" ")
@@ -114,6 +126,11 @@ const EmployeeForm = ({
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRoleSelect = (role: string) => {
+    setValue("role", role);
+    setIsRoleDropdownOpen(false);
   };
 
   return (
@@ -175,6 +192,41 @@ const EmployeeForm = ({
                 Valid email is required
               </span>
             )}
+
+            {/* Role Dropdown */}
+            <div className="relative w-full max-w-xs">
+              <div
+                onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+                className="border-b-2 border-gray-300 focus-within:border-primary w-full flex items-center justify-between cursor-pointer py-2"
+              >
+                <span className="text-muted-foreground text-center w-full">
+                  {roleOptions.find(option => option.value === selectedRole)?.label || "Select Role"}
+                </span>
+                <ChevronDown 
+                  size={16} 
+                  className={`text-muted-foreground transition-transform duration-200 ${
+                    isRoleDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </div>
+              {isRoleDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 bg-card border border-gray-300 rounded-md shadow-lg z-10 mt-1">
+                  {roleOptions.map((option) => (
+                    <div
+                      key={option.value}
+                      onClick={() => handleRoleSelect(option.value)}
+                      className="px-3 py-2 hover:bg-gray-300 cursor-pointer text-muted-foreground text-center"
+                    >
+                      {option.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {errors.role && (
+              <span className="text-red-500 text-sm">Role is required</span>
+            )}
+
             <div className="flex justify-center items-center border-b-2 border-gray-300 focus-within:border-primary w-full max-w-xs mx-auto">
               <span className="text-muted-foreground">+91</span>
               <input
@@ -201,11 +253,13 @@ const EmployeeForm = ({
               <input
                 type="text"
                 {...register("employeeId")}
+                placeholder="Employee ID"
                 className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs "
               />
               <input
                 type="text"
                 {...register("otherDetails")}
+                placeholder="Other Details"
                 className="border-b-2 border-gray-300 focus:border-primary outline-0 text-center text-muted-foreground w-full max-w-xs"
               />
             </>
