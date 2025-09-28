@@ -14,10 +14,14 @@ import {
   Code,
   Star,
   Zap,
-  Image as ImageIcon, // Renamed to avoid conflict with Image component
+  Image as ImageIcon,
+  CirclePlus, // Renamed to avoid conflict with Image component
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { fetchApplications } from "@/redux/features/applicationSlice";
 
 // 1. Define the TypeScript interface for form data (Schema-aligned)
 interface IFormInput {
@@ -36,8 +40,10 @@ const JobApplicationForm = ({
   jobId,
 }: {
   jobTitle?: string;
-  jobId: string;
+  jobId?: string;
 }) => {
+  const [job_Id, setJob_Id] = useState(jobId || null);
+  const { userData } = useSelector((state: RootState) => state.auth);
   const [openForm, setOpenForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
@@ -63,6 +69,8 @@ const JobApplicationForm = ({
   const ratingWatch = watch("rating", 3);
   const resumeWatch = watch("resume");
   const userProfileImageWatch = watch("userProfileImage"); // Watch for changes in the profile image file input
+
+  const dispatch = useDispatch()
 
   const resumeFile =
     resumeWatch && resumeWatch.length > 0 ? resumeWatch[0] : null;
@@ -146,10 +154,9 @@ const JobApplicationForm = ({
     //   status: "pending", // Default status is "pending"
     // };    // For demonstration, you might want to log the FormData content
 
-
     const formData = new FormData();
     formData.append("appliedBy", data.appliedBy);
-    formData.append("job", jobId);
+    formData.append("job", job_Id as string);
     formData.append("userLocation", data.userLocation);
     formData.append("yearOfExperience", data.yearOfExperience.toString());
     formData.append("skills", data.skills);
@@ -169,24 +176,31 @@ const JobApplicationForm = ({
 
     // Example of how you might send this to an API:
     try {
-      toast.loading('Submitting Application...', {id: "apply"});
-      const response = await fetch(`/api/user/applications/apply-for-job/${jobId}`, {
-        method: 'POST',
-        body: formData, // FormData is automatically set with 'multipart/form-data' header
-      });
+      toast.loading("Submitting Application...", { id: "apply" });
+      const response = await fetch(
+        `/api/user/applications/apply-for-job/${job_Id}`,
+        {
+          method: "POST",
+          body: formData, // FormData is automatically set with 'multipart/form-data' header
+        }
+      );
       if (!response.ok) {
-        throw new Error('Failed to submit application');
+        throw new Error("Failed to submit application");
       }
       const result = await response.json();
-      console.log('Application submitted successfully:', result);
-      toast.success('Application submitted successfully!', {id: "apply"});
+      console.log("Application submitted successfully:", result);
+      toast.success("Application submitted successfully!", { id: "apply" });
       reset();
       setOpenForm(false);
       setProfileImagePreview(null);
-
+      if(userData?.role === "admin" || userData?.role === "employee") {
+        dispatch(fetchApplications() as any)
+      }
     } catch (error) {
-      console.error('Error submitting application:', error);
-      toast.error('Failed to submit application. Please try again.', {id: "apply"});
+      console.error("Error submitting application:", error);
+      toast.error("Failed to submit application. Please try again.", {
+        id: "apply",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -198,8 +212,14 @@ const JobApplicationForm = ({
         onClick={() => setOpenForm(true)}
         className="bg-[#FF7F3F] text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2 w-full sm:w-auto"
       >
-        <Users size={20} />
-        <span>Apply Now</span>
+        {userData?.role === "admin" || userData?.role === "employee" ? (
+          <CirclePlus size={20} />
+        ) : (
+          <Users size={20} />
+        )}
+        <span>
+          {userData?.role === "admin" || userData?.role === "employee" ? "Add Application" : "Apply Now"}
+        </span>
       </button>
 
       {/* Modal / Dialog */}
@@ -231,7 +251,7 @@ const JobApplicationForm = ({
                 htmlFor="appliedBy"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Your Applicant ID (Internal / `appliedBy`)
+                Your Applicant ID
               </label>
               <div className="relative">
                 <User
@@ -255,6 +275,36 @@ const JobApplicationForm = ({
                 </p>
               )}
             </div>
+
+            {userData?.role === "admin" || userData?.role === "employee" && (
+              <div>
+                <label
+                  htmlFor="appliedBy"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Job Application ID
+                </label>
+                <div className="relative">
+                  <User
+                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                  <input
+                    type="text"
+                    id="appliedBy"
+                    onChange={(e) => setJob_Id(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
+                    placeholder="e.g., 68d18ff183a7110140280d78"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                {errors.appliedBy && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.appliedBy.message}
+                  </p>
+                )}
+              </div>
+            )}
             {/* --- */}
 
             {/* Field: userLocation (Schema field: userLocation) */}
@@ -344,8 +394,7 @@ const JobApplicationForm = ({
                 htmlFor="rating"
                 className=" text-sm font-medium text-gray-700 mb-2 flex items-center"
               >
-                <Star size={16} className="mr-1 text-yellow-500" /> Rating
-                (1-5)
+                <Star size={16} className="mr-1 text-yellow-500" /> Rating (1-5)
               </label>
               <div className="flex items-center space-x-4">
                 <div className="text-lg font-bold text-gray-700 w-1/4">

@@ -12,6 +12,7 @@ import TaskForm from "./TaskForm";
 import ApplicationForm from "./ApplicationForm";
 import Image from "next/image";
 import Link from "next/link";
+import JobApplicationForm from "./user/JobApplicationForm";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -131,6 +132,7 @@ export default function Header() {
           </Button> */}
 
           {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
+          <JobApplicationForm />
         </>
       )}
       {pathname.includes("all-employee") && (
