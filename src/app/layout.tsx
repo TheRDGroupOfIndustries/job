@@ -5,6 +5,7 @@ import { Providers } from "@/redux/Providers";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/user/NavBar";
 import Footer from "@/components/user/Footer";
+import AuthInitializer from "@/components/auth/AuthInitializer";
 
 // Define fonts
 const dmMono = DM_Mono({
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <AuthInitializer />
         </Providers>
         <Toaster />
       </body>

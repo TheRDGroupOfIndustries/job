@@ -38,12 +38,14 @@ export async function POST(
 ) {
   try {
     await connectDB();
-    const jobId = params.id; // job id corresponds to 'job' in schema
+    const jobId = await params.id; // job id corresponds to 'job' in schema
     const user = authenticate(req as any);
+    console.log(user)
 
-    // if (!user) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    if (!user) {
+      
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // if (user.role !== "user") {
     //   return NextResponse.json(
@@ -54,7 +56,8 @@ export async function POST(
 
     const formData = await req.formData();
     // Fields from the client form (JobApplicationForm.tsx)
-    const appliedBy = formData.get("appliedBy") as string;
+    // const appliedBy = formData.get("appliedBy") as string;
+    const appliedBy = user.id;
     const userLocation = formData.get("userLocation") as string;
     const skillsString = formData.get("skills") as string;
     const yearOfExperienceString = formData.get("yearOfExperience") as string; // NEW/RENAMED
