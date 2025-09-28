@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
 
     const applications = await Application.find()
         .populate("appliedBy", "name email")
-        .populate("jobId", "designation jobDescription")
+        .populate("job", "designation jobDescription workMode companyDetails employmentType keySkills workExperience")
         .sort({ createdAt: -1 });
 
     return NextResponse.json(

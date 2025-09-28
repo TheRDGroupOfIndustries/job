@@ -311,25 +311,25 @@ const JobDetails: React.FC<{ id: string }> = ({ id }) => {
                 <div className="grid grid-cols-2 gap-4 text-gray-700">
                   {diversityFlags.women && (
                     <div className="flex items-center space-x-2">
-                      <UserCheck size={20} className="text-green-500" />
+                      <UserCheck size={20} className="text-primary" />
                       <span>Women Candidates</span>
                     </div>
                   )}
                   {diversityFlags.womenReturning && (
                     <div className="flex items-center space-x-2">
-                      <UserCheck size={20} className="text-green-500" />
+                      <UserCheck size={20} className="text-primary" />
                       <span>Women Returnees</span>
                     </div>
                   )}
                   {diversityFlags.exDefence && (
                     <div className="flex items-center space-x-2">
-                      <UserCheck size={20} className="text-green-500" />
+                      <UserCheck size={20} className="text-primary" />
                       <span>Ex-Defence Personnel</span>
                     </div>
                   )}
                   {diversityFlags.differentlyAbled && (
                     <div className="flex items-center space-x-2">
-                      <Accessibility size={20} className="text-green-500" />
+                      <Accessibility size={20} className="text-primary" />
                       <span>Differently Abled</span>
                     </div>
                   )}

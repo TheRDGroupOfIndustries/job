@@ -1,20 +1,34 @@
 // components/JobApplicationForm.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { UploadCloud, User, FileText, Send, Users, X, MapPin, Code, Star } from "lucide-react";
-import { Button } from "@/components/ui/button"; 
+import {
+  UploadCloud,
+  User,
+  FileText,
+  Send,
+  Users,
+  X,
+  MapPin,
+  Code,
+  Star,
+  Zap,
+  Image as ImageIcon, // Renamed to avoid conflict with Image component
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
-// 1. Define the TypeScript interface for form data (Schema)
+// 1. Define the TypeScript interface for form data (Schema-aligned)
 interface IFormInput {
-  appliedBy: string; 
-  jobDesignation: string; 
-  location: string;
-  skills: string; 
-  ratings: number;
-  image: string; 
-  resume: FileList; 
+  appliedBy: string; // Corresponds to appliedBy (Mongoose ObjectId, using string for form input)
+  // job is passed via prop (jobId)
+  userLocation: string; // Corresponds to userLocation
+  userProfileImage: FileList | null; // Changed to FileList for upload, allow null if optional
+  skills: string; // Corresponds to skills (comma-separated string in form, converted to string[] on submit)
+  resume: FileList; // Corresponds to resume (URL/path after upload, using FileList for form input)
+  yearOfExperience: number; // Corresponds to yearOfExperience (NEW FIELD)
+  rating: number; // Corresponds to rating
 }
 
 const JobApplicationForm = ({
@@ -26,63 +40,157 @@ const JobApplicationForm = ({
 }) => {
   const [openForm, setOpenForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null
+  );
 
-  
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<IFormInput>({
     defaultValues: {
-      jobDesignation: jobTitle, // Set default job title from props
-      ratings: 3, // Default rating
+      yearOfExperience: 0, // Default year of experience
+      rating: 3, // Default rating
+      userProfileImage: null, // Initialize as null
     },
   });
 
   // Watch fields for dynamic display
-  const ratingWatch = watch("ratings", 3);
+  const ratingWatch = watch("rating", 3);
   const resumeWatch = watch("resume");
-  const resumeFile = resumeWatch && resumeWatch.length > 0 ? resumeWatch[0] : null;
+  const userProfileImageWatch = watch("userProfileImage"); // Watch for changes in the profile image file input
+
+  const resumeFile =
+    resumeWatch && resumeWatch.length > 0 ? resumeWatch[0] : null;
+
+  // Effect to handle profile image preview
+  useEffect(() => {
+    if (userProfileImageWatch && userProfileImageWatch.length > 0) {
+      const file = userProfileImageWatch[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setProfileImagePreview(null);
+    }
+    // Cleanup object URL when component unmounts or file changes
+    return () => {
+      if (profileImagePreview) {
+        URL.revokeObjectURL(profileImagePreview);
+      }
+    };
+  }, [userProfileImageWatch]);
+
+  // Handler for star click
+  const handleRatingClick = useCallback(
+    (newRating: number) => {
+      setValue("rating", newRating, { shouldValidate: true });
+    },
+    [setValue]
+  );
 
   // Helper to render star rating
   const renderRatingStars = (currentRating: number) => {
     const ratingValue = Math.round(currentRating || 0);
     return (
       <div className="flex space-x-1 items-center">
-        {Array(5).fill(0).map((_, index) => (
-          <Star
-            key={index}
-            size={20}
-            className={index < ratingValue ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}
-          />
-        ))}
+        {Array(5)
+          .fill(0)
+          .map((_, index) => {
+            const starValue = index + 1;
+            return (
+              <Star
+                key={index}
+                size={24}
+                onClick={() => handleRatingClick(starValue)}
+                className={`cursor-pointer transition-colors ${
+                  starValue <= ratingValue
+                    ? "text-yellow-500 fill-yellow-500"
+                    : "text-gray-300 hover:text-yellow-300 hover:fill-yellow-300"
+                }`}
+                aria-label={`Rate ${starValue} stars`}
+              />
+            );
+          })}
       </div>
     );
   };
 
   // 2. Define the submit handler
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     setIsSubmitting(true);
-    
-    
-    console.log("Submitting Application Data:", {
-        ...data,
-        jobDesignation: jobTitle, // Ensure the title from prop is sent
-        resume: data.resume[0] ? data.resume[0].name : 'No file',
-        jobId: jobId
-    });
 
-    
-    setTimeout(() => {
-      alert(`Application for ${jobTitle} submitted successfully! (Mock Submission)`);
-      setIsSubmitting(false);
-      reset(); // Reset the form fields
+    // const applicationData = {
+    //   appliedBy: data.appliedBy,
+    //   job: jobId, // from prop
+    //   userLocation: data.userLocation,
+    //   userProfileImage:
+    //     data.userProfileImage && data.userProfileImage.length > 0
+    //       ? `[FILE_UPLOAD_PATH]/${data.userProfileImage[0].name}` // Mock file upload path
+    //       : undefined, // Or a default image URL
+    //   skills: data.skills
+    //     .split(",")
+    //     .map((s) => s.trim())
+    //     .filter(Boolean), // Convert comma-separated string to array
+    //   resume: data.resume[0]
+    //     ? `[FILE_UPLOAD_PATH]/${data.resume[0].name}`
+    //     : "No file uploaded", // Mock file upload path
+    //   yearOfExperience: data.yearOfExperience,
+    //   rating: data.rating,
+    //   status: "pending", // Default status is "pending"
+    // };    // For demonstration, you might want to log the FormData content
+
+
+    const formData = new FormData();
+    formData.append("appliedBy", data.appliedBy);
+    formData.append("job", jobId);
+    formData.append("userLocation", data.userLocation);
+    formData.append("yearOfExperience", data.yearOfExperience.toString());
+    formData.append("skills", data.skills);
+    formData.append("rating", data.rating.toString());
+
+    if (data.userProfileImage && data.userProfileImage.length > 0) {
+      formData.append("userProfileImage", data.userProfileImage[0]);
+    }
+    if (data.resume && data.resume.length > 0) {
+      formData.append("resume", data.resume[0]);
+    }
+
+    // Log FormData contents (for debugging, won't show file content directly)
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    // Example of how you might send this to an API:
+    try {
+      toast.loading('Submitting Application...', {id: "apply"});
+      const response = await fetch(`/api/user/applications/apply-for-job/${jobId}`, {
+        method: 'POST',
+        body: formData, // FormData is automatically set with 'multipart/form-data' header
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit application');
+      }
+      const result = await response.json();
+      console.log('Application submitted successfully:', result);
+      toast.success('Application submitted successfully!', {id: "apply"});
+      reset();
       setOpenForm(false);
-    }, 1500);
-  };
+      setProfileImagePreview(null);
 
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast.error('Failed to submit application. Please try again.', {id: "apply"});
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -96,7 +204,9 @@ const JobApplicationForm = ({
 
       {/* Modal / Dialog */}
       <div
-        className={`${openForm ? "block" : "hidden"} fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]`}
+        className={`${
+          openForm ? "block" : "hidden"
+        } fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]`}
       >
         <div className="max-w-xl w-full mx-auto p-6 md:p-8 bg-white rounded-xl shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
           <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
@@ -114,46 +224,104 @@ const JobApplicationForm = ({
           </Button>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
             {/* Field: appliedBy (User ID) */}
+            {/* Remove this block after User Login is implemented to get the ID from auth context */}
             <div>
-              <label htmlFor="appliedBy" className="block text-sm font-medium text-gray-700 mb-2">
-                Your Applicant ID (Internal)
+              <label
+                htmlFor="appliedBy"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Your Applicant ID (Internal / `appliedBy`)
               </label>
               <div className="relative">
-                <User size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <User
+                  size={20}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                />
                 <input
                   type="text"
                   id="appliedBy"
-                  {...register("appliedBy", { required: "Applicant ID is required" })}
+                  {...register("appliedBy", {
+                    required: "Applicant ID is required",
+                  })}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
                   placeholder="e.g., 68d18ff183a7110140280d78"
                   disabled={isSubmitting}
                 />
               </div>
-              {errors.appliedBy && <p className="text-red-500 text-xs mt-1">{errors.appliedBy.message}</p>}
+              {errors.appliedBy && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.appliedBy.message}
+                </p>
+              )}
             </div>
+            {/* --- */}
 
-            {/* NEW FIELD: location */}
+            {/* Field: userLocation (Schema field: userLocation) */}
             <div>
-              <label htmlFor="location" className=" text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <MapPin size={16} className="mr-1 text-orange-500" /> Current Location
+              <label
+                htmlFor="userLocation"
+                className=" text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
+                <MapPin size={16} className="mr-1 text-orange-500" /> Current
+                Location
               </label>
               <input
                 type="text"
-                id="location"
-                {...register("location", { required: "Location is required" })}
+                id="userLocation"
+                {...register("userLocation", {
+                  required: "Location is required",
+                })}
                 className="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
                 placeholder="e.g., Nashik, Maharashtra, India"
                 disabled={isSubmitting}
               />
-              {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location.message}</p>}
+              {errors.userLocation && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.userLocation.message}
+                </p>
+              )}
             </div>
 
-            {/* NEW FIELD: skills (Textarea) */}
+            {/* Field: yearOfExperience */}
             <div>
-              <label htmlFor="skills" className=" text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <Code size={16} className="mr-1 text-blue-500" /> Key Skills (Comma Separated)
+              <label
+                htmlFor="yearOfExperience"
+                className=" text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
+                <Zap size={16} className="mr-1 text-purple-500" /> Years of
+                Professional Experience
+              </label>
+              <input
+                type="number"
+                id="yearOfExperience"
+                {...register("yearOfExperience", {
+                  required: "Years of experience is required",
+                  valueAsNumber: true,
+                  min: { value: 0, message: "Minimum experience is 0" },
+                  max: { value: 50, message: "Maximum experience is 50" }, // Sensible max value
+                })}
+                className="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
+                placeholder="e.g., 5"
+                min="0"
+                step="1"
+                disabled={isSubmitting}
+              />
+              {errors.yearOfExperience && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.yearOfExperience.message}
+                </p>
+              )}
+            </div>
+
+            {/* Field: skills (Textarea) */}
+            <div>
+              <label
+                htmlFor="skills"
+                className=" text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
+                <Code size={16} className="mr-1 text-blue-500" /> Key Skills
+                (Comma Separated)
               </label>
               <textarea
                 id="skills"
@@ -163,56 +331,111 @@ const JobApplicationForm = ({
                 placeholder="e.g., JavaScript, React, Node.js, MongoDB"
                 disabled={isSubmitting}
               />
-              {errors.skills && <p className="text-red-500 text-xs mt-1">{errors.skills.message}</p>}
+              {errors.skills && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.skills.message}
+                </p>
+              )}
             </div>
-            
-            {/* NEW FIELD: ratings */}
+
+            {/* Field: rating (Clickable Stars) */}
             <div>
-              <label htmlFor="ratings" className=" text-sm font-medium text-gray-700 mb-2 flex items-center">
-                <Star size={16} className="mr-1 text-yellow-500" /> Self-Rating (1-5)
+              <label
+                htmlFor="rating"
+                className=" text-sm font-medium text-gray-700 mb-2 flex items-center"
+              >
+                <Star size={16} className="mr-1 text-yellow-500" /> Rating
+                (1-5)
               </label>
               <div className="flex items-center space-x-4">
+                <div className="text-lg font-bold text-gray-700 w-1/4">
+                  {ratingWatch} / 5
+                </div>
+                {renderRatingStars(ratingWatch)}
                 <input
-                  type="number"
-                  id="ratings"
-                  {...register("ratings", {
+                  type="hidden"
+                  id="rating"
+                  {...register("rating", {
                     required: "Rating is required",
                     valueAsNumber: true,
                     min: { value: 1, message: "Min rating is 1" },
                     max: { value: 5, message: "Max rating is 5" },
                   })}
-                  className="w-1/4 py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors text-center"
+                />
+              </div>
+              {errors.rating && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.rating.message}
+                </p>
+              )}
+            </div>
+
+            {/* Field: userProfileImage (Uploadable with preview) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Profile Image
+              </label>
+              <div
+                className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg transition-colors cursor-pointer 
+                            ${errors.userProfileImage ? "border-red-500" : "border-gray-300 hover:border-[#FF7F3F]"}`}
+                onClick={() =>
+                  document.getElementById("userProfileImageUpload")?.click()
+                }
+              >
+                <input
+                  type="file"
+                  id="userProfileImageUpload"
+                  className="hidden"
+                  accept="image/*"
+                  {...register("userProfileImage")} // Not required by schema but good UX
                   disabled={isSubmitting}
                 />
-                {renderRatingStars(ratingWatch)}
+                {profileImagePreview ? (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={profileImagePreview}
+                      alt="Profile Preview"
+                      className="w-24 h-24 object-cover rounded-full mb-2 border-2 border-[#FF7F3F]"
+                    />
+                    <span className="font-medium text-gray-700">
+                      {userProfileImageWatch && userProfileImageWatch.length > 0
+                        ? userProfileImageWatch[0].name
+                        : "Image selected"}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-1">
+                      Click to change
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500">
+                    <ImageIcon
+                      size={32}
+                      className="mx-auto mb-2 text-[#FF7F3F]"
+                    />
+                    <p className="font-semibold">
+                      Click to upload profile image
+                    </p>
+                    <p className="text-xs mt-1">
+                      (JPG, PNG, GIF - Max 2MB recommended)
+                    </p>
+                  </div>
+                )}
               </div>
-              {errors.ratings && <p className="text-red-500 text-xs mt-1">{errors.ratings.message}</p>}
+              {errors.userProfileImage && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.userProfileImage.message as string}
+                </p>
+              )}
             </div>
-
-            {/* Optional Field: image URL */}
-            <div>
-              <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-                Profile Image URL (Optional)
-              </label>
-              <input
-                type="url"
-                id="image"
-                {...register("image")}
-                className="w-full py-3 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
-                placeholder="e.g., https://example.com/profile.jpg"
-                disabled={isSubmitting}
-              />
-            </div>
-
 
             {/* Field: resume Upload */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Resume / CV (PDF or DOCX)
+                Resume / CV
               </label>
               <div
-                className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg transition-colors cursor-pointer border-gray-300 hover:border-[#FF7F3F]`}
-                // Trigger file input click when the container is clicked
+                className={`flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-lg transition-colors cursor-pointer 
+                            ${errors.resume ? "border-red-500" : "border-gray-300 hover:border-[#FF7F3F]"}`}
                 onClick={() => document.getElementById("resumeUpload")?.click()}
               >
                 <input
@@ -220,9 +443,10 @@ const JobApplicationForm = ({
                   id="resumeUpload"
                   className="hidden"
                   accept=".pdf,.doc,.docx"
-                  {...register("resume", { 
+                  {...register("resume", {
                     required: "Resume file is required",
-                    validate: (value) => value.length > 0 || "Resume file is required"
+                    validate: (value) =>
+                      value.length > 0 || "Resume file is required",
                   })}
                   disabled={isSubmitting}
                 />
@@ -236,7 +460,10 @@ const JobApplicationForm = ({
                   </div>
                 ) : (
                   <div className="text-center text-gray-500">
-                    <UploadCloud size={32} className="mx-auto mb-2 text-[#FF7F3F]" />
+                    <UploadCloud
+                      size={32}
+                      className="mx-auto mb-2 text-[#FF7F3F]"
+                    />
                     <p className="font-semibold">
                       Click to upload (PDF or DOCX)
                     </p>
@@ -246,7 +473,11 @@ const JobApplicationForm = ({
                   </div>
                 )}
               </div>
-              {errors.resume && <p className="text-red-500 text-xs mt-1">{errors.resume.message}</p>}
+              {errors.resume && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.resume.message}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
@@ -258,9 +489,25 @@ const JobApplicationForm = ({
             >
               {isSubmitting ? (
                 <>
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   <span>Submitting...</span>
                 </>
