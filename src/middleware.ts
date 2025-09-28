@@ -3,13 +3,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-interface IUser {
-  id: string;
-  email: string;
-  role: string;
-  name: string;
-}
-
 function getRoleFromToken(token?: string): string | null {
   if (!token) return null;
   try {
@@ -22,26 +15,39 @@ function getRoleFromToken(token?: string): string | null {
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // -----------------------
+  // ✅ Global CORS for all APIs
+  // -----------------------
+  const allowedOrigin = "http://localhost:5173"; // 👈 change to "*" or prod domain
+  const res = NextResponse.next();
+
+  res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+  // Handle preflight request
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 204, headers: res.headers });
+  }
+
+  // -----------------------
+  // 🔒 Authentication & Role-based routes
+  // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
 
-  if (!token && !pathname.startsWith("/auth"))
+  if (!token && !pathname.startsWith("/auth") && !pathname.startsWith("/api")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
 
-  // 🔒 Protect /admin → only admin
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // 🔒 Protect /employee → only employee
   if (pathname.startsWith("/employee") && role !== "employee") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
-
-  // 🔒 Protect /user → only user
-  // if (pathname === "/" && role !== "user") {
-  //   return NextResponse.redirect(new URL("/auth/login", req.url));
-  // }
 
   if (pathname.startsWith("/auth") && token) {
     if (role === "admin") {
@@ -55,15 +61,15 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // ✅ Everything else → public
-  return NextResponse.next();
+  // ✅ Allow everything else
+  return res;
 }
 
 export const config = {
   matcher: [
+    "/api/:path*",   // 👈 apply CORS to all API routes
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
-    // "/",
   ],
 };

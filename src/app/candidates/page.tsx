@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/user/NavBar';
-import Footer from '@/components/user/Footer';
-import { MapPin, Code, Star } from 'lucide-react'; // Import new icons
+// NOTE: I've commented out Navbar and Footer since their import paths are external 
+// and may not be available in this environment. Please uncomment them in your local project.
+// import Navbar from '@/components/user/NavBar';
+// import Footer from '@/components/user/Footer';
+import { MapPin, Code, Star } from 'lucide-react'; 
 
 
 type ResumeApplication = {
@@ -47,38 +49,39 @@ function mapStatus(status: string): ResumeApplication['status'] {
   }
 }
 
+// Helper function to convert comma-separated string to string array
+const parseSkills = (skillsString: string): string[] => {
+    if (!skillsString) return [];
+    return skillsString.split(',').map(s => s.trim()).filter(s => s.length > 0);
+};
+
+// Helper to render star rating
+const renderRatingStars = (rating: number) => {
+    const roundedRating = Math.round(rating || 0);
+    return (
+      <div className="flex space-x-0.5 items-center">
+        {Array(5).fill(0).map((_, index) => (
+          <Star
+            key={index}
+            size={14}
+            className={index < roundedRating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}
+          />
+        ))}
+      </div>
+    );
+};
+
+
 export default function CandidateApplicationsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [applications, setApplications] = useState<ResumeApplication[]>([]);
   const [loading, setLoading] = useState(true);
 
-  
-  const parseSkills = (skillsString: string): string[] => {
-    if (!skillsString) return [];
-    return skillsString.split(',').map(s => s.trim()).filter(s => s.length > 0);
-  };
-  
- 
-  const renderRatingStars = (rating: number) => {
-    const roundedRating = Math.round(rating || 0);
-    return (
-      <div className="flex space-x-0.5 items-center">
-        {Array(5).fill(0).map((_, index) => (
-          <Star
-            key={index}
-            size={14}
-            className={index < roundedRating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}
-          />
-        ))}
-      </div>
-    );
-  };
-
-
   useEffect(() => {
     async function fetchApplications() {
       try {
         
+        // Using 'http://localhost:3000' based on your provided conflict block.
         const res = await fetch('http://localhost:3000/api/user/applications/get-all');
         if (!res.ok) throw new Error('Failed to fetch applications');
         const data = await res.json();
@@ -91,12 +94,13 @@ export default function CandidateApplicationsPage() {
           company: app.appliedBy?.name || 'Unknown Company',
           appliedDate: new Date(app.createdAt).toLocaleDateString(),
           status: mapStatus(app.status),
-         
+         
+          // Mapped new fields using local helper functions:
           skills: parseSkills(app.skills || ''), 
           location: app.location || 'Remote / On-site', 
           experience: app.experience || 'N/A',
-          ratings: app.ratings || 0, 
-         
+          ratings: app.ratings || 0, 
+         
           jobId: app.jobId?._id || '',
           resumeFileName: app.resume,
         }));
@@ -123,7 +127,7 @@ export default function CandidateApplicationsPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="min-h-screen bg-gray-50 pt-20 pb-20 max-w-6xl mx-auto px-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Resume Applications</h1>
@@ -152,33 +156,33 @@ export default function CandidateApplicationsPage() {
                   <h2 className="text-xl font-semibold text-gray-900">{app.jobTitle}</h2>
                   <p className="text-orange-600 font-medium">{app.company}</p>
                   
-                    {/* Display Location and Experience */}
+                    {/* Display Location and Experience */}
                   <div className="flex items-center text-gray-600 mt-1 space-x-4">
-                        <span className="flex items-center text-sm">
-                            <MapPin size={14} className="mr-1 text-gray-400" />
-                            {app.location}
-                        </span>
-                        <span className="text-sm">
-                            Experience: {app.experience}
-                        </span>
-                    </div>
+                        <span className="flex items-center text-sm">
+                            <MapPin size={14} className="mr-1 text-gray-400" />
+                            {app.location}
+                        </span>
+                        <span className="text-sm">
+                            Experience: {app.experience}
+                        </span>
+                    </div>
 
-                    {/* Display Rating */}
-                    <div className="flex items-center text-gray-700 mt-2 space-x-2">
-                        <span className='font-medium text-sm'>Self-Rating:</span>
-                        {renderRatingStars(app.ratings)}
-                    </div>
+                    {/* Display Rating */}
+                    <div className="flex items-center text-gray-700 mt-2 space-x-2">
+                        <span className='font-medium text-sm'>Self-Rating:</span>
+                        {renderRatingStars(app.ratings)}
+                    </div>
 
                   <p className="text-gray-500 mt-2 text-sm">
                     Applied on: <time dateTime={app.appliedDate}>{app.appliedDate}</time>
                   </p>
                   
-                    {/* Display Skills */}
+                    {/* Display Skills */}
                   <div className="flex flex-wrap gap-2 mt-3">
-                        <span className='flex items-center text-sm font-semibold text-gray-700 mr-1'>
-                            <Code size={14} className="mr-1 text-blue-500" />
-                            Skills:
-                        </span>
+                        <span className='flex items-center text-sm font-semibold text-gray-700 mr-1'>
+                            <Code size={14} className="mr-1 text-blue-500" />
+                            Skills:
+                        </span>
                     {app.skills.length > 0 ? app.skills.map((skill, idx) => (
                       <span
                         key={idx}
@@ -187,8 +191,8 @@ export default function CandidateApplicationsPage() {
                         {skill}
                       </span>
                     )) : (
-                        <span className="text-xs text-gray-500 italic mt-1">No skills provided.</span>
-                    )}
+                        <span className="text-xs text-gray-500 italic mt-1">No skills provided.</span>
+                    )}
                   </div>
                 </div>
 
@@ -227,6 +231,8 @@ export default function CandidateApplicationsPage() {
           </div>
         )}
       </main>
+      {/* <Footer /> */}
     </>
   );
 }
+
