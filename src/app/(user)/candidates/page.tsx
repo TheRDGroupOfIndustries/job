@@ -102,8 +102,7 @@ export default function CandidateApplicationsPage() {
         const mappedApps: ResumeApplication[] = data.applications.map(
           (app: any) => ({
             id: app._id,
-            jobTitle:
-              app.job?.designation || "Not specified",
+            jobTitle: app.job?.designation || "Not specified",
             company: app.job?.companyDetails?.name || "Unknown Company",
             appliedDate: new Date(app.createdAt).toLocaleDateString(),
             status: app.status, // Mapped new fields using local helper functions:
@@ -117,7 +116,7 @@ export default function CandidateApplicationsPage() {
           })
         );
 
-        console.log("mapped data: ", mappedApps)
+        console.log("mapped data: ", mappedApps);
 
         setApplications(mappedApps);
       } catch (err) {
@@ -141,7 +140,6 @@ export default function CandidateApplicationsPage() {
 
   return (
     <>
-      {/* <Navbar /> */}
       <main className="min-h-screen bg-gray-50 pt-20 pb-20 max-w-6xl mx-auto px-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">
           Your Resume Applications
@@ -192,7 +190,7 @@ export default function CandidateApplicationsPage() {
                   </div>
 
                   <p className="text-gray-500 mt-2 text-sm">
-                    Applied on: {" "}
+                    Applied on:{" "}
                     <time dateTime={app.appliedDate}>{app.appliedDate}</time>
                   </p>
 
@@ -238,18 +236,18 @@ export default function CandidateApplicationsPage() {
                   >
                     View Job
                   </Link> */}
-                  {/* 📄 Download Resume */}
-                  {app.resumeFileName && (
-                    <a
-                      href={app.resumeFileName}
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full px-5 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors font-medium shadow-sm text-center flex items-center"
-                    >
-                      Resume <Download size={20} className="ml-2"/>
-                    </a>
-                  )}
+                    {/* 📄 Download Resume */}
+                    {app.resumeFileName && (
+                      <a
+                        href={app.resumeFileName}
+                        download
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full px-5 py-2 bg-primary text-white rounded-md hover:bg-primary/80 transition-colors font-medium shadow-sm text-center flex items-center"
+                      >
+                        Resume <Download size={20} className="ml-2" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -257,7 +255,6 @@ export default function CandidateApplicationsPage() {
           </div>
         )}
       </main>
-      {/* <Footer /> */}
     </>
   );
 }

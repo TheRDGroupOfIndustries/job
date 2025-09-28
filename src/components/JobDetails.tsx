@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import { deleteJob } from "@/redux/features/jobSlice";
 import JobForm from "./JobForm";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function JobDetails({ jobId }: { jobId: string }) {
   const [openView, setOpenView] = useState(false);
@@ -90,31 +91,29 @@ export default function JobDetails({ jobId }: { jobId: string }) {
       </div>
 
       <div className="flex-1 h-[calc(100vh-80px)] overflow-y-auto pl-20 pr-10 mb-10 custom-scrollbar">
-       
-
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 mt-6">
           <div className="space-y-4">
             <div className="">
-               <p className="text-sm text-secondary">{job._id}</p>
-        <div className="flex justify-between items-center text-3xl font-bold text-gray-800">
-          <div className="flex items-center gap-5">
-            <span>{job.designation}</span>
-            <Badge
-              variant="secondary"
-              className="text-sm font-normal bg-secondary/30 capitalize"
-            >
-              {job.employmentType}
-            </Badge>
-          </div>
-        </div>
-        <div className="text-sm text-gray-500">
-          <p>
-            {job.companyDetails.name} • {job.companyDetails.locatedAt}
-          </p>
-          <p>
-            Work Mode: <span className="capitalize">{job.workMode}</span>
-          </p>
-        </div>
+              <p className="text-sm text-secondary">{job._id}</p>
+              <div className="flex justify-between items-center text-3xl font-bold text-gray-800">
+                <div className="flex items-center gap-5">
+                  <span>{job.designation}</span>
+                  <Badge
+                    variant="secondary"
+                    className="text-sm font-normal bg-secondary/30 capitalize"
+                  >
+                    {job.employmentType}
+                  </Badge>
+                </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                <p>
+                  {job.companyDetails.name} • {job.companyDetails.locatedAt}
+                </p>
+                <p>
+                  Work Mode: <span className="capitalize">{job.workMode}</span>
+                </p>
+              </div>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-700">
@@ -178,25 +177,27 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             <div>
               <h3 className="text-lg font-semibold text-gray-700 ">Company</h3>
               <div className="flex items-center gap-4 mt-2">
-  {job.companyDetails?.image ? (
-    <img
-      src={job.companyDetails.image}
-      alt={job.companyDetails.name}
-      className="h-12 w-12 rounded-full object-cover border"
-    />
-  ) : (
-    <div
-      className="h-8 w-8 flex items-center justify-center rounded-full"
-      style={{ backgroundColor: "#E17C3A" }}
-    >
-      <span className="text-white text-sm font-medium">
-        {job.companyDetails?.name
-          ? job.companyDetails.name.charAt(0).toUpperCase()
-          : "?"}
-      </span>
-    </div>
-  )}
-</div>
+                {job.companyDetails?.image ? (
+                  <Image
+                    height={16}
+                    width={16}
+                    src={job.companyDetails.image}
+                    alt={job.companyDetails.name}
+                    className=" rounded-full object-cover border"
+                  />
+                ) : (
+                  <div
+                    className="h-16 w-16 flex items-center justify-center rounded-full"
+                    style={{ backgroundColor: "#E17C3A" }}
+                  >
+                    <span className="text-white text-2xl font-medium">
+                      {job.companyDetails?.name
+                        ? job.companyDetails.name.charAt(0).toUpperCase()
+                        : "?"}
+                    </span>
+                  </div>
+                )}
+              </div>
               <div className="capitalize">
                 <p className="text-gray-600">Name: {job.companyDetails.name}</p>
                 <p className="text-gray-600">
@@ -232,7 +233,6 @@ export default function JobDetails({ jobId }: { jobId: string }) {
         </div>
         <Separator className="my-6" />
       </div>
-
 
       {isOpenForm && updateId && (
         <JobForm

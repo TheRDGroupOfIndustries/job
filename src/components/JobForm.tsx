@@ -2,7 +2,7 @@
 
 // New imports for image upload logic
 import { useRef, useState, useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, FieldError } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +24,7 @@ import { RootState } from "@/redux/store";
 import { IJob } from "@/models/Job";
 import { createJob, updateJob } from "@/redux/features/jobSlice";
 import toast from "react-hot-toast";
-
+import Image from "next/image";
 
 // Cloudinary config (replace with your values)
 const CLOUD_NAME = "YOUR_CLOUD_NAME";
@@ -180,9 +180,9 @@ export default function JobForm({
     setLoading(true);
     data.createdBy = userData?._id || "";
 
-    data.keySkills = data.keySkills.filter(skill => skill.trim() !== "");
-    data.skills = data.skills.filter(skill => skill.trim() !== "");
-    data.location = data.location.filter(loc => loc.trim() !== "");
+    data.keySkills = data.keySkills.filter((skill) => skill.trim() !== "");
+    data.skills = data.skills.filter((skill) => skill.trim() !== "");
+    data.location = data.location.filter((loc) => loc.trim() !== "");
 
     if (data.keySkills.length === 0) {
       toast.error("Please add at least one key skill");
@@ -239,61 +239,77 @@ export default function JobForm({
 
   // Handle company logo file upload to Cloudinary
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-  setImageUploading(true);
-  const formData = new FormData();
-  formData.append("file", file);
-  // Ensure UPLOAD_PRESET is a string, even if env var is missing
-  formData.append("upload_preset", UPLOAD_PRESET || ""); 
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+    setImageUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    // Ensure UPLOAD_PRESET is a string, even if env var is missing
+    formData.append("upload_preset", UPLOAD_PRESET || "");
 
-  // You might want to log these for debugging if needed
-  // console.log("Uploading file:", file.name);
-  // console.log("Using Cloudinary URL:", `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`);
-  // console.log("Using Upload Preset:", UPLOAD_PRESET || "");
+    // You might want to log these for debugging if needed
+    // console.log("Uploading file:", file.name);
+    // console.log("Using Cloudinary URL:", `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`);
+    // console.log("Using Upload Preset:", UPLOAD_PRESET || "");
 
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+          // For FormData, fetch automatically sets the 'Content-Type' header with the correct boundary.
+          // Explicitly setting it can sometimes cause issues.
+        }
+      );
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
-        // For FormData, fetch automatically sets the 'Content-Type' header with the correct boundary.
-        // Explicitly setting it can sometimes cause issues.
+      // Check if the HTTP response status is in the 2xx range (success)
+      if (!res.ok) {
+        const errorResponseText = await res.text(); // Get the raw error message from Cloudinary
+        console.error(
+          "Cloudinary upload failed with status:",
+          res.status,
+          "Response:",
+          errorResponseText
+        );
+        // Display a user-friendly error, potentially truncating the raw response if it's too long
+        toast.error(
+          `Image upload failed: ${res.status} - ${errorResponseText.substring(0, 100)}...`
+        );
+        setImageUploading(false); // Make sure to reset loading state on error before returning
+        return; // Stop execution if the response was not OK
       }
-    );
 
-    // Check if the HTTP response status is in the 2xx range (success)
-    if (!res.ok) { 
-      const errorResponseText = await res.text(); // Get the raw error message from Cloudinary
-      console.error("Cloudinary upload failed with status:", res.status, "Response:", errorResponseText);
-      // Display a user-friendly error, potentially truncating the raw response if it's too long
-      toast.error(`Image upload failed: ${res.status} - ${errorResponseText.substring(0, 100)}...`); 
-      setImageUploading(false); // Make sure to reset loading state on error before returning
-      return; // Stop execution if the response was not OK
+      const data = await res.json(); // Parse the successful JSON response
+      // console.log("Cloudinary response data:", data); // Log full response for debugging
+
+      if (data.secure_url) {
+        // Assuming setValue is from react-hook-form or similar
+        setValue("companyDetails.image", data.secure_url, {
+          shouldValidate: true,
+        });
+        toast.success("Image uploaded!");
+      } else {
+        console.error("Cloudinary response missing secure_url:", data);
+        toast.error("Image upload failed: No secure_url found in response.");
+      }
+    } catch (error) {
+      // Catch network errors or issues parsing JSON from a successful response
+      console.error("Image upload fetch error:", error);
+      toast.error("Image upload error: Check network or server configuration.");
+    } finally {
+      setImageUploading(false); // Ensure loading state is always reset
     }
+  };
 
-    const data = await res.json(); // Parse the successful JSON response
-    // console.log("Cloudinary response data:", data); // Log full response for debugging
-
-    if (data.secure_url) {
-      // Assuming setValue is from react-hook-form or similar
-      setValue("companyDetails.image", data.secure_url, { shouldValidate: true });
-      toast.success("Image uploaded!");
-    } else {
-      console.error("Cloudinary response missing secure_url:", data);
-      toast.error("Image upload failed: No secure_url found in response.");
-    }
-  } catch (error) { // Catch network errors or issues parsing JSON from a successful response
-    console.error("Image upload fetch error:", error);
-    toast.error("Image upload error: Check network or server configuration.");
-  } finally {
-    setImageUploading(false); // Ensure loading state is always reset
+  function getErrorMessage(error: FieldError): React.ReactNode {
+    if (!error) return null;
+    if (typeof error.message === "string") return error.message;
+    // react-hook-form can sometimes nest errors, handle that
+    if (error.type === "manual" && error.message) return error.message;
+    return "Invalid value";
   }
-};
-
 
   return (
     <div className="fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]">
@@ -325,8 +341,8 @@ export default function JobForm({
                     required: "Designation is required",
                     minLength: {
                       value: 2,
-                      message: "Designation must be at least 2 characters"
-                    }
+                      message: "Designation must be at least 2 characters",
+                    },
                   })}
                   className={`rounded-xl bg-gray-100 border-none h-12 ${
                     errors.designation ? "border-red-500" : ""
@@ -334,7 +350,7 @@ export default function JobForm({
                 />
                 {errors.designation && (
                   <p className="text-sm text-red-500">
-                    {errors.jobDescription.message}
+                    {errors?.jobDescription?.message}
                   </p>
                 )}
               </div>
@@ -411,8 +427,8 @@ export default function JobForm({
                     required: "Job description is required",
                     minLength: {
                       value: 10,
-                      message: "Job description must be at least 10 characters"
-                    }
+                      message: "Job description must be at least 10 characters",
+                    },
                   })}
                   className={`rounded-xl bg-gray-100 border-none ${
                     errors.jobDescription ? "border-red-500" : ""
@@ -504,12 +520,12 @@ export default function JobForm({
                         required: "Key skill is required",
                         minLength: {
                           value: 2,
-                          message: "Skill must be at least 2 characters"
+                          message: "Skill must be at least 2 characters",
                         },
                         pattern: {
                           value: /^[a-zA-Z0-9\s\-\+\.\#\(\)]+$/,
-                          message: "Please enter a valid skill name"
-                        }
+                          message: "Please enter a valid skill name",
+                        },
                       })}
                     />
                     <Button
@@ -523,12 +539,16 @@ export default function JobForm({
                     </Button>
                   </div>
                 ))}
-                {keySkillsFields.map((item, index) => 
-                  errors.keySkills?.[index] && (
-                    <p key={`error-${index}`} className="text-sm text-red-500">
-                      {getErrorMessage(errors.keySkills[index])}
-                    </p>
-                  )
+                {keySkillsFields.map(
+                  (item, index) =>
+                    errors.keySkills?.[index] && (
+                      <p
+                        key={`error-${index}`}
+                        className="text-sm text-red-500"
+                      >
+                        {getErrorMessage(errors.keySkills[index])}
+                      </p>
+                    )
                 )}
                 <Button
                   type="button"
@@ -539,11 +559,13 @@ export default function JobForm({
                   <Plus className="h-4 w-4 mr-2" />
                   Add Key Skill
                 </Button>
-                {errors.keySkills && typeof errors.keySkills === 'object' && !Array.isArray(errors.keySkills) && (
-                  <p className="text-sm text-red-500">
-                    Please add at least one key skill.
-                  </p>
-                )}
+                {errors.keySkills &&
+                  typeof errors.keySkills === "object" &&
+                  !Array.isArray(errors.keySkills) && (
+                    <p className="text-sm text-red-500">
+                      Please add at least one key skill.
+                    </p>
+                  )}
               </div>
 
               <div className="grid gap-2">
@@ -559,12 +581,12 @@ export default function JobForm({
                         required: "Skill is required",
                         minLength: {
                           value: 2,
-                          message: "Skill must be at least 2 characters"
+                          message: "Skill must be at least 2 characters",
                         },
                         pattern: {
                           value: /^[a-zA-Z0-9\s\-\+\.\#\(\)]+$/,
-                          message: "Please enter a valid skill name"
-                        }
+                          message: "Please enter a valid skill name",
+                        },
                       })}
                     />
                     <Button
@@ -578,12 +600,16 @@ export default function JobForm({
                     </Button>
                   </div>
                 ))}
-                {skillsFields.map((item, index) => 
-                  errors.skills?.[index] && (
-                    <p key={`error-${index}`} className="text-sm text-red-500">
-                      {getErrorMessage(errors.skills[index])}
-                    </p>
-                  )
+                {skillsFields.map(
+                  (item, index) =>
+                    errors.skills?.[index] && (
+                      <p
+                        key={`error-${index}`}
+                        className="text-sm text-red-500"
+                      >
+                        {getErrorMessage(errors.skills[index])}
+                      </p>
+                    )
                 )}
                 <Button
                   type="button"
@@ -594,11 +620,13 @@ export default function JobForm({
                   <Plus className="h-4 w-4 mr-2" />
                   Add Skill
                 </Button>
-                {errors.skills && typeof errors.skills === 'object' && !Array.isArray(errors.skills) && (
-                  <p className="text-sm text-red-500">
-                    Please add at least one skill.
-                  </p>
-                )}
+                {errors.skills &&
+                  typeof errors.skills === "object" &&
+                  !Array.isArray(errors.skills) && (
+                    <p className="text-sm text-red-500">
+                      Please add at least one skill.
+                    </p>
+                  )}
               </div>
 
               <div className="grid gap-2">
@@ -674,8 +702,8 @@ export default function JobForm({
                       valueAsNumber: true,
                       min: {
                         value: 0,
-                        message: "Experience cannot be negative"
-                      }
+                        message: "Experience cannot be negative",
+                      },
                     })}
                     className={`rounded-xl bg-gray-100 border-none h-12 ${
                       errors.workExperience?.min ? "border-red-500" : ""
@@ -700,11 +728,11 @@ export default function JobForm({
                       valueAsNumber: true,
                       min: {
                         value: 0,
-                        message: "Experience cannot be negative"
+                        message: "Experience cannot be negative",
                       },
-                      validate: (value, formValues) => 
-                        value >= formValues.workExperience.min || 
-                        "Max experience must be greater than or equal to min experience"
+                      validate: (value, formValues) =>
+                        value >= formValues.workExperience.min ||
+                        "Max experience must be greater than or equal to min experience",
                     })}
                     className={`rounded-xl bg-gray-100 border-none h-12 ${
                       errors.workExperience?.max ? "border-red-500" : ""
@@ -730,8 +758,8 @@ export default function JobForm({
                       valueAsNumber: true,
                       min: {
                         value: 1,
-                        message: "Salary must be greater than 0"
-                      }
+                        message: "Salary must be greater than 0",
+                      },
                     })}
                     className={`rounded-xl bg-gray-100 border-none h-12 ${
                       errors.annualSalary?.min ? "border-red-500" : ""
@@ -754,11 +782,11 @@ export default function JobForm({
                       valueAsNumber: true,
                       min: {
                         value: 1,
-                        message: "Salary must be greater than 0"
+                        message: "Salary must be greater than 0",
                       },
-                      validate: (value, formValues) => 
-                        value >= formValues.annualSalary.min || 
-                        "Max salary must be greater than or equal to min salary"
+                      validate: (value, formValues) =>
+                        value >= formValues.annualSalary.min ||
+                        "Max salary must be greater than or equal to min salary",
                     })}
                     className={`rounded-xl bg-gray-100 border-none h-12 ${
                       errors.annualSalary?.max ? "border-red-500" : ""
@@ -777,7 +805,7 @@ export default function JobForm({
               <h2 className="text-xl font-semibold border-b pb-2">
                 Company & Diversity
               </h2>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="companyName">Company Name</Label>
@@ -808,12 +836,12 @@ export default function JobForm({
                       valueAsNumber: true,
                       min: {
                         value: 1800,
-                        message: "Year must be after 1800"
+                        message: "Year must be after 1800",
                       },
                       max: {
                         value: new Date().getFullYear(),
-                        message: "Year cannot be in the future"
-                      }
+                        message: "Year cannot be in the future",
+                      },
                     })}
                     className={`rounded-xl bg-gray-100 border-none h-12 ${
                       errors.companyDetails?.established ? "border-red-500" : ""
@@ -877,7 +905,9 @@ export default function JobForm({
                 {imageUploading && <span>Uploading...</span>}
                 {/* Preview uploaded logo */}
                 {watchCompanyImage && (
-                  <img
+                  <Image
+                    height={50}
+                    width={50}
                     src={watchCompanyImage}
                     alt="Company Logo"
                     className="h-16 w-16 object-cover rounded-full border mt-2"
@@ -987,8 +1017,8 @@ export default function JobForm({
                   valueAsNumber: true,
                   min: {
                     value: 1,
-                    message: "Vacancy must be at least 1"
-                  }
+                    message: "Vacancy must be at least 1",
+                  },
                 })}
                 className={`rounded-xl bg-gray-100 border-none h-12 ${
                   errors.vacancy ? "border-red-500" : ""
@@ -1009,12 +1039,11 @@ export default function JobForm({
             >
               {loading ? (
                 <>
-                <BtnLoader /> {mode === "create" ? "Creating..." : "Updating..."}
+                  <BtnLoader />{" "}
+                  {mode === "create" ? "Creating..." : "Updating..."}
                 </>
               ) : (
-                <>
-                  {mode} Job Post
-                </>
+                <>{mode} Job Post</>
               )}
             </Button>
           </CardFooter>

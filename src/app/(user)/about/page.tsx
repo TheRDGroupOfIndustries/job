@@ -51,8 +51,6 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-hero opacity-10"></div>
@@ -72,7 +70,7 @@ const About = () => {
             <div>
               <div className="space-y-6 text-xl">
                 {/* 🟢 FIX: The "Founded with a vision" paragraph now has corrected spacing and size */}
-                <p className="mb-8"> 
+                <p className="mb-8">
                   Founded with a vision to transform the HR landscape, Alpran HR
                   Services has been at the forefront of providing innovative
                   human resource solutions to businesses of all sizes. Our
@@ -85,7 +83,7 @@ const About = () => {
                   positive work environments.
                 </p>
               </div>
-              
+
               {/* 🟢 FIX: Contact Us Button - Increased Size */}
               <Button
                 className="mt-8 bg-white shadow-2xl 
@@ -98,14 +96,22 @@ const About = () => {
                 Contact Us
               </Button>
             </div>
-            
+
             <div className="flex justify-center lg:justify-end">
               {/* 🟢 FIX: 500+ Companies Served Stat Box with bg-[#f2f2f2] */}
-              <div className="bg-[#f2f2f2] p-8 rounded-xl shadow-lg w-full max-w-xs text-center 
-                            transform hover:scale-[1.03] transition-transform duration-300 border border-gray-100">
-                <h3 className="text-6xl font-extrabold text-orange-600">500+</h3>
-                <p className="text-xl font-semibold text-gray-900 mt-4">Companies Served</p>
-                <p className="text-sm text-gray-600 mt-2">Trusted by organizations worldwide</p>
+              <div
+                className="bg-[#f2f2f2] p-8 rounded-xl shadow-lg w-full max-w-xs text-center 
+                            transform hover:scale-[1.03] transition-transform duration-300 border border-gray-100"
+              >
+                <h3 className="text-6xl font-extrabold text-orange-600">
+                  500+
+                </h3>
+                <p className="text-xl font-semibold text-gray-900 mt-4">
+                  Companies Served
+                </p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Trusted by organizations worldwide
+                </p>
               </div>
             </div>
           </div>
@@ -159,8 +165,8 @@ const About = () => {
               Ready to Transform Your HR?
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Let&apos;s work together to build stronger teams and create positive
-              work environments
+              Let&apos;s work together to build stronger teams and create
+              positive work environments
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button

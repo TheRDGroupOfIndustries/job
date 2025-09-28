@@ -69,18 +69,18 @@ const ApplicationComp = () => {
               )}
             </Avatar>
             <CardContent className="p-0 text-start w-full ">
-              <h2 className="text-lg sm:text-2xl font-medium">
+              <h2 className="text-lg sm:text-2xl font-medium line-clamp-1">
                 {app.appliedBy.name}
               </h2>
-              <p className="text-gray-500 text-xs sm:text-sm break-words">
+              <p className="text-gray-500 text-xs sm:text-sm break-words line-clamp-1">
                 ({app.appliedBy.email})
               </p>
-              <p className="text-gray-700 text-sm sm:text-base font-medium">
+              <p className="text-gray-700 text-sm sm:text-base font-medium line-clamp-1">
                 {app.job.designation}
               </p>
               {/* NEW FIELD: Location */}
               {app.userLocation && (
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-gray-600 line-clamp-1">
                   <MapPin size={14} className="mr-1 text-orange-500" />
                   {app.userLocation}  
                 </div>

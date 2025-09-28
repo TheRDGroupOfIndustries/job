@@ -22,6 +22,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { fetchApplications } from "@/redux/features/applicationSlice";
+import Image from "next/image";
 
 // 1. Define the TypeScript interface for form data (Schema-aligned)
 interface IFormInput {
@@ -114,7 +115,7 @@ const JobApplicationForm = ({
             const starValue = index + 1;
             return (
               <Star
-                key={index}
+                key={`star-${starValue}`}
                 size={24}
                 onClick={() => handleRatingClick(starValue)}
                 className={`cursor-pointer transition-colors ${
@@ -170,7 +171,7 @@ const JobApplicationForm = ({
     }
 
     // Log FormData contents (for debugging, won't show file content directly)
-    for (let [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
 
@@ -238,7 +239,11 @@ const JobApplicationForm = ({
 
           <Button
             className="text-black hover:bg-orange-600 rounded-full p-2 cursor-pointer absolute top-2 right-2"
-            onClick={() => setOpenForm(false)}
+            onClick={() => {
+              setOpenForm(false);
+              setProfileImagePreview(null);
+              reset();
+            }}
           >
             <X />
           </Button>
@@ -441,7 +446,9 @@ const JobApplicationForm = ({
                 />
                 {profileImagePreview ? (
                   <div className="flex flex-col items-center">
-                    <img
+                    <Image
+                      height={100}
+                      width={100}
                       src={profileImagePreview}
                       alt="Profile Preview"
                       className="w-24 h-24 object-cover rounded-full mb-2 border-2 border-[#FF7F3F]"

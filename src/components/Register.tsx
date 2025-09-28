@@ -49,35 +49,40 @@ export default function Register() {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   const handleSendOtp = async (data: RegisterFormData) => {
     setSendingOtp(true);
     dispatch(registerUser(data) as any)
-      .unwrap().then((res: any)=> {
+      .unwrap()
+      .then((res: any) => {
         // console.log("register res", res)
-        if(res.success){
-          setOtpSent(true)
+        if (res.success) {
+          setOtpSent(true);
         }
-      }).catch((err: any) => {
-        console.log("register err", err)
-      }).finally(() => {
+      })
+      .catch((err: any) => {
+        console.log("register err", err);
+      })
+      .finally(() => {
         setSendingOtp(false);
       });
   };
 
   const handleVerifyOtp = async (data: RegisterFormData) => {
     setLoading(true);
-    dispatch(verifyUser({email: data.email, otp: data.otp}) as any)
-      .unwrap().then((res: any) => {
+    dispatch(verifyUser({ email: data.email, otp: data.otp }) as any)
+      .unwrap()
+      .then((res: any) => {
         // console.log("register res", res)
-        if(res.success){
-          router.push("/auth/login")
+        if (res.success) {
+          router.push("/auth/login");
         }
-      }).catch((err: any) => {
-        console.log("register err", err)
-      }).finally(() => {
+      })
+      .catch((err: any) => {
+        console.log("register err", err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   };
@@ -93,7 +98,12 @@ export default function Register() {
             <CardDescription className="text-center">
               Enter Otp sent to your email to verify your account.
             </CardDescription>
-            <Button className="absolute -top-18 -left-0 rounded-full cursor-pointer" onClick={() => setOtpSent(false)}><ArrowLeft/> </Button>
+            <Button
+              className="absolute -top-18 -left-0 rounded-full cursor-pointer"
+              onClick={() => setOtpSent(false)}
+            >
+              <ArrowLeft />{" "}
+            </Button>
           </CardHeader>
           <form onSubmit={handleSubmit(handleVerifyOtp)}>
             <CardContent className="grid gap-4">
@@ -126,7 +136,10 @@ export default function Register() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4 p-6 pt-6">
-              <Button className="w-full rounded-full cursor-pointer" type="submit">
+              <Button
+                className="w-full rounded-full cursor-pointer"
+                type="submit"
+              >
                 {loading ? <BtnLoader /> : "Varify"}
               </Button>
             </CardFooter>
@@ -249,7 +262,10 @@ export default function Register() {
               </div> */}
             </CardContent>
             <CardFooter className="flex flex-col gap-4 p-6 pt-6">
-              <Button className="w-full rounded-full cursor-pointer" type="submit">
+              <Button
+                className="w-full rounded-full cursor-pointer"
+                type="submit"
+              >
                 {sendingOtp ? <BtnLoader /> : "Register"}
               </Button>
               <p className="text-center text-secondary text-base">

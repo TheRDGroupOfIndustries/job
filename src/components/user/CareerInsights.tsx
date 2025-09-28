@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import ArticleCard from "./ArticleCard";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 const ARTICLES = [
   {
@@ -81,7 +82,9 @@ const CareerInsights = () => {
             >
               <X size={24} />
             </button>
-            <img
+            <Image
+              height={256}
+              layout="fill"
               src={selectedArticle.imageUrl}
               alt={selectedArticle.title}
               className="w-full h-64 object-cover rounded-t-lg"

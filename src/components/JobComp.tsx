@@ -17,23 +17,26 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PageLoader from "./PageLoader";
+import Image from "next/image";
 
 export default function JobComp() {
   const { mails, selectedMail } = useSelector((state: RootState) => state.mail);
   const { jobs } = useSelector((state: RootState) => state.job); // Ensure jobs is typed as IJob[]
   const { userData } = useSelector((state: RootState) => state.auth);
   const [isOpenForm, setIsOpenForm] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     if (jobs.length > 0) {
-      setLoading(false)
+      setLoading(false);
     }
-    dispatch(fetchJobs()).then(() => setLoading(false)).catch(() => setLoading(false))
+    dispatch(fetchJobs())
+      .then(() => setLoading(false))
+      .catch(() => setLoading(false));
   }, []);
 
   const formatDate = (dateString: Date) => {
@@ -45,8 +48,8 @@ export default function JobComp() {
     });
   };
 
-  if(loading) {
-    return <PageLoader />
+  if (loading) {
+    return <PageLoader />;
   }
 
   return (
@@ -66,26 +69,31 @@ export default function JobComp() {
             .join("");
 
           return (
-            <Card key={job._id} className="max-w-xs max-h-[350px] w-full rounded-2xl p-4 bg-card hover:bg-background duration-200 transition-all shadow-none border-none flex flex-col ">
+            <Card
+              key={job._id}
+              className="max-w-xs max-h-[350px] w-full rounded-2xl p-4 bg-card hover:bg-background duration-200 transition-all shadow-none border-none flex flex-col "
+            >
               <CardHeader className="flex items-center justify-center p-0 mt-6">
                 {job.companyDetails?.image ? (
-    <img
-      src={job.companyDetails.image}
-      alt={job.companyDetails.name}
-      className="h-10 w-10 rounded-full object-cover border"
-    />
-  ) : (
-    <div
-      className="h-10 w-10 flex items-center justify-center rounded-full"
-      style={{ backgroundColor: "#E17C3A" }}
-    >
-      <span className="text-white text-sm font-medium">
-        {job.companyDetails?.name
-          ? job.companyDetails.name.charAt(0).toUpperCase()
-          : "?"}
-      </span>
-    </div>
-  )}
+                  <Image
+                    height={20}
+                    width={20}
+                    src={job.companyDetails.image}
+                    alt={job.companyDetails.name}
+                    className="h-20 w-20 rounded-full object-cover border"
+                  />
+                ) : (
+                  <div
+                    className="h-20 w-20 flex items-center justify-center rounded-full"
+                    style={{ backgroundColor: "#E17C3A" }}
+                  >
+                    <span className="text-white text-3xl font-medium">
+                      {job.companyDetails?.name
+                        ? job.companyDetails.name.charAt(0).toUpperCase()
+                        : "?"}
+                    </span>
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="p-0 m-0 relative flex-1 flex flex-col justify-between">
                 <div className="text-gray-500 text-sm">

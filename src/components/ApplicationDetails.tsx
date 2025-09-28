@@ -105,7 +105,8 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                 <Avatar className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FD5E00] text-white text-2xl sm:text-3xl font-semibold flex-shrink-0">
                   {/* UPDATED: Use image field if available */}
                   {application.userProfileImage ? (
-                    <img
+                    <Image
+                      layout="fill"
                       src={application.userProfileImage}
                       alt={application.appliedBy.name}
                       className="w-full h-full object-cover rounded-full"
