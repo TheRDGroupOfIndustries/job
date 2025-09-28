@@ -52,7 +52,7 @@ export default function CandidateApplicationsPage() {
   useEffect(() => {
     async function fetchApplications() {
       try {
-        const res = await fetch('http://localhost:3000/api/user/applications/get-all');
+        const res = await fetch('/api/user/applications/get-all');
         if (!res.ok) throw new Error('Failed to fetch applications');
         const data = await res.json();
         console.log('API Data:', data);
