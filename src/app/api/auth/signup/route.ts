@@ -13,7 +13,7 @@ function generateOTP() {
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { name, email, password, role, phone } = await req.json();
+    const { name, email, password, phone } = await req.json();
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         name,
         email,
         password,
-        role: role || "user",
+        role: "user",
         phone,
         otp: OTP,
       });

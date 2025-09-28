@@ -34,6 +34,7 @@ export interface IJob extends Document {
     established: number;
     sector: string;
     locatedAt: string;
+    image?: string;
   };
   jobDescription: string;
   vacancy?: number;
@@ -95,6 +96,7 @@ const JobSchema: Schema<IJob> = new Schema(
       established: { type: Number, required: true },
       sector: { type: String, required: true },
       locatedAt: { type: String, required: true },
+      image: { type: String }, 
     },
 
     jobDescription: { type: String, required: true },
