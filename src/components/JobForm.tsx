@@ -1,14 +1,13 @@
-// components/JobForm.tsx
-
 "use client";
 
+// New imports for image upload logic
+import { useRef, useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Card,
@@ -19,7 +18,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Trash2, X, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
 import BtnLoader from "./BtnLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -27,6 +25,12 @@ import { IJob } from "@/models/Job";
 import { createJob, updateJob } from "@/redux/features/jobSlice";
 import toast from "react-hot-toast";
 
+
+// Cloudinary config (replace with your values)
+const CLOUD_NAME = "YOUR_CLOUD_NAME";
+const UPLOAD_PRESET = "YOUR_UPLOAD_PRESET";
+
+// Updated type: companyDetails.image is optional string
 interface FormData {
   designation: string;
   employmentType: string;
@@ -61,6 +65,7 @@ interface FormData {
     established: string;
     sector: string;
     locatedAt: string;
+    image?: string; // newly added field
   };
   jobDescription: string;
   vacancy: number;
@@ -120,24 +125,24 @@ export default function JobForm({
         established: "",
         sector: "",
         locatedAt: "",
+        image: "", // new default value for image
       },
       jobDescription: "",
       vacancy: 0,
     },
-    mode: "onChange", // Enable real-time validation
+    mode: "onChange",
   });
 
   const { userData } = useSelector((state: RootState) => state.auth);
   const { jobs } = useSelector((state: RootState) => state.job);
-
   const [loading, setLoading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false); // new state for upload UI
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (mode === "update" && jobId) {
       const job = jobs.find((j) => j._id === jobId);
-      console.log("job", job);
       if (job) {
         reset(job as any);
       }
@@ -174,47 +179,38 @@ export default function JobForm({
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     data.createdBy = userData?._id || "";
-    
-    // Filter out empty strings from arrays
+
     data.keySkills = data.keySkills.filter(skill => skill.trim() !== "");
     data.skills = data.skills.filter(skill => skill.trim() !== "");
     data.location = data.location.filter(loc => loc.trim() !== "");
 
-    // Additional validation for arrays
     if (data.keySkills.length === 0) {
       toast.error("Please add at least one key skill");
       setLoading(false);
       return;
     }
-    
     if (data.skills.length === 0) {
       toast.error("Please add at least one skill");
       setLoading(false);
       return;
     }
-    
     if (data.location.length === 0) {
       toast.error("Please add at least one location");
       setLoading(false);
       return;
     }
 
-    console.log("Job Data:", data);
-
     if (mode === "update" && jobId) {
-      console.log("JobId:", jobId);
       toast.loading("Updating Job...", { id: "update-job" });
       dispatch(updateJob(data as any) as any)
         .unwrap()
         .then((res: { message: string; job: IJob }) => {
-          console.log("res", res);
           toast.success("Job Updated Successfully", { id: "update-job" });
           reset();
           close();
         })
         .catch((err: any) => {
           toast.error("Error Updating Job", { id: "update-job" });
-          console.log("err", err);
         })
         .finally(() => {
           setLoading(false);
@@ -225,13 +221,11 @@ export default function JobForm({
         .unwrap()
         .then((res: { message: string; job: IJob }) => {
           toast.success("Job Created Successfully", { id: "create-job" });
-          console.log("res", res);
           reset();
           close();
         })
         .catch((err: any) => {
           toast.error("Error Creating Job", { id: "create-job" });
-          console.log("err", err);
         })
         .finally(() => {
           setLoading(false);
@@ -241,13 +235,65 @@ export default function JobForm({
 
   const watchWillingToRelocate = watch("willingToRelocate");
   const watchDiversityHiring = watch("diversityHiring");
+  const watchCompanyImage = watch("companyDetails.image"); // new watcher
 
-  // Helper function to get error message
-  const getErrorMessage = (error: any): string => {
-    if (typeof error === "string") return error;
-    if (error?.message) return error.message;
-    return "This field is required";
-  };
+  // Handle company logo file upload to Cloudinary
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+  setImageUploading(true);
+  const formData = new FormData();
+  formData.append("file", file);
+  // Ensure UPLOAD_PRESET is a string, even if env var is missing
+  formData.append("upload_preset", UPLOAD_PRESET || ""); 
+
+  // You might want to log these for debugging if needed
+  // console.log("Uploading file:", file.name);
+  // console.log("Using Cloudinary URL:", `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`);
+  // console.log("Using Upload Preset:", UPLOAD_PRESET || "");
+
+
+  try {
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+        // For FormData, fetch automatically sets the 'Content-Type' header with the correct boundary.
+        // Explicitly setting it can sometimes cause issues.
+      }
+    );
+
+    // Check if the HTTP response status is in the 2xx range (success)
+    if (!res.ok) { 
+      const errorResponseText = await res.text(); // Get the raw error message from Cloudinary
+      console.error("Cloudinary upload failed with status:", res.status, "Response:", errorResponseText);
+      // Display a user-friendly error, potentially truncating the raw response if it's too long
+      toast.error(`Image upload failed: ${res.status} - ${errorResponseText.substring(0, 100)}...`); 
+      setImageUploading(false); // Make sure to reset loading state on error before returning
+      return; // Stop execution if the response was not OK
+    }
+
+    const data = await res.json(); // Parse the successful JSON response
+    // console.log("Cloudinary response data:", data); // Log full response for debugging
+
+    if (data.secure_url) {
+      // Assuming setValue is from react-hook-form or similar
+      setValue("companyDetails.image", data.secure_url, { shouldValidate: true });
+      toast.success("Image uploaded!");
+    } else {
+      console.error("Cloudinary response missing secure_url:", data);
+      toast.error("Image upload failed: No secure_url found in response.");
+    }
+  } catch (error) { // Catch network errors or issues parsing JSON from a successful response
+    console.error("Image upload fetch error:", error);
+    toast.error("Image upload error: Check network or server configuration.");
+  } finally {
+    setImageUploading(false); // Ensure loading state is always reset
+  }
+};
+
 
   return (
     <div className="fixed inset-0 bg-secondary/50 z-50 flex items-center justify-center backdrop-blur-[6px]">
@@ -288,7 +334,7 @@ export default function JobForm({
                 />
                 {errors.designation && (
                   <p className="text-sm text-red-500">
-                    {getErrorMessage(errors.designation)}
+                    {errors.jobDescription.message}
                   </p>
                 )}
               </div>
@@ -731,6 +777,7 @@ export default function JobForm({
               <h2 className="text-xl font-semibold border-b pb-2">
                 Company & Diversity
               </h2>
+              
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="companyName">Company Name</Label>
@@ -816,6 +863,26 @@ export default function JobForm({
                     </p>
                   )}
                 </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="companyImage">Company Logo (optional)</Label>
+                <Input
+                  id="companyImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="rounded-xl bg-gray-100 border-none h-12"
+                  disabled={imageUploading}
+                />
+                {imageUploading && <span>Uploading...</span>}
+                {/* Preview uploaded logo */}
+                {watchCompanyImage && (
+                  <img
+                    src={watchCompanyImage}
+                    alt="Company Logo"
+                    className="h-16 w-16 object-cover rounded-full border mt-2"
+                  />
+                )}
               </div>
 
               <div className="grid gap-2">

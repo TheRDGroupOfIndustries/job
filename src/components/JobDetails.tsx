@@ -177,6 +177,26 @@ export default function JobDetails({ jobId }: { jobId: string }) {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-700 ">Company</h3>
+              <div className="flex items-center gap-4 mt-2">
+  {job.companyDetails?.image ? (
+    <img
+      src={job.companyDetails.image}
+      alt={job.companyDetails.name}
+      className="h-12 w-12 rounded-full object-cover border"
+    />
+  ) : (
+    <div
+      className="h-8 w-8 flex items-center justify-center rounded-full"
+      style={{ backgroundColor: "#E17C3A" }}
+    >
+      <span className="text-white text-sm font-medium">
+        {job.companyDetails?.name
+          ? job.companyDetails.name.charAt(0).toUpperCase()
+          : "?"}
+      </span>
+    </div>
+  )}
+</div>
               <div className="capitalize">
                 <p className="text-gray-600">Name: {job.companyDetails.name}</p>
                 <p className="text-gray-600">
