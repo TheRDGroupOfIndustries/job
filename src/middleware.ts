@@ -3,13 +3,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
 
-interface IUser {
-  id: string;
-  email: string;
-  role: string;
-  name: string;
-}
-
 function getRoleFromToken(token?: string): string | null {
   if (!token) return null;
   try {
@@ -24,40 +17,38 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // -----------------------
-  // ✅ Add CORS headers
+  // ✅ Global CORS for all APIs
   // -----------------------
+  const allowedOrigin = "http://localhost:5173"; // 👈 change to "*" or prod domain
   const res = NextResponse.next();
-  const allowedOrigin = "http://localhost:5173"; // 🔑 change to "*" if you want to allow all
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  // Handle preflight request quickly
+  // Handle preflight request
   if (req.method === "OPTIONS") {
     return new NextResponse(null, { status: 204, headers: res.headers });
   }
 
   // -----------------------
-  // 🔒 Authentication logic
+  // 🔒 Authentication & Role-based routes
   // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
 
-  if (!token && !pathname.startsWith("/auth"))
+  if (!token && !pathname.startsWith("/auth") && !pathname.startsWith("/api")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
 
-  // 🔒 Protect /admin → only admin
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // 🔒 Protect /employee → only employee
   if (pathname.startsWith("/employee") && role !== "employee") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // 🔒 If authenticated user visits /auth routes → redirect them
   if (pathname.startsWith("/auth") && token) {
     if (role === "admin") {
       return NextResponse.redirect(new URL("/admin", req.url));
@@ -70,13 +61,13 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // ✅ Continue with response (with CORS headers included)
+  // ✅ Allow everything else
   return res;
 }
 
 export const config = {
   matcher: [
-    "/api/:path*", // 👈 added so CORS applies to all API routes
+    "/api/:path*",   // 👈 apply CORS to all API routes
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
