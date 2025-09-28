@@ -29,6 +29,21 @@ export async function POST(
     const jobDesignation = formData.get("jobDesignation") as string;
     const resumeFile = formData.get("resume") as File;
 
+    // --- START: REQUIRED CHANGES FOR NEW SCHEMA FIELDS ---
+    const skillsString = formData.get("skills") as string;
+    const image = formData.get("image") as string | null;
+    const ratingsString = formData.get("ratings") as string;
+    const location = formData.get("location") as string;
+
+    // Basic validation for new required fields
+    if (!skillsString || !ratingsString || !location) {
+        return NextResponse.json(
+            { error: "Skills, ratings, and location are required." },
+            { status: 400 }
+        );
+    }
+    
+
     if (!resumeFile) {
       return NextResponse.json(
         { error: "Resume file required" },
@@ -48,21 +63,18 @@ export async function POST(
       );
     }
 
-    // 🔹 Convert File to Buffer
     const arrayBuffer = await resumeFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // 🔹 Prepare formData for Cloudinary unsigned upload
     const cloudForm = new FormData();
     cloudForm.append(
       "file",
-      new Blob([buffer], { type: resumeFile.type }), // <-- correct MIME
+      new Blob([buffer], { type: resumeFile.type }), 
       resumeFile.name
     );
-    cloudForm.append("upload_preset", "unsigned_raw"); // your preset
+    cloudForm.append("upload_preset", "unsigned_raw"); 
     cloudForm.append("folder", "resumes");
 
-    // 🔹 Upload to Cloudinary (unsigned)
     const cloudRes = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/raw/upload`,
       {
@@ -82,7 +94,6 @@ export async function POST(
       );
     }
 
-    // 🔹 Save application in DB
     const application = await Application.create({
       appliedBy: new mongoose.Types.ObjectId(appliedBy),
       jobId: new mongoose.Types.ObjectId(id),
@@ -90,6 +101,12 @@ export async function POST(
       userEmail: user.email,
       resume: uploadResult.secure_url,
       status: "pending",
+
+      skills: skillsString.split(',').map(s => s.trim()), 
+      image: image ? image : undefined, 
+      ratings: parseFloat(ratingsString),
+      location,
+      
     });
 
     console.log("Application saved in DB:", application);

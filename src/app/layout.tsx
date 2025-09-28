@@ -1,33 +1,28 @@
 import type { Metadata } from "next";
-import {
-  DM_Mono,
-  Geist,
-  Geist_Mono,
-  Spline_Sans,
-  STIX_Two_Text,
-} from "next/font/google";
+import { DM_Mono, Spline_Sans, STIX_Two_Text } from "next/font/google";
 import "../styles/globals.css";
 import { Providers } from "@/redux/Providers";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/user/NavBar";
 import Footer from "@/components/user/Footer";
 
+// Define fonts
 const dmMono = DM_Mono({
   weight: ["400", "500"],
-  variable: "--font-dm-mono",
   subsets: ["latin"],
+  display: "swap", // ensures font-display swap
 });
 
-const stixTwoMath = STIX_Two_Text({
+const stixTwoText = STIX_Two_Text({
   weight: ["400", "700"],
-  variable: "--font-stix-two-math",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const splineSans = Spline_Sans({
   weight: ["400", "700"],
-  variable: "--font-spline-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -37,20 +32,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body
-        className={` ${dmMono.variable} ${stixTwoMath.variable} ${splineSans.className} antialiased`}
+        className={`${dmMono.className} ${stixTwoText.className} ${splineSans.className} antialiased`}
       >
         <Providers>
-          <>
-            <Navbar />
-            {children}
-            <Footer />
-          </>
+          <Navbar />
+          {children}
+          <Footer />
         </Providers>
         <Toaster />
       </body>

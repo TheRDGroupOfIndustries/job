@@ -1,10 +1,9 @@
-// components/JobCard.jsx
 import React from "react";
-import { Heart, MapPin, Briefcase, DollarSign, Clock, Building, IndianRupee } from "lucide-react";
+import { MapPin, Briefcase, Clock, Building, IndianRupee } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Job {
+export interface Job {
   _id: string;
   designation: string;
   companyDetails: {
@@ -12,6 +11,7 @@ interface Job {
     established: number;
     sector: string;
     locatedAt: string;
+    logo?: string;
   };
   location: string[];
   employmentType: string;
@@ -26,7 +26,7 @@ interface Job {
   skills: string[];
   keySkills: string[];
   department: string;
-  roleCategory: string;
+  roleCategory?: string;
   vacancy: number;
   jobDescription: string;
 }
@@ -47,42 +47,35 @@ const JobCard = ({ job }: { job: Job }) => {
     vacancy,
   } = job;
 
-  
-
-  // Format salary display
   const formatSalary = () => {
-    if (annualSalary.hideFromCandidates) {
-      return "Salary not disclosed";
-    }
-    const currency = annualSalary.currency === 'INR' ? '₹' : annualSalary.currency;
-    return `${currency}${annualSalary.min} - ${currency}${annualSalary.max} per year`;
+    if (annualSalary.hideFromCandidates) return "Salary not disclosed";
+    const currency = annualSalary.currency === "INR" ? "₹" : annualSalary.currency;
+    const format = (num: number) => num.toLocaleString("en-IN");
+    return `${currency}${format(annualSalary.min)} - ${currency}${format(annualSalary.max)}`;
   };
 
-  // Format posted time
   const formatPostedTime = (dateString: string) => {
     const now = new Date();
     const posted = new Date(dateString);
     const diffInDays = Math.floor((now.getTime() - posted.getTime()) / (1000 * 60 * 60 * 24));
-    
     if (diffInDays === 0) return "Posted today";
-    if (diffInDays === 1) return "Posted 1 day ago";
-    if (diffInDays < 7) return `Posted ${diffInDays} days ago`;
-    if (diffInDays < 30) return `Posted ${Math.floor(diffInDays / 7)} weeks ago`;
-    return `Posted ${Math.floor(diffInDays / 30)} months ago`;
+    if (diffInDays === 1) return "1 day ago";
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+    if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
+    return `${Math.floor(diffInDays / 365)} years ago`;
   };
 
-  // Format work mode and employment type
   const formatJobType = () => {
-    let type = employmentType?.replace('-', ' ') || '';
-    if (workMode && workMode.toLowerCase() === 'remote') {
-      type += ' • Remote';
+    let type = employmentType?.replace("-", " ") || "";
+    if (workMode?.toLowerCase() === "remote") {
+      type += " • Remote";
     } else if (workMode) {
-      type += ` • ${workMode.replace('-', ' ')}`;
+      type += ` • ${workMode.replace("-", " ")}`;
     }
     return type;
   };
 
-  // Get company logo (placeholder for now)
   const getCompanyLogo = () => {
     // Generate a placeholder image based on company name
     const companyName = companyDetails?.name || 'Company';
@@ -90,118 +83,104 @@ const JobCard = ({ job }: { job: Job }) => {
     return "/images/jobs/devops-engg.jpg"
   };
 
-  // Function to determine tag styling based on its type
   const getTagStyle = (tag: string) => {
-    const baseClasses = "text-xs font-medium px-2.5 py-0.5 rounded-full transition-colors";
-
-    // Customize colors for specific skills
-    const lowerTag = tag.toLowerCase();
-    
-    if (lowerTag.includes('react') || lowerTag.includes('javascript') || lowerTag.includes('js')) {
-      return `${baseClasses} bg-blue-100 text-blue-800`;
-    }
-    if (lowerTag.includes('python') || lowerTag.includes('django') || lowerTag.includes('flask')) {
-      return `${baseClasses} bg-green-100 text-green-800`;
-    }
-    if (lowerTag.includes('java') || lowerTag.includes('spring')) {
-      return `${baseClasses} bg-red-100 text-red-800`;
-    }
-    if (lowerTag.includes('node') || lowerTag.includes('express')) {
-      return `${baseClasses} bg-emerald-100 text-emerald-800`;
-    }
-    if (lowerTag.includes('sql') || lowerTag.includes('database')) {
-      return `${baseClasses} bg-purple-100 text-purple-800`;
-    }
-    
-    // Default style
-    return `${baseClasses} bg-gray-100 text-gray-700`;
+    const base = "text-xs font-medium px-2.5 py-0.5 rounded-full transition-colors";
+    const lower = tag.toLowerCase();
+    if (lower.includes("react") || lower.includes("javascript") || lower.includes("js"))
+      return `${base} bg-blue-100 text-blue-800`;
+    if (lower.includes("python") || lower.includes("django") || lower.includes("flask"))
+      return `${base} bg-green-100 text-green-800`;
+    if (lower.includes("java") || lower.includes("spring"))
+      return `${base} bg-red-100 text-red-800`;
+    if (lower.includes("node") || lower.includes("express"))
+      return `${base} bg-emerald-100 text-emerald-800`;
+    if (lower.includes("sql") || lower.includes("database"))
+      return `${base} bg-purple-100 text-purple-800`;
+    return `${base} bg-gray-100 text-gray-700`;
   };
 
-  // Combine and deduplicate skills
   const allSkills = [...new Set([...keySkills, ...skills])];
-  const displaySkills = allSkills.slice(0, 3); // Show max 3 skills
+  const displaySkills = allSkills.slice(0, 3);
 
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg flex flex-col h-full relative hover:-translate-y-2 duration-200 transition-all group">
-      {/* Company Info & Save Icon */}
-      <div className="flex justify-between items-start mb-4">
+    <div
+      className="bg-white p-4 rounded-xl border border-gray-200 hover:shadow-md flex flex-col 
+      min-h-[250px] w-full sm:w-[280px] lg:w-auto relative hover:-translate-y-1 transition-all group"
+    >
+      {/* Company Info */}
+      <div className="flex justify-between items-start mb-2">
         <div className="flex items-start">
           <Image
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             src={getCompanyLogo()}
-            alt={`${companyDetails?.name || 'Company'} logo`}
-            className="w-12 h-12 rounded-lg object-cover mr-3 flex-shrink-0"
+            alt={`${companyDetails?.name || "Company"} logo`}
+            className="w-10 h-10 rounded-lg object-cover mr-3 flex-shrink-0"
           />
-          <div className="flex flex-col items-start max-w-[80%]">
-            <h3 className="text-xl text-start font-bold text-gray-900 group-hover:text-orange-500 transition-all duration-200 mb-1 line-clamp-2">
+          <div className="flex flex-col items-start max-w-[85%]">
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-500 transition-all mb-0.5 line-clamp-1">
               {designation}
             </h3>
-            <h4 className="text-base font-medium text-gray-600">
-              {companyDetails?.name || 'Company Name'}
+            <h4 className="text-sm font-medium text-gray-500">
+              {companyDetails?.name || "Company Name"}
             </h4>
           </div>
         </div>
-        {/* <button
-          aria-label="Save Job"
-          className="text-gray-400 hover:text-orange-500 transition-colors flex-shrink-0"
-        >
-          <Heart size={20} />
-        </button> */}
       </div>
 
-      {/* Details Grid */}
-      <div className="space-y-3 text-sm text-gray-600 pb-4 mb-4 flex-grow">
+      {/* Job Details */}
+      <div className="space-y-1.5 text-sm text-gray-600 mb-2 flex-grow">
         <div className="flex items-center">
-          <MapPin size={16} className="mr-2 flex-shrink-0 text-gray-400" />
-          <span>{location?.[0] || 'Location not specified'}</span>
+          <MapPin size={15} className="mr-1 text-gray-400" />
+          <span>{location?.[0] || "Location n/a"}</span>
         </div>
-        
         <div className="flex items-center">
-          <Briefcase size={16} className="mr-2 flex-shrink-0 text-gray-400" />
+          <Briefcase size={15} className="mr-1 text-gray-400" />
           <span className="capitalize">{formatJobType()}</span>
         </div>
-        
         <div className="flex items-center">
-          <IndianRupee size={16} className="mr-2 flex-shrink-0 text-gray-400" />
+          <IndianRupee size={15} className="mr-1 text-gray-400" />
           <span>{formatSalary()}</span>
         </div>
-        
         <div className="flex items-center">
-          <Clock size={16} className="mr-2 flex-shrink-0 text-gray-400" />
+          <Clock size={15} className="mr-1 text-gray-400" />
           <span>{formatPostedTime(createdAt)}</span>
         </div>
-
         {department && (
           <div className="flex items-center">
-            <Building size={16} className="mr-2 flex-shrink-0 text-gray-400" />
-            <span>{department} • {vacancy} opening{vacancy > 1 ? 's' : ''}</span>
+            <Building size={15} className="mr-1 text-gray-400" />
+            <span>
+              {department} • {vacancy} opening{vacancy > 1 ? "s" : ""}
+            </span>
           </div>
         )}
       </div>
 
-      {/* Skills Tags */}
+      {/* Skills */}
       {displaySkills.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          {displaySkills.map((skill, index) => (
-            <span
-              key={index}
-              className={getTagStyle(skill)}
-            >
+        <div className="flex flex-wrap gap-2 mb-2">
+          {displaySkills.map((skill, i) => (
+            <span key={i} className={getTagStyle(skill)}>
               {skill}
             </span>
           ))}
           {allSkills.length > 3 && (
-            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500">
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">
               +{allSkills.length - 3} more
             </span>
           )}
         </div>
       )}
 
-      {/* Apply Button */}
-      <Link href={`/browse-jobs/${_id}`} className="w-full font-semibold py-3 rounded-lg transition-all bg-[#FF7F3F] text-white hover:bg-orange-600 cursor-pointer hover:scale-[1.02] transform duration-200 flex justify-center items-center">
-        Apply Now
+      {/* Apply */}
+      <Link
+        href={`/browse-jobs/${_id}`}
+        aria-label={`Apply for ${designation}`}
+        className="w-full text-sm font-semibold py-2 rounded-md transition-all bg-[#FF7F3F] 
+        text-white hover:bg-orange-600 cursor-pointer hover:scale-[1.02] duration-200 
+        flex justify-center items-center mt-auto"
+      >
+        Apply
       </Link>
     </div>
   );
