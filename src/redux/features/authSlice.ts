@@ -65,13 +65,11 @@ export const registerUser = createAsyncThunk(
       email,
       password,
       name,
-      role,
       phone,
     }: {
       email: string;
       password: string;
       name: string;
-      role: string;
       phone?: string;
     },
     { rejectWithValue }
@@ -82,7 +80,7 @@ export const registerUser = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, name, role, phone }),
+        body: JSON.stringify({ email, password, name, phone }),
       });
       const data = await res.json();
       if (!data.success) {

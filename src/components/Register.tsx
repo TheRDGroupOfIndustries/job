@@ -25,7 +25,7 @@ interface RegisterFormData {
   email: string;
   password: string;
   phone: string;
-  role: string;
+  // role: string;
   otp: string;
 }
 
@@ -41,7 +41,7 @@ export default function Register() {
       email: "",
       password: "",
       phone: "",
-      role: "employee",
+      // role: "employee",
       otp: "",
     },
   });
@@ -203,7 +203,7 @@ export default function Register() {
                 )}
               </div>
 
-              <div className="grid gap-2">
+              {/* <div className="grid gap-2">
                 <Label htmlFor="role">Role</Label>
                 <div className="flex flex-row space-x-4">
                   <div className="flex items-center space-x-2 cursor-pointer">
@@ -246,7 +246,7 @@ export default function Register() {
                     </Label>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </CardContent>
             <CardFooter className="flex flex-col gap-4 p-6 pt-6">
               <Button className="w-full rounded-full cursor-pointer" type="submit">
