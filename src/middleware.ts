@@ -10,6 +10,10 @@ interface IUser {
   name: string;
 }
 
+const allowedOrigins = [
+  "http://localhost:5173"
+];
+
 function getRoleFromToken(token?: string): string | null {
   if (!token) return null;
   try {
@@ -22,6 +26,15 @@ function getRoleFromToken(token?: string): string | null {
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+    const origin = req.headers.get("origin");
+
+  const isApi = pathname.startsWith("/api");
+  const isTrustedOrigin = origin && allowedOrigins.includes(origin);
+
+  if (isApi && isTrustedOrigin) {
+    return NextResponse.next();
+  }
+  
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
 
