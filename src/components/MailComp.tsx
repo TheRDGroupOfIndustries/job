@@ -32,22 +32,22 @@ const MailComp: React.FC<MailCompProps> = ({ onSelectMail }) => {
 
   return (
     <div className="h-full overflow-y-auto custom-scrollbar">
-      <div className="flex items-center justify-between px-6 py-4 border-b">
+      <div className="flex items-center justify-between px-6 pl-20 py-4 border-b">
         <h1 className="text-lg font-semibold text-gray-800">Primary Mails</h1>
         <div className="flex items-center gap-4 text-gray-500">
           <span>{filteredMails.length} emails</span>
-          <button title="Refresh" className="hover:text-gray-700">⟳</button>
-          <button title="More options" className="hover:text-gray-700">⋯</button>
+          {/* <button title="Refresh" className="hover:text-gray-700">⟳</button>
+          <button title="More options" className="hover:text-gray-700">⋯</button> */}
         </div>
       </div>
 
-      <div className="p-4 border-b">
+      {/* <div className="p-4 border-b">
         <input
           type="search"
           placeholder="Search emails..."
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
-      </div>
+      </div> */}
 
       {filteredMails.length > 0 ? (
         <div className="divide-y">

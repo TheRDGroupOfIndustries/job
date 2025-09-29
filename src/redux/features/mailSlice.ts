@@ -81,6 +81,31 @@ export const deleteMails = createAsyncThunk(
   }
 )
 
+export const deleteMail = createAsyncThunk(
+  "mail/deleteMail",
+  async ({ mailId }: { mailId: string }, { rejectWithValue, getState }) => {
+    const mailIds = [mailId];
+    console.log(mailIds)
+    try {
+      const res = await fetch("/api/mails/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({mailIds})
+      });
+
+      const data = await res.json();
+      return {data, mailId};
+      
+    } catch (error) {
+      return rejectWithValue(error);
+      
+    }
+  }
+)
+
+
 
 const mailSlice = createSlice({
   name: "mail",
@@ -152,6 +177,24 @@ const mailSlice = createSlice({
       toast.success("Mails deleted successfully", { id: "deleteMail" });
     })
     .addCase(deleteMails.rejected, (state, action: PayloadAction<any>) => {
+      toast.error("Failed to delete mails", { id: "deleteMail" });
+    });
+    builder
+    .addCase(deleteMail.pending, (state) => {
+      toast.loading("Deleting Mails...", { id: "deleteMail" });
+    })
+    .addCase(deleteMail.fulfilled, (state, action: PayloadAction<any>) => {
+      console.log(action.payload)
+      state.mails = state.mails.filter(
+        (mail) => mail._id !== action.payload.mailId
+      );
+      state.filteredMails = state.filteredMails?.filter(
+        (mail) => mail._id !== action.payload.mailId
+      );
+      state.selectedMail = [];
+      toast.success("Mails deleted successfully", { id: "deleteMail" });
+    })
+    .addCase(deleteMail.rejected, (state, action: PayloadAction<any>) => {
       toast.error("Failed to delete mails", { id: "deleteMail" });
     });
   },

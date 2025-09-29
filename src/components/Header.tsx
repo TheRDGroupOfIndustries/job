@@ -100,21 +100,21 @@ export default function Header() {
       );
     }
     
-    if (pathname.includes("applications")) {
-      return (
-        <div className="flex justify-end">
-          <JobApplicationForm /> 
-        </div>
-      );
-    }
+    // if (pathname.includes("applications")) {
+    //   return (
+    //     <div className="flex justify-end">
+    //       <JobApplicationForm /> 
+    //     </div>
+    //   );
+    // }
 
-    if (pathname.includes("all-employee")) {
-      return (
-        <div className="flex justify-end">
-          <h2 className="text-2xl font-semibold text-gray-800">All Employees</h2>
-        </div>
-      );
-    }
+    // if (pathname.includes("all-employee")) {
+    //   return (
+    //     <div className="flex justify-end">
+    //       <h2 className="text-2xl font-semibold text-gray-800">All Employees</h2>
+    //     </div>
+    //   );
+    // }
 
 
     return <div className="flex justify-end">{/* Empty space on the right */}</div>;

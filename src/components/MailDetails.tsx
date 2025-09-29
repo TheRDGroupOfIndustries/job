@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchMails } from "@/redux/features/mailSlice";
+import { deleteMail, fetchMails } from "@/redux/features/mailSlice";
 import { Mail } from "@/types";
 
 interface MailDetailsProps {
@@ -52,8 +52,8 @@ const MailDetails: React.FC<MailDetailsProps> = ({ id }) => {
         </Button>
         <div className="flex-grow text-left text-xl font-bold">{mail?.subject ?? "No Subject"}</div>
         <div className="flex items-center gap-4 text-gray-700">
-          <Star size={20} className="cursor-pointer hover:text-yellow-500" />
-          <Trash2 size={20} className="cursor-pointer hover:text-red-500" />
+          {/* <Star size={20} className="cursor-pointer hover:text-yellow-500" /> */}
+          <Trash2 onClick={() => dispatch(deleteMail({mailId: mail?._id as string}) as never)} size={20} className="cursor-pointer hover:text-red-500" />
         </div>
       </div>
 
