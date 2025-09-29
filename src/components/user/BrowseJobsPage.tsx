@@ -3,7 +3,7 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import JobSearchBar from "./JobSearchBar";
 import JobCard from "./JobCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -111,21 +111,31 @@ const BrowseJobsPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen pt-16">
       {/* 1. Hero Section with Background */}
-      <div className="bg-[#FF7F3F] text-white py-28 relative ">
-        <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
-            Find Your Dream Job Today
-          </h1>
-          <p className="text-xl font-light mb-10 max-w-3xl mx-auto">
-            Explore thousands of hand-picked opportunities from leading
-            companies worldwide.
-          </p>
-        </div>
-        {/* 2. Job Search Form (Floating over the hero section) */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 ">
-          <Suspense fallback={<div>Loading jobs...</div>}>
-            <JobSearchBar />
-          </Suspense>
+      <div
+        className=""
+        style={{
+          backgroundImage: "url('/images/bgImage-HeroSection.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="bg-primary/80 text-white py-28 relative ">
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
+              Find Your Dream Job Today
+            </h1>
+            <p className="text-xl font-light mb-10 max-w-3xl mx-auto">
+              Explore thousands of hand-picked opportunities from leading
+              companies worldwide.
+            </p>
+          </div>
+          {/* 2. Job Search Form (Floating over the hero section) */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 ">
+            <Suspense fallback={<div>Loading jobs...</div>}>
+              <JobSearchBar />
+            </Suspense>
+          </div>
         </div>
       </div>
 
@@ -135,9 +145,13 @@ const BrowseJobsPage = () => {
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3">
             Featured Job Opportunities
           </h2>
-          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            {finalFilteredJobs.length} jobs found
-          </p>
+          <div className="flex items-center justify-center mb-12  max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 ">
+              {finalFilteredJobs.length} jobs found
+            </p>
+
+            <button className="flex items-center gap-1 ml-4 cursor-pointer text-gray-400 hover:text-primary transition-colors duration-150">Clear Filters <X size={18} /></button>
+          </div>
 
           {/* Filter Tabs */}
           <div className="flex flex-wrap justify-center space-x-2 sm:space-x-4 mb-16">
