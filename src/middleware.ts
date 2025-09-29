@@ -19,7 +19,7 @@ export function middleware(req: NextRequest) {
   // -----------------------
   // ✅ Global CORS for all APIs
   // -----------------------
-  const allowedOrigin = ["http://localhost:5173", "https://hr-app-five.vercel.app"]; // 👈 change to "*" or prod domain
+  const allowedOrigin = "https://hr-app-five.vercel.app"; // 👈 change to "*" or prod domain
   const res = NextResponse.next();
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
