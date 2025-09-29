@@ -160,7 +160,8 @@ const Footer = () => {
                     {/* *** REVISED LOGO IMPLEMENTATION *** */}
                     <div className="w-10 h-6 px-1 bg-white flex items-center justify-center overflow-hidden">
                         <Image
-                            layout="fill"
+                        height={24}
+                        width={24}
                             src={"/BNI_logo.png"}
                             alt="BNI Logo"
                             // Use Tailwind classes to ensure the image scales to fit the container
