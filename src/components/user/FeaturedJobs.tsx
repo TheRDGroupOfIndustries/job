@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { fetchJobs } from "@/redux/features/jobSlice";
+import Link from "next/link";
 
 const FILTER_TABS = ["All", "Full-time", "Part-time", "Contract", "Remote"];
 
@@ -82,10 +83,10 @@ const FeaturedJobs: React.FC = () => {
         </div>
 
         {/* View All Button */}
-        <button className="inline-flex items-center text-primary border-2 border-primary font-semibold py-3 px-8 rounded-lg transition-colors hover:bg-primary hover:text-white cursor-pointer">
+        <Link href="/browse-jobs" className="inline-flex items-center text-primary border-2 border-primary font-semibold py-3 px-8 rounded-lg transition-colors hover:bg-primary hover:text-white cursor-pointer">
           View All Jobs
           <ArrowRight size={20} className="ml-3" />
-        </button>
+        </Link>
       </div>
     </section>
   );
