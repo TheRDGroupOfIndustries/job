@@ -93,7 +93,7 @@ export default function CandidateApplicationsPage() {
       try {
         // Using 'http://localhost:3000' based on your provided conflict block.
         const res = await fetch(
-          "http://localhost:3000/api/user/applications/get-all"
+          "/api/user/applications/get-all"
         );
         if (!res.ok) throw new Error("Failed to fetch applications");
         const data = await res.json();
