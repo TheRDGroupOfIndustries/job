@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Kanban from "@/models/Kanban";
-import {User} from "@/models/User";
+import { User } from "@/models/User";
 import { authenticate } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
@@ -30,10 +30,10 @@ export async function POST(req: NextRequest) {
 
     const newTask = await Kanban.create({
       ...body,
-      createdBy: user.id, 
+      createdBy: user.id,
     })
 
-const task = await newTask.populate("assignedTo createdBy", "name email role");
+    const task = await newTask.populate("assignedTo createdBy", "name email role");
 
 
 

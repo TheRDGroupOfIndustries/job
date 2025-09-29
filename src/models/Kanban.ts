@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 export interface IKanban extends Document {
   title: string;
   details: string;
-  status: "Pending" | "Completed";
+  status: "Pending" | "In Progress" | "Completed";
   deadline: Date;
   assignedTo: Types.ObjectId;
   createdBy: Types.ObjectId;
@@ -15,7 +15,7 @@ const KanbanSchema: Schema<IKanban> = new Schema(
     details: { type: String, required: true },
     status: {
       type: String,
-      enum: ["Pending", "Completed"],
+      enum: ["Pending", "In Progress", "Completed"],
       default: "Pending",
     },
     deadline: { type: Date },
