@@ -37,114 +37,124 @@ export default function Header() {
     dispatch(setFilteredMails(filtered) as any);
   }
 
-  return (
-    <header className="h-[80px] bg-section rounded-br-[40px] rounded-bl-[100px] pl-20 pr-10 flex items-center justify-between gap-10">
-      <div className="flex-shrink-0 flex items-center space-x-2">
-          <Link href={`/${userData?.role}`} className="flex items-center">
-            <Image
-              src="/images/alplogo.webp"
-              alt="logo"
-              width={40}
-              height={40}
+  // Helper function to render dynamic right-side content
+  const renderDynamicContent = () => {
+    if (pathname.includes("send-mails")) {
+      return (
+        <div className="flex items-center gap-4 justify-end">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex items-center gap-2"
+          >
+            <input
+              type="text"
+              placeholder="Search for mails..."
+              value={searchQuery}
+              onChange={handleSearchMails}
+              className="bg-background rounded-full px-4 py-1 min-w-[200px] outline-secondary"
             />
-            <span className="text-2xl font-bold text-orange-600 ml-2">
-              Alpran HR Services
-            </span>
-          </Link>
-        </div>
-      {pathname.includes("send-mails") && (
-        <>
-          <div className="flex flex-1 items-center">
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex items-center gap-2"
+            <Button
+              type="submit"
+              className="rounded-full bg-primary/40 hover:bg-primary/50 cursor-pointer"
             >
-              <input
-                type="text"
-                placeholder="Search for mails..."
-                value={searchQuery}
-                onChange={handleSearchMails}
-                className="bg-background rounded-full px-4 py-1 min-w-[300px] outline-secondary "
-              />
-              <Button
-                type="submit"
-                className="rounded-full bg-primary/40 hover:bg-primary/50 cursor-pointer"
-              >
-                <Search className="text-primary font-semibold" />
-              </Button>
-            </form>
-          </div>
-          <div className="flex items-center gap-2">
-            {selectedMail.length > 0 && (
-              <Button
-                type="button"
-                className="text-card rounded-full cursor-pointer"
-                onClick={() => dispatch(deleteMails() as any)}
-              >
-                <Trash2 />
-              </Button>
-            )}
-
-            <ComposeMailModal />
-          </div>
-        </>
-      )}
-
-      {pathname.includes("assign-works") && (
-        <>
+              <Search className="text-primary font-semibold" />
+            </Button>
+          </form>
+          {selectedMail.length > 0 && (
+            <Button
+              type="button"
+              className="text-card rounded-full cursor-pointer"
+              onClick={() => dispatch(deleteMails() as any)}
+            >
+              <Trash2 />
+            </Button>
+          )}
+          <ComposeMailModal />
+        </div>
+      );
+    }
+    
+    if (pathname.includes("assign-works")) {
+      return (
+        <div className="flex justify-end">
           <Button
             onClick={() => setOpenAssignWorkForm(true)}
-            className="rounded-full text-section cursor-pointer"
+            className="rounded-full text-section cursor-pointer bg-orange-600 hover:bg-orange-700"
           >
-            <CirclePlus /> Assign Work
+            <CirclePlus className="mr-2 h-5 w-5" /> Assign Work
           </Button>
-          {openAssignWorkForm && (
-            <TaskForm
-              mode="Create"
-              close={() => setOpenAssignWorkForm(false)}
-            />
-          )}
-        </>
-      )}
-      {/* {pathname.includes("my-works") && (
-        <>
+        </div>
+      );
+    }
+
+    if (pathname.includes("my-works")) {
+      return (
+        <div className="flex justify-end">
           <Button
             onClick={() => setOpenAssignWorkForm(true)}
-            className="rounded-full text-section cursor-pointer"
+            className="rounded-full text-section cursor-pointer bg-orange-600 hover:bg-orange-700"
           >
-            <CirclePlus /> Add Work
+            <CirclePlus className="mr-2 h-5 w-5" /> Add Work
           </Button>
-          {openAssignWorkForm && (
-            <TaskForm
-              mode="Create"
-              close={() => setOpenAssignWorkForm(false)}
-            />
-          )}
-        </>
-      )} */}
-      {pathname.includes("applications") && (
-        <>
-          {/* <Button
-            onClick={()=>setOpenApplicationForm(true)}
-            className="rounded-full text-section cursor-pointer"
-          >
-            <CirclePlus /> Add Application
-          </Button> */}
+        </div>
+      );
+    }
+    
+    if (pathname.includes("applications")) {
+      return (
+        <div className="flex justify-end">
+          <JobApplicationForm /> 
+        </div>
+      );
+    }
 
-          {/* {openAssignWorkForm && <TaskForm mode="Create" close={()=>setOpenAssignWorkForm(false)}  />} */}
-          {/* <JobApplicationForm /> */}
-        </>
+    if (pathname.includes("all-employee")) {
+      return (
+        <div className="flex justify-end">
+          <h2 className="text-2xl font-semibold text-gray-800">All Employees</h2>
+        </div>
+      );
+    }
+
+
+    return <div className="flex justify-end">{/* Empty space on the right */}</div>;
+  };
+
+  return (
+    <header className="h-[80px] bg-section rounded-br-[40px] rounded-bl-[100px] pl-10 pr-10 flex items-center justify-between gap-10">
+      
+      
+      <div className="grid grid-cols-3 w-full items-center h-full">
+        
+
+        <div className="flex-shrink-0">
+        </div>
+
+        <div className="flex justify-center">
+            <Link href={`/${userData?.role}`} className="flex items-center space-x-2">
+                <Image
+                    src="/images/alplogo.webp"
+                    alt="logo"
+                    width={40}
+                    height={40}
+                />
+                <span className="text-2xl font-bold text-orange-600">
+                    Alpran HR Services
+                </span>
+            </Link>
+        </div>
+
+        <div className="flex justify-end">
+            {renderDynamicContent()}
+        </div>
+      </div>
+      
+      {openAssignWorkForm && (
+        <TaskForm
+          mode={pathname.includes("my-works") ? "Create" : "Create"}
+          close={() => setOpenAssignWorkForm(false)}
+        />
       )}
-      {pathname.includes("all-employee") && (
-        <>
-          <h2 className="text-2xl font-semibold">All Employees</h2>
-        </>
-      )}
-      {/* {pathname.includes("my-works") && (
-        <>
-          <h2 className="text-2xl font-semibold">Your Kanban</h2>
-        </>
-      )} */}
       {openApplicationForm && <ApplicationForm close={() => setOpenApplicationForm(false)} />}
     </header>
   );

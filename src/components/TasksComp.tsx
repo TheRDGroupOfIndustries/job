@@ -103,7 +103,7 @@ const TasksCard = ({ task }: { task: any }) => {
   };
 
   const handleDeleteTask = () => {
-    toast.loading("Deleting Task", { id: "deleting" });
+    toast.loading("Deleting Task...", { id: "deleting" });
     dispatch(deleteTask(task._id) as any)
       .unwrap()
       .then(() => {
@@ -231,18 +231,14 @@ const TasksCard = ({ task }: { task: any }) => {
 
 export default function TasksComp() {
   const { tasks } = useSelector((state: RootState) => state.task);
-
-  const { userData, isAutheticated } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { userData } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userData && userData.role === "admin") {
+    if (userData?.role === "admin") {
       dispatch(getTasks() as any);
-    } else if (userData && userData.role === "employee") {
+    } else if (userData?.role === "employee") {
       dispatch(getEmployeeTasks() as any);
-    } else {
     }
   }, [userData, dispatch]);
 
@@ -298,3 +294,4 @@ export default function TasksComp() {
     </div>
   );
 }
+

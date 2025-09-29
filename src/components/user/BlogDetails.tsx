@@ -200,9 +200,6 @@ const BlogDetails = ({ slug }: { slug: string }) => {
 
                 {/* Share/Action Footer */}
                 <div className="mt-16 pt-8 border-t border-gray-200 flex justify-center">
-                    <button className="bg-[#FF7F3F] text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors">
-                        Share this Article
-                    </button>
                 </div>
             </div>
 
