@@ -158,6 +158,8 @@ const TasksCard = ({ task }: { task: any }) => {
                 >
                   <PencilLine size={16} className="text-gray-500 " />
                 </button>
+              </>
+            )}
                 <button
                   onClick={handleDeleteTask}
                   className="p-2 rounded-full hover:bg-red-100 transition cursor-pointer"
@@ -165,8 +167,6 @@ const TasksCard = ({ task }: { task: any }) => {
                 >
                   <Trash size={16} className="text-red-500" />
                 </button>
-              </>
-            )}
           </div>
         </div>
 
