@@ -4,21 +4,17 @@ import { Application } from "@/models/Application";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
 
-export async function PATCH(
+export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     await connectDB();
-    const user = authenticate(req as any);
 
+    const user = authenticate(req as any);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    // if (user.role !== "admin" && user.role !== "employee") {
-    //   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    // }
 
     const applicationId = params.id;
     if (!mongoose.Types.ObjectId.isValid(applicationId)) {
@@ -30,10 +26,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
 
-    application.status = "rejected";
-    await application.save();
+    // Delete the application
+    await Application.findByIdAndDelete(applicationId);
 
-    return NextResponse.json({ message: "Application rejected", application }, { status: 200 });
+    return NextResponse.json({ message: "Application deleted successfully" }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

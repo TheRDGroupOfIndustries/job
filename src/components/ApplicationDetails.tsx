@@ -12,7 +12,7 @@ import {
   MapPin,
   Star,
   Code,
-} from "lucide-react"; // Imported MapPin, Star, Code
+} from "lucide-react"; 
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -59,7 +59,9 @@ const ApplicationDetails = ({ id }: { id: string }) => {
     application?.appliedBy?.name
       ?.split(" ")
       ?.map((n: string) => n[0])
-      ?.join("") || "NA"; // Helper to render star rating
+      ?.join("") || "NA"; 
+      
+  // Helper to render star rating
   const renderRatingStars = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -323,36 +325,33 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                         application.status === "accepted"
                           ? "bg-orange-100 text-green-800"
                           : application.status === "pending"
-                            ? "bg-orange-100 text-yellow-800"
-                            : application.status === "rejected"
-                              ? "bg-orange-100 text-red-800"
-                              : "bg-orange-100 text-gray-800"
+                          ? "bg-orange-100 text-yellow-800"
+                          : application.status === "rejected"
+                          ? "bg-orange-100 text-red-800"
+                          : "bg-orange-100 text-gray-800"
                       }`}
                     >
                       {application.status === "accepted"
                         ? "Accepted"
                         : application.status === "pending"
-                          ? "Pending"
-                          : application.status === "rejected"
-                            ? "Rejected"
-                            : ""}
+                        ? "Pending"
+                        : application.status === "rejected"
+                        ? "Rejected"
+                        : ""}
                     </span>
                   )}
                 </h3>
 
                 {application.status === "pending" && (
                   <div className="flex gap-4">
-                    <Button
-                      variant="outline"
-                      className="flex-1 border-2 border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg transition-colors cursor-pointer"
-                      onClick={() => {
-                        // Add reject functionality here
-                        console.log("Rejecting application...");
-                        dispatch(rejectApplication(id) as any);
-                      }}
-                    >
-                      Reject
-                    </Button>
+                    <Button variant="outline" className="flex-1 border-2 border-red-500
+                     text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg 
+                     transition-colors cursor-pointer" 
+                     onClick={() => { if (!application?._id) return; 
+                     console.log("Rejecting application...", application._id); 
+                     dispatch(rejectApplication(application._id) as any); }} >
+                       Reject 
+                       </Button>
 
                     <Button
                       className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 font-medium rounded-lg transition-colors cursor-pointer"

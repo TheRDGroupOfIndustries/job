@@ -21,6 +21,7 @@ const Footer = () => {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
+  // Conditional rendering to hide footer on specific paths
   if (
     pathname.includes("sanity-studio") ||
     pathname.includes("auth") ||
@@ -33,9 +34,10 @@ const Footer = () => {
   return (
     <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700">
+        
         {/* Company Info Section */}
         <div className="flex flex-col items-start text-center sm:text-left">
-          <h3 className="text-primary text-2xl font-bold mb-4">
+          <h3 className="text-orange-500 text-2xl font-bold mb-4">
             Alpran HR Services
           </h3>
           <p className="text-gray-400 leading-relaxed max-w-sm mb-6">
@@ -48,7 +50,7 @@ const Footer = () => {
               aria-label="Facebook"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Facebook size={20} />
             </Link>
@@ -57,7 +59,7 @@ const Footer = () => {
               aria-label="Twitter"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Twitter size={20} />
             </Link>
@@ -66,7 +68,7 @@ const Footer = () => {
               aria-label="LinkedIn"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Linkedin size={20} />
             </Link>
@@ -75,7 +77,7 @@ const Footer = () => {
               aria-label="Instagram"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 flex items-center justify-center bg-primary text-white rounded-full hover:bg-orange-600 transition-colors"
+              className="w-10 h-10 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
             >
               <Instagram size={20} />
             </Link>
@@ -87,34 +89,22 @@ const Footer = () => {
           <h4 className="text-white text-lg font-semibold mb-4">Quick Links</h4>
           <ul className="space-y-3 text-center sm:text-left">
             <li>
-              <Link
-                href="/"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/" className="text-gray-400 hover:text-white transition-colors">
                 Browse Jobs
               </Link>
             </li>
             <li>
-              <Link
-                href="/candidates"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/candidates" className="text-gray-400 hover:text-white transition-colors">
                 Candidates
               </Link>
             </li>
             <li>
-              <Link
-                href="/about"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
                 About Us
               </Link>
             </li>
             <li>
-              <Link
-                href="/contact"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
                 Contact
               </Link>
             </li>
@@ -126,34 +116,22 @@ const Footer = () => {
           <h4 className="text-white text-lg font-semibold mb-4">Support</h4>
           <ul className="space-y-3 text-center sm:text-left">
             <li>
-              <Link
-                href="/contact"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
                 Help Center
               </Link>
             </li>
             <li>
-              <Link
-                href="/privacy-policy"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
                 Privacy Policy
               </Link>
             </li>
             <li>
-              <Link
-                href="/t&c"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/t&c" className="text-gray-400 hover:text-white transition-colors">
                 Terms of Service
               </Link>
             </li>
             <li>
-              <Link
-                href="/cookie-policy"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
+              <Link href="/cookie-policy" className="text-gray-400 hover:text-white transition-colors">
                 Cookie Policy
               </Link>
             </li>
@@ -166,26 +144,49 @@ const Footer = () => {
         <p>&copy; {currentYear} Alpran HR Services. All rights reserved.</p>
       </div>
 
-      <div className="fixed bottom-6 left-6 z-50">
-        <Link
-          href="/bni-link"
-          className="bg-orange-500 text-white font-medium py-3 px-6 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-3 text-sm"
+      {/* =====================================================
+        Floating Buttons
+        ===================================================== */}
+      
+      {/* 1. "Proud Member of BNI" Button (Custom Design) */}
+      <div className="fixed bottom-20 left-6 z-50 sm:bottom-6"> 
+        <Link 
+            href="/bni-link" 
+            className="block"
         >
-          <Award size={20} className="text-white" />
-          <span>Proud Member of BNI</span>
+            <div className="relative bg-gradient-to-r w-fit bg-[linear-gradient(to_right,#dc2626,#ef4444,#b91c1c)] text-white px-4 py-2 rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer">
+                <div className="flex items-center space-x-2">
+                    {/* *** REVISED LOGO IMPLEMENTATION *** */}
+                    <div className="w-10 h-6 px-1 bg-white flex items-center justify-center overflow-hidden">
+                        <img 
+                            src={"/BNI_logo.png"}
+                            alt="BNI Logo"
+                            // Use Tailwind classes to ensure the image scales to fit the container
+                            className="object-contain h-full w-full"
+                        />
+                    </div>
+                    {/* ********************************* */}
+                    <span className="text-sm font-semibold whitespace-nowrap">
+                        Proud Member of BNI
+                    </span>
+                </div>
+                {/* Gradient overlay for subtle shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-lg"></div>
+            </div>
         </Link>
       </div>
 
-      {/* "Talk with Us" Button (Floating) */}
+      {/* 2. "Talk with Us" Button (Floating) */}
       <div className="fixed bottom-6 right-6 z-50">
         <Link
           href="/contact"
-          className="bg-primary text-white font-medium py-2 px-4 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]"
+          className="bg-orange-500 text-white font-medium py-2 px-4 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]"
         >
           <MessageSquare size={16} />
           <span>Talk with Us</span>
         </Link>
       </div>
+      
     </footer>
   );
 };
