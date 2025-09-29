@@ -11,6 +11,7 @@ import {
   Users,
   TrendingUp,
 } from "lucide-react";
+import Image from "next/image";
 
 // NOTE: Handshake is no longer imported as the image replaces the icon/text placeholder
 
@@ -95,7 +96,7 @@ const About = () => {
                   Founded with a vision to <strong>simplify and humanize</strong> complex HR processes, Alpran HR Services began as a small team determined to make a significant impact. Our focus was simple: empower businesses by <strong>elevating their employee experience.</strong>
                 </p>
                 <p>
-                  Today, we are a comprehensive HR partner, trusted for our <strong>deep expertise and future-forward approach</strong>. We integrate strategic consultancy with cutting-edge technology, ensuring our clients don't just manage HR—they <strong>master talent</strong>.
+                  Today, we are a comprehensive HR partner, trusted for our <strong>deep expertise and future-forward approach</strong>. We integrate strategic consultancy with cutting-edge technology, ensuring our clients don&apos;t just manage HR—they <strong>master talent</strong>.
                 </p>
               </div>
 
@@ -115,7 +116,8 @@ const About = () => {
               
               {/* Visual Placeholder - USING YOUR IMAGE FROM PUBLIC FOLDER */}
               <div className="relative h-64 rounded-xl overflow-hidden shadow-xl border border-gray-200">
-                <img
+                <Image
+                  layout="fill"
                   // The path to your image in the public folder. Double-check capitalization!
                   src={"/img.jpg"} 
                   alt="Team Collaboration"

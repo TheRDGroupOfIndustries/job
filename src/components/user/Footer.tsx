@@ -12,6 +12,7 @@ import {
   Award,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -158,7 +159,8 @@ const Footer = () => {
                 <div className="flex items-center space-x-2">
                     {/* *** REVISED LOGO IMPLEMENTATION *** */}
                     <div className="w-10 h-6 px-1 bg-white flex items-center justify-center overflow-hidden">
-                        <img 
+                        <Image
+                            layout="fill"
                             src={"/BNI_logo.png"}
                             alt="BNI Logo"
                             // Use Tailwind classes to ensure the image scales to fit the container

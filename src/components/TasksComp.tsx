@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TaskForm from "./TaskForm";
 import toast from "react-hot-toast";
 import TaskDetails from "./TaskDetails";
+import Image from "next/image";
 
 // New component for the Assignee Avatar Stack
 const AssigneeToAvatars = ({
@@ -29,7 +30,9 @@ const AssigneeToAvatars = ({
   return (
     <div className="flex -space-x-2 overflow-hidden">
       {/* Assigned To Avatar */}
-      <img
+      <Image
+        height={40}
+        width={40}
         className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover"
         src={avatarUrl}
         alt={assignedTo?.name || "Assignee"}
@@ -53,7 +56,9 @@ const AssigneeByAvatars = ({
   return (
     <div className="flex -space-x-2 overflow-hidden">
       {/* Assigned To Avatar */}
-      <img
+      <Image
+        height={40}
+        width={40}
         className="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover"
         src={avatarUrl}
         alt={createdBy?.name || "Assignee"}
