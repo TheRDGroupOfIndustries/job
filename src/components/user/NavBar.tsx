@@ -3,19 +3,29 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { Button } from "../ui/button";
+import { DoorOpen } from "lucide-react";
+import toast from "react-hot-toast";
+import { logout } from "@/redux/features/authSlice";
 
 const Navbar = () => {
+  const { userData, isAutheticated } = useSelector(
+    (state: RootState) => state.auth
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   // console.log(pathname)
+  const dispatch = useDispatch();
 
   if (
     pathname.includes("sanity-studio") ||
     pathname.includes("auth") ||
     pathname.includes("admin") ||
     pathname.includes("employee")
-   ) {
+  ) {
     return null;
   }
 
@@ -24,7 +34,15 @@ const Navbar = () => {
   };
 
   const handlePostJobClick = () => {
-    router.push("/post-job"); 
+    router.push("/post-job");
+  };
+
+  const handleLogout = async () => {
+    toast.loading("Logging Out...", { id: "logout" });
+    await fetch("/api/auth/logout", { method: "POST" });
+    dispatch(logout());
+    toast.success("Logged out", { id: "logout" });
+    router.push("/");
   };
 
   return (
@@ -53,7 +71,7 @@ const Navbar = () => {
           >
             Jobs
           </Link>
-          
+
           <Link
             href="/candidates"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
@@ -78,12 +96,52 @@ const Navbar = () => {
           >
             Contact
           </Link>
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium cursor-pointer"
-          >
-            Register
-          </button>
+          {isAutheticated ? (
+            <div className="relative group">
+              {/* 1. Profile Image/Icon (The Click/Hover Target) */}
+              <Image
+                src={userData?.profileImage || "/images/profile_picture.jpg"}
+                alt="Profile Picture"
+                priority={true}
+                width={40}
+                height={40}
+                className="rounded-full cursor-pointer transition duration-150 ease-in-out hover:ring-2 hover:ring-primary hover:ring-offset-2"
+              />
+
+              {/* 2. Dropdown Menu (Appears on Hover) */}
+              <div className="absolute right-0 top-0 mt-3 hidden group-hover:block transition-all duration-300 ease-out z-50 min-w-[200px] pt-10">
+                
+                <div className="bg-white border border-gray-100 rounded-xl shadow-xl p-4 space-y-3">
+                  {/* User Information */}
+                  <div className="pb-3 border-b border-gray-200">
+                    <p className="font-semibold text-gray-800 truncate">
+                      {userData?.name || "User Name"}
+                    </p>
+                    <p className="text-sm text-gray-500 truncate">
+                      {userData?.email || "user@example.com"}
+                    </p>
+                  </div>
+
+                  {/* Logout Button */}
+                  <Button
+                    type="button"
+                    onClick={handleLogout}
+                    variant={"ghost"}
+                    className="text-base text-red-600 hover:bg-red-50 cursor-pointer w-full justify-start px-2 py-1.5 transition duration-150"
+                  >
+                    <DoorOpen size={20} className="mr-2" /> Logout
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => router.push("/auth/login")}
+              className="w-full text-left px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium"
+            >
+              Register
+            </button>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -152,12 +210,25 @@ const Navbar = () => {
           >
             Contact
           </Link>
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="w-full text-left px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium"
-          >
-            Register
-          </button>
+          {isAutheticated ? (
+            <div className=" rounded-full mb-2">
+              <Image
+                src={userData?.profileImage || "/images/profile_picture.jpg"}
+                alt="Profile Picture"
+                priority={true}
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </div>
+          ) : (
+            <button
+              onClick={() => router.push("/auth/login")}
+              className="w-full text-left px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium"
+            >
+              Register
+            </button>
+          )}
         </div>
       )}
     </nav>

@@ -88,7 +88,7 @@ const HowItWorks = () => {
         </div>
 
         <Link 
-          href="/browse-jobs" 
+          href="/auth/login" 
           className="inline-flex items-center bg-primary text-white font-semibold py-3 sm:py-4 px-6 sm:px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-6 sm:mt-8 hover:scale-[1.05] transform mx-auto duration-200 text-base sm:text-lg"
         >
           Get Started Today

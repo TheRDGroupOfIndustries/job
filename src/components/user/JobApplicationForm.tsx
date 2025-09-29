@@ -44,7 +44,7 @@ const JobApplicationForm = ({
   jobId?: string;
 }) => {
   const [job_Id, setJob_Id] = useState(jobId || null);
-  const { userData } = useSelector((state: RootState) => state.auth);
+  const { userData, isAutheticated } = useSelector((state: RootState) => state.auth);
   const [openForm, setOpenForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
@@ -156,7 +156,7 @@ const JobApplicationForm = ({
     // };    // For demonstration, you might want to log the FormData content
 
     const formData = new FormData();
-    formData.append("appliedBy", data.appliedBy);
+    // formData.append("appliedBy", userData?._id as string);
     formData.append("job", job_Id as string);
     formData.append("userLocation", data.userLocation);
     formData.append("yearOfExperience", data.yearOfExperience.toString());
@@ -182,6 +182,7 @@ const JobApplicationForm = ({
         `/api/user/applications/apply-for-job/${job_Id}`,
         {
           method: "POST",
+          credentials: "include",
           body: formData, // FormData is automatically set with 'multipart/form-data' header
         }
       );
@@ -207,10 +208,19 @@ const JobApplicationForm = ({
     }
   };
 
+  const handleOpenForm = () => {
+    if(!isAutheticated) {
+      toast.error("Please login to apply for this job")
+      return;
+    }
+    setOpenForm(true);
+  };
+
+
   return (
     <>
       <button
-        onClick={() => setOpenForm(true)}
+        onClick={handleOpenForm}
         className="bg-[#FF7F3F] text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-orange-600 transition-colors flex items-center justify-center space-x-2 w-full sm:w-auto"
       >
         {userData?.role === "admin" || userData?.role === "employee" ? (
@@ -251,7 +261,7 @@ const JobApplicationForm = ({
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Field: appliedBy (User ID) */}
             {/* Remove this block after User Login is implemented to get the ID from auth context */}
-            <div>
+            {/* <div>
               <label
                 htmlFor="appliedBy"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -279,7 +289,7 @@ const JobApplicationForm = ({
                   {errors.appliedBy.message}
                 </p>
               )}
-            </div>
+            </div> */}
 
             {userData?.role === "admin" || userData?.role === "employee" && (
               <div>
