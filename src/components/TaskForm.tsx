@@ -14,6 +14,7 @@ type User = {
   _id: string;
   name: string;
   email: string;
+  role: string;
 };
 
 const statusOptions = ["Pending", "In Progress", "Completed"];
@@ -62,14 +63,16 @@ export default function TaskForm({
       const deadlineDate = new Date(task.deadline).toISOString().split("T")[0];
       setValue("deadline", deadlineDate);
       setValue("assignedTo", task.assignedTo._id);
-      
+
       // Set status if available
       if ((task as any)?.status) {
         setSelectedStatus((task as any).status);
         setValue("status", (task as any).status);
       }
 
-      setSelectedUser(`${(task as any)?.assignedTo?.name} (${(task as any)?.assignedTo?.email})`);
+      setSelectedUser(
+        `${(task as any)?.assignedTo?.name} (${(task as any)?.assignedTo?.email})`
+      );
     }
   }, [id]);
 
@@ -78,6 +81,7 @@ export default function TaskForm({
     fetch("/api/mails/mail-users")
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
         setSuggestions(res.suggetions);
         setFilteredSuggestions(res.suggetions);
       });
@@ -119,9 +123,12 @@ export default function TaskForm({
     setLoading(true);
 
     if (!id) {
-      toast.loading(userData?.role === "admin" ? "Assigning Task ..." : "Adding Task ...", {
-        id: "task",
-      });
+      toast.loading(
+        userData?.role === "admin" ? "Assigning Task ..." : "Adding Task ...",
+        {
+          id: "task",
+        }
+      );
 
       dispatch(createTask(data) as any)
         .unwrap()
@@ -218,20 +225,26 @@ export default function TaskForm({
               {showDropdown && filteredSuggestions?.length > 0 && (
                 <div className="absolute top-10 w-full shadow left-0 bg-card rounded-2xl overflow-hidden z-50">
                   <ul className="h-[250px] overflow-y-auto w-full custom-scrollbar">
-                    {filteredSuggestions.map((user) => (
-                      <li
-                        key={user._id}
-                        onClick={() => {
-                          setSelectedUser(`${user.name} (${user.email})`);
-                          setValue("assignedTo", user._id);
-                          setInputValue("");
-                          setShowDropdown(false);
-                        }}
-                        className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
-                      >
-                        {user.name} ({user.email})
-                      </li>
-                    ))}
+                    {filteredSuggestions.map((user) => {
+                      // console.log(user)
+                      return (
+                        <li
+                          key={user._id}
+                          onClick={() => {
+                            setSelectedUser(
+                              `${user.name} (${user.email}) ${user.role === "admin" ? "(Admin)" : ""}`
+                            );
+                            setValue("assignedTo", user._id);
+                            setInputValue("");
+                            setShowDropdown(false);
+                          }}
+                          className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
+                        >
+                          {user.name} ({user.email}){" "}
+                          {user.role === "admin" ? "(Admin)" : null}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               )}
@@ -246,7 +259,10 @@ export default function TaskForm({
                 className="flex items-center w-full bg-card border-b-2 border-background focus-within:border-primary p-3 cursor-pointer transition duration-150 hover:border-primary"
                 onClick={() => setIsStatusOpen(!isStatusOpen)}
               >
-                <Briefcase size={20} className="text-gray-400 mr-2 flex-shrink-0" />
+                <Briefcase
+                  size={20}
+                  className="text-gray-400 mr-2 flex-shrink-0"
+                />
                 <span className="text-lg flex-1">{selectedStatus}</span>
                 <ChevronDown
                   size={18}
@@ -296,7 +312,9 @@ export default function TaskForm({
             className={`w-full border-b-2 focus:border-primary ${
               errors.details ? "border-primary" : "border-background"
             } text-lg outline-0 resize-none`}
-            {...register("details", { required: "Description cannot be empty" })}
+            {...register("details", {
+              required: "Description cannot be empty",
+            })}
           />
 
           {/* Submit */}

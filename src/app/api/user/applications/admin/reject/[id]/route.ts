@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Application } from "@/models/Application";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { sendRejectionMail } from "@/lib/emailServices";
 
 export async function DELETE(
   req: NextRequest,
@@ -21,10 +22,13 @@ export async function DELETE(
       return NextResponse.json({ error: "Invalid application ID" }, { status: 400 });
     }
 
-    const application = await Application.findById(applicationId);
+    const application = await Application.findById(applicationId).populate("appliedBy")
+
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
+
+    await sendRejectionMail( application )
 
     // Delete the application
     await Application.findByIdAndDelete(applicationId);

@@ -67,3 +67,53 @@ export const sendOTP = async (to: string, otp: string, type: "Register") => {
     html,
   });
 };
+
+export const sendRejectionMail = async (application: any) => {
+  const { appliedBy } = application;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <h2 style="color: #d9534f;">Job Application Update</h2>
+      <p>Dear <strong>${appliedBy.name}</strong>,</p>
+      <p>Thank you for applying to our job opening. We truly appreciate the time and effort you put into your application.</p>
+      <p>After careful consideration, we regret to inform you that your application has not been selected for further process at this time.</p>
+      <p>We encourage you to apply for future opportunities that match your skills and experience.</p>
+      <br/>
+      <p style="margin-top:20px;">Best regards,</p>
+      <p><strong>Job App Team</strong></p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: appliedBy.email,
+    subject: "Application Status - Rejected",
+    text: `Dear ${appliedBy.name}, we regret to inform you that your job application has been rejected. Thank you for applying, and we encourage you to apply again in the future.`,
+    html,
+  });
+};
+
+
+export const sendApproveMail = async (application: any) => {
+  const { appliedBy } = application;
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <h2 style="color: #28a745;">Congratulations!</h2>
+      <p>Dear <strong>${appliedBy.name}</strong>,</p>
+      <p>We are pleased to inform you that your job application has been <strong>approved</strong>.</p>
+      <p>Our team was impressed with your skills and experience, and we look forward to moving ahead with the next steps of the hiring process.</p>
+      <p>Our HR team will contact you soon with further details.</p>
+      <br/>
+      <p style="margin-top:20px;">Best regards,</p>
+      <p><strong>Job App Team</strong></p>
+    </div>
+  `;
+
+  return sendEmail({
+    to: appliedBy.email,
+    subject: "Application Status - Approved 🎉",
+    text: `Dear ${appliedBy.name}, congratulations! Your job application has been approved. Our HR team will contact you soon with further details.`,
+    html,
+  });
+};
+

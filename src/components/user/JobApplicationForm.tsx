@@ -44,7 +44,9 @@ const JobApplicationForm = ({
   jobId?: string;
 }) => {
   const [job_Id, setJob_Id] = useState(jobId || null);
-  const { userData, isAutheticated } = useSelector((state: RootState) => state.auth);
+  const { userData, isAutheticated } = useSelector(
+    (state: RootState) => state.auth
+  );
   const [openForm, setOpenForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
@@ -71,7 +73,7 @@ const JobApplicationForm = ({
   const resumeWatch = watch("resume");
   const userProfileImageWatch = watch("userProfileImage"); // Watch for changes in the profile image file input
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const resumeFile =
     resumeWatch && resumeWatch.length > 0 ? resumeWatch[0] : null;
@@ -187,6 +189,13 @@ const JobApplicationForm = ({
         }
       );
       if (!response.ok) {
+        console.log(response.status);
+        if (response.status === 409) {
+          toast.error("You have already applied for this job.", {
+            id: "apply",
+          });
+          return
+        }
         throw new Error("Failed to submit application");
       }
       const result = await response.json();
@@ -195,8 +204,8 @@ const JobApplicationForm = ({
       reset();
       setOpenForm(false);
       setProfileImagePreview(null);
-      if(userData?.role === "admin" || userData?.role === "employee") {
-        dispatch(fetchApplications() as any)
+      if (userData?.role === "admin" || userData?.role === "employee") {
+        dispatch(fetchApplications() as any);
       }
     } catch (error) {
       console.error("Error submitting application:", error);
@@ -209,13 +218,12 @@ const JobApplicationForm = ({
   };
 
   const handleOpenForm = () => {
-    if(!isAutheticated) {
-      toast.error("Please login to apply for this job")
+    if (!isAutheticated) {
+      toast.error("Please login to apply for this job");
       return;
     }
     setOpenForm(true);
   };
-
 
   return (
     <>
@@ -229,7 +237,9 @@ const JobApplicationForm = ({
           <Users size={20} />
         )}
         <span>
-          {userData?.role === "admin" || userData?.role === "employee" ? "Add Application" : "Apply Now"}
+          {userData?.role === "admin" || userData?.role === "employee"
+            ? "Add Application"
+            : "Apply Now"}
         </span>
       </button>
 
@@ -291,35 +301,36 @@ const JobApplicationForm = ({
               )}
             </div> */}
 
-            {userData?.role === "admin" || userData?.role === "employee" && (
-              <div>
-                <label
-                  htmlFor="appliedBy"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Job Application ID
-                </label>
-                <div className="relative">
-                  <User
-                    size={20}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  />
-                  <input
-                    type="text"
-                    id="appliedBy"
-                    onChange={(e) => setJob_Id(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
-                    placeholder="e.g., 68d18ff183a7110140280d78"
-                    disabled={isSubmitting}
-                  />
+            {userData?.role === "admin" ||
+              (userData?.role === "employee" && (
+                <div>
+                  <label
+                    htmlFor="appliedBy"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Job Application ID
+                  </label>
+                  <div className="relative">
+                    <User
+                      size={20}
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      type="text"
+                      id="appliedBy"
+                      onChange={(e) => setJob_Id(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF7F3F] focus:border-[#FF7F3F] transition-colors"
+                      placeholder="e.g., 68d18ff183a7110140280d78"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+                  {errors.appliedBy && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.appliedBy.message}
+                    </p>
+                  )}
                 </div>
-                {errors.appliedBy && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.appliedBy.message}
-                  </p>
-                )}
-              </div>
-            )}
+              ))}
             {/* --- */}
 
             {/* Field: userLocation (Schema field: userLocation) */}

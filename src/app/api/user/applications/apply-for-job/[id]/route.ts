@@ -38,12 +38,11 @@ export async function POST(
 ) {
   try {
     await connectDB();
-    const jobId = await params.id; // job id corresponds to 'job' in schema
+    const {id: jobId} = await params; // job id corresponds to 'job' in schema
     const user = authenticate(req as any);
     console.log(user)
 
     if (!user) {
-      
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -368,7 +368,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                       onClick={() => {
                         // Add approve functionality here
                         console.log("Approving application...");
-                        dispatch(acceptApplication(id) as any);
+                        dispatch(acceptApplication(application._id) as any);
                       }}
                     >
                       Approve

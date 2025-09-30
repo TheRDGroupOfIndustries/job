@@ -7,9 +7,9 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    const suggetions = await User.find()
-        .select("name email _id")
-      .sort({ createdAt: -1 });
+    const suggetions = await User.find({ $or: [{ role: "admin"}, { role: "employee"}]})
+        .select("name email _id role")
+      .sort({ role: 1 });
 
     return NextResponse.json({ suggetions }, { status: 200 });
   } catch (error: any) {

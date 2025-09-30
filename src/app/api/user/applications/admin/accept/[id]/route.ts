@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import { Application } from "@/models/Application";
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { sendApproveMail } from "@/lib/emailServices";
 
 export async function PATCH(
   req: NextRequest,
@@ -20,17 +21,21 @@ export async function PATCH(
     //   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     // }
 
-    const applicationId = params.id;
+    const {id:applicationId} = await params;
+    console.log("application id:", applicationId)
+
     if (!mongoose.Types.ObjectId.isValid(applicationId)) {
       return NextResponse.json({ error: "Invalid application ID" }, { status: 400 });
     }
 
-    const application = await Application.findById(applicationId);
+    const application = await Application.findById(applicationId).populate("appliedBy")
+    
     if (!application) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
 
     application.status = "accepted";
+    await sendApproveMail(application)
     await application.save();
 
     return NextResponse.json({ message: "Application accepted", application }, { status: 200 });
