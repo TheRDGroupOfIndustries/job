@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-// NOTE: Handshake is no longer imported as the image replaces the icon/text placeholder
+
 
 const About = () => {
   const router = useRouter();
@@ -53,18 +53,15 @@ const About = () => {
   return (
     <div className="min-h-screen bg-white font-sans">
       
-      {/* =====================================================
-        01. Hero Section (Clean, Bold Header with Orange Stripe)
-        ===================================================== */}
       <section
-        className="relative pt-14 py-24 md:pt-20 md:py-36 bg-gray-50 overflow-hidden text-gray-900"
+        className="relative pt-14 py-15 md:pt-20 md:py-10 bg-gray-50 overflow-hidden text-gray-900"
       >
         <div className="relative container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
             <p className="text-lg font-medium mb-3 uppercase tracking-widest text-orange-600">
               The Foundation of Alpran HR
             </p>
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">
               Our <span className="text-orange-600">Story</span>
             </h1>
             <p className="text-base md:text-lg font-normal max-w-3xl mx-auto text-gray-700">
@@ -74,12 +71,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* ---
-        =====================================================
-        02. Our Story Section (Clean Split Layout with Stats Box)
-        ===================================================== 
-      */}
-      <section className="py-24 md:py-32 bg-white">
+      <section className="py-10 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             
@@ -212,14 +204,6 @@ const About = () => {
                 onClick={() => router.push("/contact")}
               >
                 Get Started Today
-              </Button>
-              {/* Secondary CTA: Transparent/White border */}
-              <Button
-                variant="outline"
-                size="lg"
-                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 font-bold px-10 py-7 text-xl rounded-lg"
-              >
-                View Case Studies
               </Button>
             </div>
           </div>
