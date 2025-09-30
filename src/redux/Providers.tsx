@@ -37,15 +37,15 @@ const useDisableCopyPaste = (onActionPrevented: () => void) => {
 
     useEffect(() => {
        
-        document.addEventListener('copy', disableAction as (e: Event) => void);
-        document.addEventListener('paste', disableAction as (e: Event) => void);
-        document.addEventListener('contextmenu', disableAction as (e: Event) => void);
-        document.addEventListener('keydown', handleKeydown as (e: Event) => void);
+        // document.addEventListener('copy', disableAction as (e: Event) => void);
+        // document.addEventListener('paste', disableAction as (e: Event) => void);
+        // document.addEventListener('contextmenu', disableAction as (e: Event) => void);
+        // document.addEventListener('keydown', handleKeydown as (e: Event) => void);
         return () => {
-            document.removeEventListener('copy', disableAction as (e: Event) => void);
-            document.removeEventListener('paste', disableAction as (e: Event) => void);
-            document.removeEventListener('contextmenu', disableAction as (e: Event) => void);
-            document.removeEventListener('keydown', handleKeydown as (e: Event) => void);
+            // document.removeEventListener('copy', disableAction as (e: Event) => void);
+            // document.removeEventListener('paste', disableAction as (e: Event) => void);
+            // document.removeEventListener('contextmenu', disableAction as (e: Event) => void);
+            // document.removeEventListener('keydown', handleKeydown as (e: Event) => void);
         };
     }, [disableAction, handleKeydown]);
 };
