@@ -54,7 +54,7 @@ const ContactUs: React.FC = () => {
                       href="mailto:hr@alpranhrservices.com"
                       className="text-orange-500 hover:underline"
                     >
-                      hr@alpranhrservices.com
+                      hr@alpranhrservices.com{" "}
                     </a>
                   </div>
                 </div>

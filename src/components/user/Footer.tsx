@@ -10,6 +10,7 @@ import {
   Instagram,
   MessageSquare,
   Award,
+  Headset,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -203,7 +204,7 @@ const Footer = () => {
           href="/contact"
           className="bg-orange-500 text-white font-medium py-2 px-4 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]"
         >
-          <MessageSquare size={16} />
+          <Headset  size={20} className="" />
           <span>Talk with Us</span>
         </Link>
       </div>

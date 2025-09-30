@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { Button } from "../ui/button";
-import { DoorOpen } from "lucide-react";
+import { DoorOpen, FileMinus } from "lucide-react";
 import toast from "react-hot-toast";
 import { logout } from "@/redux/features/authSlice";
 
@@ -52,7 +52,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 flex items-center space-x-2">
           <Link href="/" className="flex items-center">
             <Image
-              src="/images/alplogo.webp"
+              src={"/images/alplogo.webp"}
               alt="logo"
               width={40}
               height={40}
@@ -66,18 +66,27 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8 items-center">
           <Link
+            href="/alpran-ai"
+            className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200 whitespace-nowrap"
+          >
+            Alpran Ai
+          </Link>
+
+          <Link
             href="/browse-jobs"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Jobs
           </Link>
 
-          {isAutheticated && (<Link
-            href="/candidates"
-            className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
-          >
-            Candidates
-          </Link>)}
+          {isAutheticated && (
+            <Link
+              href="/candidates"
+              className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
+            >
+              Candidates
+            </Link>
+          )}
           <Link
             href="/blogs"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
@@ -100,7 +109,9 @@ const Navbar = () => {
             <div className="relative group">
               {/* 1. Profile Image/Icon (The Click/Hover Target) */}
               <Image
-                src={userData?.profileImage || "/images/profile_picture.jpg"}
+                src={
+                  userData?.profileImage || "/images/profile-placeholder.webp"
+                }
                 alt="Profile Picture"
                 priority={true}
                 width={40}
@@ -109,9 +120,8 @@ const Navbar = () => {
               />
 
               {/* 2. Dropdown Menu (Appears on Hover) */}
-              <div className="absolute right-0 top-0 mt-3 hidden group-hover:block transition-all duration-300 ease-out z-50 min-w-[200px] pt-10">
-                
-                <div className="bg-white border border-gray-100 rounded-xl shadow-xl p-4 space-y-3">
+              <div className="absolute right-0 top-5 mt-3 hidden group-hover:flex transition-all duration-300 ease-out z-50 min-w-[200px] pt-5 ">
+                <div className="bg-white border border-gray-100 rounded-xl shadow-xl p-4 space-y-3 w-full">
                   {/* User Information */}
                   <div className="pb-3 border-b border-gray-200">
                     <p className="font-semibold text-gray-800 truncate">
@@ -121,6 +131,15 @@ const Navbar = () => {
                       {userData?.email || "user@example.com"}
                     </p>
                   </div>
+
+                  <Button
+                    type="button"
+                    onClick={() => router.push("/my-applications")}
+                    variant={"ghost"}
+                    className="text-base  hover:bg-background cursor-pointer w-full justify-start px-2 py-1.5 transition duration-150"
+                  >
+                    <FileMinus size={20} className="mr-2" /> My Applications
+                  </Button>
 
                   {/* Logout Button */}
                   <Button
@@ -180,6 +199,13 @@ const Navbar = () => {
       {/* Mobile menu dropdown */}
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-md py-4 px-6 space-y-3">
+          <Link
+            href="/alpran-ai"
+            className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200 whitespace-nowrap"
+          >
+            Alpran Ai
+          </Link>
+
           <Link
             href="/browse-jobs"
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
