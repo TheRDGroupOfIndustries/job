@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const employees = await User.find().select("-password");
+  // { $or: [{ role: "employee" }, { role: "admin" }] }
+  const employees = await User.find().select("-password").sort({ role: 1 });
   return NextResponse.json({ employees }, { status: 200 });
 }
 

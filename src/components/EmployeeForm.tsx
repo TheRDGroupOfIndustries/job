@@ -160,7 +160,7 @@ const EmployeeForm = ({
                 onChange={handleImageChange}
               />
               <Avatar className="w-full h-full">
-                <AvatarImage src={profileImage || undefined} />
+                <AvatarImage src={profileImage || "/images/profile-placeholder.webp"} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
               <div className="h-full w-full opacity-0 absolute top-0 left-0 bg-secondary/50 group-hover:opacity-100 duration-300 transition-opacity flex items-center justify-center rounded-full">

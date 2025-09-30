@@ -29,7 +29,7 @@ export async function DELETE(
     // Delete the application
     await Application.findByIdAndDelete(applicationId);
 
-    return NextResponse.json({ message: "Application deleted successfully" }, { status: 200 });
+    return NextResponse.json({ message: "Application deleted successfully", application }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

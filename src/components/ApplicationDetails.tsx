@@ -12,7 +12,7 @@ import {
   MapPin,
   Star,
   Code,
-} from "lucide-react"; 
+} from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -59,8 +59,8 @@ const ApplicationDetails = ({ id }: { id: string }) => {
     application?.appliedBy?.name
       ?.split(" ")
       ?.map((n: string) => n[0])
-      ?.join("") || "NA"; 
-      
+      ?.join("") || "NA";
+
   // Helper to render star rating
   const renderRatingStars = (rating: number) => {
     return (
@@ -317,41 +317,51 @@ const ApplicationDetails = ({ id }: { id: string }) => {
             <Card className="p-6 bg-gray-100 border-none shadow-sm">
               {/* ... existing status content ... */}
               <div className="space-y-4">
-                <h3 className="font-semibold text-lg text-gray-900 flex items-center justify-between">
-                  Application Status
+                <h3 className="font-semibold text-lg text-gray-900 flex flex-wrap items-center justify-between">
+                  <span className="whitespace-nowrap">Application Status</span>
                   {application.status !== "peending" && (
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         application.status === "accepted"
                           ? "bg-orange-100 text-green-800"
                           : application.status === "pending"
-                          ? "bg-orange-100 text-yellow-800"
-                          : application.status === "rejected"
-                          ? "bg-orange-100 text-red-800"
-                          : "bg-orange-100 text-gray-800"
+                            ? "bg-orange-100 text-yellow-800"
+                            : application.status === "rejected"
+                              ? "bg-orange-100 text-red-800"
+                              : "bg-orange-100 text-gray-800"
                       }`}
                     >
                       {application.status === "accepted"
                         ? "Accepted"
                         : application.status === "pending"
-                        ? "Pending"
-                        : application.status === "rejected"
-                        ? "Rejected"
-                        : ""}
+                          ? "Pending"
+                          : application.status === "rejected"
+                            ? "Rejected"
+                            : ""}
                     </span>
                   )}
                 </h3>
 
                 {application.status === "pending" && (
                   <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1 border-2 border-red-500
+                    <Button
+                      variant="outline"
+                      className="flex-1 border-2 border-red-500
                      text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg 
-                     transition-colors cursor-pointer" 
-                     onClick={() => { if (!application?._id) return; 
-                     console.log("Rejecting application...", application._id); 
-                     dispatch(rejectApplication(application._id) as any); }} >
-                       Reject 
-                       </Button>
+                     transition-colors cursor-pointer"
+                      onClick={() => {
+                        if (!application?._id) return;
+                        console.log(
+                          "Rejecting application...",
+                          application._id
+                        );
+                        dispatch(rejectApplication(application._id) as any)
+                          .unwrap()
+                          .then(() => router.back());
+                      }}
+                    >
+                      Reject
+                    </Button>
 
                     <Button
                       className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 font-medium rounded-lg transition-colors cursor-pointer"
@@ -368,9 +378,8 @@ const ApplicationDetails = ({ id }: { id: string }) => {
               </div>
             </Card>
             {/* Additional Application Info (EXISTING) */}
-            {application?.appliedAt && (
+            {/* {application?.appliedAt && (
               <Card className="p-6 bg-white border-none shadow-sm">
-                {/* ... existing application details content ... */}
 
                 <div className="space-y-3">
                   <h3 className="font-semibold text-lg text-gray-900">
@@ -396,7 +405,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                   </div>
                 </div>
               </Card>
-            )}
+            )} */}
           </div>
         </div>
       </div>
