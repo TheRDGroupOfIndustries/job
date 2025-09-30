@@ -179,8 +179,8 @@ export default function JobDetails({ jobId }: { jobId: string }) {
               <div className="flex items-center gap-4 mt-2">
                 {job.companyDetails?.image ? (
                   <Image
-                    height={16}
-                    width={16}
+                    height={60}
+                    width={60}
                     src={job.companyDetails.image}
                     alt={job.companyDetails.name}
                     className=" rounded-full object-cover border"

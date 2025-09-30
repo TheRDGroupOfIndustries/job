@@ -93,18 +93,18 @@ export default function Header() {
       );
     }
 
-    if (pathname.includes("my-works")) {
-      return (
-        <div className="flex justify-end">
-          <Button
-            onClick={() => setOpenAssignWorkForm(true)}
-            className="rounded-full text-section cursor-pointer bg-orange-600 hover:bg-orange-700"
-          >
-            <CirclePlus className="mr-2 h-5 w-5" /> Add Work
-          </Button>
-        </div>
-      );
-    }
+    // if (pathname.includes("my-works")) {
+    //   return (
+    //     <div className="flex justify-end">
+    //       <Button
+    //         onClick={() => setOpenAssignWorkForm(true)}
+    //         className="rounded-full text-section cursor-pointer bg-orange-600 hover:bg-orange-700"
+    //       >
+    //         <CirclePlus className="mr-2 h-5 w-5" /> Add Work
+    //       </Button>
+    //     </div>
+    //   );
+    // }
 
     // if (pathname.includes("applications")) {
     //   return (
