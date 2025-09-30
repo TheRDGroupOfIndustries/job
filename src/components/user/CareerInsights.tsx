@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArticleCard from "./ArticleCard";
-import { X } from "lucide-react";
+import { ArrowRight, Clock, User, X } from "lucide-react";
 import Image from "next/image";
+import { client } from "@/sanity/lib/client";
+import { POSTS_QUERY } from "@/lib/sanityQueries";
+import Link from "next/link";
 
 const ARTICLES = [
   {
@@ -44,9 +47,109 @@ const ARTICLES = [
   },
 ];
 
+type Post = {
+  _id: string;
+  title: string;
+  author?: string;
+  publishedAt: string;
+  readTime?: string;
+  slug: { current: string };
+  categories?: { title: string }[];
+  mainImage?: { asset?: { url?: string } };
+};
+
+// BlogCard component
+const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
+  const publishedDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const categoryTitle = post.categories?.[0]?.title || "Uncategorized";
+  const postUrl = `/blogs/${post.slug.current}`;
+
+  return (
+    <div className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full group hover:scale-[1.01]">
+      {/* Image */}
+      <div className="relative h-56 overflow-hidden">
+        <Image
+          layout="fill"
+          src={post.mainImage?.asset?.url || "/images/placeholder-image.jpg"}
+          alt={post.title}
+          className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute top-4 left-4 bg-[#FF7F3F] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+          {categoryTitle}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-6 flex flex-col flex-grow">
+        <h3 className="text-xl  text-left font-bold text-gray-900 group-hover:text-primary transition-all duration-300 mb-3 line-clamp-2">
+          {post.title}
+        </h3>
+
+        {/* Metadata */}
+        <div className="text-sm text-gray-500 mb-5 pt-2 border-t border-gray-100 mt-auto flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
+            {post.author && (
+              <div className="flex items-center">
+                <User size={16} className="text-[#FF7F3F] mr-1" />
+                <span className="font-medium text-gray-700">{post.author}</span>
+                {/* <span className="mx-2">•</span> */}
+              </div>
+            )}
+            <div className="flex items-center">
+              <Clock size={16} className="text-[#FF7F3F] mr-1" />
+              <span>{publishedDate}</span>
+            </div>
+
+            {post.readTime && (
+              <div className="flex items-center">
+                <Clock size={16} className="text-[#FF7F3F] mr-1" />
+                <span>{post.readTime}</span> min
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Read More */}
+        <div className="w-full ">
+          <Link
+            href={postUrl}
+            className="inline-flex w-full py-2 justify-center rounded-full border-2 border-primary items-center text-[#FF7F3F] font-semibold transition-all duration-300 hover:text-white hover:bg-primary hover:scale-105 "
+          >
+            Read Article
+            <ArrowRight size={18} className="ml-2" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const CareerInsights = () => {
   const [activeArticle, setActiveArticle] = useState<number | null>(null);
   const selectedArticle = ARTICLES.find((a) => a.id === activeArticle);
+
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchPosts = async () => {
+    try {
+      const data: Post[] = await client.fetch(POSTS_QUERY);
+      console.log("Blog Posts: ", data);
+      setPosts(data);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const openModal = (id: number) => setActiveArticle(id);
   const closeModal = () => setActiveArticle(null);
@@ -61,19 +164,22 @@ const CareerInsights = () => {
           Stay ahead with the latest career advice and industry insights
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {ARTICLES.map((article) => (
-            <ArticleCard
-              key={article.id}
-              article={article}
-              onReadMore={() => openModal(article.id)} // Pass function to card
-            />
-          ))}
+        {/* Blog Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {loading ? (
+            <p className="text-gray-600 lg:col-span-3">Loading articles...</p>
+          ) : posts.length === 0 ? (
+            <p className="text-gray-600 lg:col-span-3">No posts found.</p>
+          ) : (
+            posts
+              .slice(0, 3)
+              .map((post) => <BlogCard key={post._id} post={post} />)
+          )}
         </div>
       </div>
 
       {/* Modal */}
-      {selectedArticle && (
+      {/* {selectedArticle && (
         <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg max-w-3xl w-full overflow-y-auto max-h-[90vh] relative shadow-lg">
             <button
@@ -102,7 +208,18 @@ const CareerInsights = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
+      {/* View All Button */}
+     <div className="flex justify-center w-full">
+       <Link
+        href="/blogs"
+        className="inline-flex items-center text-primary border-2 border-primary font-semibold py-3 px-8 rounded-lg transition-colors hover:bg-primary hover:text-white cursor-pointer"
+      >
+        View All Posts
+        <ArrowRight size={20} className="ml-3" />
+      </Link>
+     </div>
     </section>
   );
 };

@@ -18,7 +18,7 @@ type Slug = {
 type Post = {
   _id: string;
   title: string;
-  author?: string; 
+  author?: string;
   publishedAt: string;
   readTime?: string;
   slug: { current: string };
@@ -37,7 +37,7 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
   const postUrl = `/blogs/${post.slug.current}`;
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full">
+    <div className="bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full group hover:scale-[1.01]">
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
         <Image
@@ -53,32 +53,39 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
 
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow">
-        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+        <h3 className="text-xl  text-left font-bold text-gray-900 group-hover:text-primary transition-all duration-300 mb-3 line-clamp-2">
           {post.title}
         </h3>
 
         {/* Metadata */}
-        <div className="flex flex-wrap items-center text-sm text-gray-500 mb-5 pt-2 border-t border-gray-100 mt-auto">
-          {post.author && (
-            <div className="flex items-center mr-4">
-              <User size={16} className="text-[#FF7F3F] mr-1" />
-              <span className="font-medium text-gray-700">{post.author}</span>
-            </div>
-          )}
-          <span className="mr-4">{publishedDate}</span>
-          {post.readTime && (
+        <div className="text-sm text-gray-500 mb-5 pt-2 border-t border-gray-100 mt-auto flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
+            {post.author && (
+              <div className="flex items-center">
+                <User size={16} className="text-[#FF7F3F] mr-1" />
+                <span className="font-medium text-gray-700">{post.author}</span>
+                {/* <span className="mx-2">•</span> */}
+              </div>
+            )}
             <div className="flex items-center">
               <Clock size={16} className="text-[#FF7F3F] mr-1" />
-              <span>{post.readTime}</span>
+              <span>{publishedDate}</span>
             </div>
-          )}
+
+            {post.readTime && (
+              <div className="flex items-center">
+                <Clock size={16} className="text-[#FF7F3F] mr-1" />
+                <span>{post.readTime}</span> min
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Read More */}
-        <div>
+        <div className="w-full ">
           <Link
             href={postUrl}
-            className="inline-flex items-center text-[#FF7F3F] font-semibold transition-colors hover:text-orange-600"
+            className="inline-flex w-full py-2 justify-center rounded-full border-2 border-primary items-center text-[#FF7F3F] font-semibold transition-all duration-300 hover:text-white hover:bg-primary hover:scale-105 "
           >
             Read Article
             <ArrowRight size={18} className="ml-2" />
@@ -96,6 +103,7 @@ const Blogs: React.FC = () => {
   const fetchPosts = async () => {
     try {
       const data: Post[] = await client.fetch(POSTS_QUERY);
+      console.log("Blog Posts: ", data);
       setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);
