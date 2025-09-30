@@ -13,10 +13,10 @@ export default function AuthInitializer() {
 
   useEffect(() => {
     dispatch(fetchUser())
-      .unwrap()
-      .catch(() => {
-        router.push("/auth/login");
-      });
+      // .unwrap()
+      // .catch(() => {
+      //   router.push("/auth/login");
+      // });
   }, [dispatch]);
 
   return null; // doesn’t render anything
