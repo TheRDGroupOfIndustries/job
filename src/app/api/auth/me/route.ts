@@ -37,7 +37,7 @@ export async function GET(req: Request) {
       message: "Unauthorized",
       user: null,
     });
-    // res.cookies.delete("job-auth-token");
+    res.cookies.delete("job-auth-token");
     return res;
   }
 }

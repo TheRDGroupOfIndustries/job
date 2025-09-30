@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {User} from "@/models/User";
+import { User } from "@/models/User";
 import { connectDB } from "@/lib/mongodb";
 import { comparePassword, generateToken } from "@/lib/auth";
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials" },
-        { status: 400 }
+        { status: 401 }
       );
     }
 
@@ -27,27 +27,39 @@ export async function POST(req: NextRequest) {
     if (!isValid) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials" },
-        { status: 400 }
+        { status: 401 }
       );
     }
+
+    // generateToken should set an exp (e.g., 24h)
     const token = generateToken(user);
 
-    const res = NextResponse.json({
-      success: true,
-      message: "Login successful",
-      token,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        profileImage: user.profileImage,
-        employeeId: user.employeeId,
-        otherDetails: user.otherDetails,
-        phone: user.phone,
+    const res = NextResponse.json(
+      {
+        success: true,
+        message: "Login successful",
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          profileImage: user.profileImage,
+          employeeId: user.employeeId,
+          otherDetails: user.otherDetails,
+          phone: user.phone,
+        },
       },
-    }, { status: 200 });
-    res.cookies.set("job-auth-token", token, { httpOnly: true });
+      { status: 200 }
+    );
+
+    res.cookies.set("job-auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24, // 24 hour
+    });
+
     return res;
   } catch (error) {
     return NextResponse.json(

@@ -106,7 +106,7 @@ export default function Sidebar() {
     await fetch("/api/auth/logout", { method: "POST" });
     dispatch(logout());
     toast.success("Logged out", { id: "logout" });
-    router.push("/auth/login");
+    router.push("/");
   };
 
   return (

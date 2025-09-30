@@ -19,7 +19,7 @@ export function middleware(req: NextRequest) {
   // -----------------------
   // ✅ Global CORS for all APIs
   // -----------------------
-  const allowedOrigin = "https://hr-app-five.vercel.app"; // 👈 change to "*" or prod domain
+  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*"; // 👈 change to "*" or prod domain
   const res = NextResponse.next();
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
@@ -36,28 +36,44 @@ export function middleware(req: NextRequest) {
   // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
   const role = getRoleFromToken(token);
+  console.log("Role: ", role)
+  console.log("Token: ", token)
 
-  if (!token && !pathname.startsWith("/auth") && !pathname.startsWith("/api")) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
+
+  // if there is no token means no logged in, we can allow "/" and "/auth" only
+  if (!token) {
+    if (pathname.startsWith("/admin") || pathname.startsWith("/employee")) {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
+    if (pathname === '/' || pathname.startsWith("/auth")) {
+      return res;
+    }
   }
 
+  // have token means user logged in
+  // if other try to go "/admin" except "admin" redirect to "/auth/login" | only admin route
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
+  // if other try to go "/employee" except "employee" redirect to "/auth/login" | only employee route
   if (pathname.startsWith("/employee") && role !== "employee") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  if (pathname.startsWith("/auth") && token) {
+  // if other try to go "/" except "user" redirect to "/auth/login" | only user route
+  if (pathname === "/" && role !== "user") {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
+  }
+
+  // "/auth" redirect users to right place
+  if ((pathname.startsWith("/auth")) && token) {
     if (role === "admin") {
       return NextResponse.redirect(new URL("/admin", req.url));
     } else if (role === "employee") {
       return NextResponse.redirect(new URL("/employee", req.url));
-    } else if (role === "user") {
-      return NextResponse.redirect(new URL("/", req.url));
     } else {
-      return NextResponse.redirect(new URL("/auth/login", req.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
@@ -66,10 +82,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/api/:path*",   // 👈 apply CORS to all API routes
-    "/admin/:path*",
-    "/employee/:path*",
-    "/auth/:path*",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|api/public).*)"],
+
 };
