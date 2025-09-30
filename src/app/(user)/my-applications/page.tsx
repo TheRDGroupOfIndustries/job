@@ -271,7 +271,7 @@ export default function MyApplicationsPage() {
           Your Resume Applications
         </h1>
         <div className="p-8 text-center text-gray-500 border border-gray-200 rounded-lg">
-          <p>You haven't applied for any jobs yet.</p>
+          <p>You haven&apos;t applied for any jobs yet.</p>
         </div>
       </div>
     );
