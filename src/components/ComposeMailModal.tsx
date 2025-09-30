@@ -18,6 +18,7 @@ type User = {
   _id: string;
   name: string;
   email: string;
+  role: string;
 };
 
 export default function ComposeMailModal() {
@@ -161,14 +162,14 @@ export default function ComposeMailModal() {
                         <li
                           key={user._id}
                           onClick={() => {
-                            setSelectedUser(`${user.name} (${user.email})`);
+                            setSelectedUser(`${user.name} (${user.email}) (${user.role}})`);
                             setValue("to", user.email);
                             setInputValue("");
                             setShowDropdown(false);
                           }}
                           className="px-4 py-3 hover:bg-background text-secondary cursor-pointer"
                         >
-                          {user.name} ({user.email})
+                          {user.name} ({user.email}) ({user.role})
                         </li>
                       ))}
                     </ul>

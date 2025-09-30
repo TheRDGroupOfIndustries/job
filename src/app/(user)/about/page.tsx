@@ -12,10 +12,14 @@ import {
   TrendingUp,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 
 
 const About = () => {
+  const { isAutheticated } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
   const coreValues = [
     {
@@ -197,14 +201,12 @@ const About = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {/* Primary CTA: Solid Orange */}
-              <Button
-                variant="default"
-                size="lg"
-                className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-7 text-xl shadow-2xl rounded-lg"
-                onClick={() => router.push("/contact")}
+              <Link
+                href={ isAutheticated ? "/" : "/auth/login"} 
+                className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-10 py-4 text-xl shadow-2xl rounded-lg"
               >
                 Get Started Today
-              </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -4,6 +4,8 @@
 import React from "react";
 import Link from "next/link"; 
 import { User, Search, Trophy, ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const STEPS = [
   {
@@ -36,6 +38,7 @@ const STEPS = [
 ];
 
 const HowItWorks = () => {
+  const { isAutheticated } = useSelector((state: RootState) => state.auth);
   return (
     <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -44,7 +47,7 @@ const HowItWorks = () => {
           How It Works
         </h2>
         <p className="text-base sm:text-lg text-gray-600 mb-12 sm:mb-16 max-w-2xl mx-auto">
-          Get started with JobConnect in three simple steps
+          Get started with Alpran HR Services in three simple steps
         </p>
 
         {/* Steps Container */}
@@ -88,7 +91,7 @@ const HowItWorks = () => {
         </div>
 
         <Link 
-          href="/auth/login" 
+          href={ isAutheticated ? "/" : "/auth/login"} 
           className="inline-flex items-center bg-primary text-white font-semibold py-3 sm:py-4 px-6 sm:px-10 rounded-lg shadow-lg transition-all hover:bg-orange-600 mt-6 sm:mt-8 hover:scale-[1.05] transform mx-auto duration-200 text-base sm:text-lg"
         >
           Get Started Today

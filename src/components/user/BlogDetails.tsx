@@ -217,13 +217,12 @@ const BlogDetails = ({ slug }: { slug: string }) => {
 
                 {/* --- HEADER IMAGE & CATEGORY TAG --- */}
                 {imageUrl && (
-                    <div className="relative h-96 w-full rounded-2xl overflow-hidden mb-10 shadow-xl">
+                    <div className="relative h-[420px] w-full rounded-2xl overflow-hidden mb-10 shadow-xl">
                         <Image
                             src={urlFor(imageUrl).url()}
                             alt={mainImage?.alt || title} 
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className="w-full h-full object-cover"
+                            layout="fill"
+                            className=" object-cover object-center"
                         />
                         <div className="absolute top-4 left-4">
                             <span className="bg-[#FF7F3F] text-white text-sm font-bold px-4 py-2 rounded-xl shadow-md uppercase tracking-wider">
@@ -286,7 +285,7 @@ const BlogDetails = ({ slug }: { slug: string }) => {
                         We have 100+ Jobs listed from verified employers.
                     </p>
                     
-                    <Link href="https://job-three-ashen.vercel.app/" target="_blank" passHref>
+                    <Link href={`${process.env.NEXT_PUBLIC_API_URL}/browse-jobs`} target="_blank" passHref>
                         <button className="bg-[#FF7F3F] text-white font-bold text-lg py-3 px-8 rounded-xl shadow-lg hover:bg-orange-600 transition-all duration-300 transform hover:scale-[1.02] flex items-center space-x-2 cursor-pointer">
                             <Send className="h-5 w-5" />
                             <span>Apply Now</span>

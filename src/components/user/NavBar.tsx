@@ -72,12 +72,12 @@ const Navbar = () => {
             Jobs
           </Link>
 
-          <Link
+          {isAutheticated && (<Link
             href="/candidates"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Candidates
-          </Link>
+          </Link>)}
           <Link
             href="/blogs"
             className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
@@ -139,7 +139,7 @@ const Navbar = () => {
               onClick={() => router.push("/auth/login")}
               className="w-full text-left px-5 py-2 border-2 border-[#eb6827] rounded-md text-[#FF7F3F] bg-white hover:bg-orange-50 transition-colors duration-200 font-medium"
             >
-              Register
+              Get Started
             </button>
           )}
         </div>

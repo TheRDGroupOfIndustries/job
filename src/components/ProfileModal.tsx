@@ -25,7 +25,7 @@ interface ProfileFormInputs {
 
 const ProfileModal = ({ close }: { close: () => void }) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const { userData, isAuthenticated } = useSelector(
+  const { userData } = useSelector(
     (state: RootState) => state.auth
   );
   const [profileImage, setProfileImage] = useState<string | null>(userData?.profileImage || null);
