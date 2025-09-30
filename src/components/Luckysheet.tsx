@@ -166,7 +166,7 @@ export default function Luckysheet({ id }: { id: string }) {
           // Core editing permissions
           allowEdit: true,
           allowUpdate: true,
-          allowCopy: true,
+          allowCopy: false,
           allowCut: true,
           
           // UI elements
@@ -184,9 +184,9 @@ export default function Luckysheet({ id }: { id: string }) {
           
           // Make sure these are enabled
           cellRightClickConfig: {
-            copy: true,
-            copyAs: true,
-            paste: true,
+            copy: false,
+            copyAs: false,
+            paste: false,
             insertRow: true,
             insertColumn: true,
             deleteRow: true,
