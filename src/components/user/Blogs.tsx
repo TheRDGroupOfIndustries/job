@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Clock, User, ArrowRight } from "lucide-react";
+import { Clock, User, ArrowRight, CalendarDays } from "lucide-react";
 import { POSTS_QUERY } from "@/lib/sanityQueries";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
@@ -68,7 +68,7 @@ const BlogCard: React.FC<{ post: Post }> = ({ post }) => {
               </div>
             )}
             <div className="flex items-center">
-              <Clock size={16} className="text-[#FF7F3F] mr-1" />
+              <CalendarDays size={16} className="text-[#FF7F3F] mr-1" />
               <span>{publishedDate}</span>
             </div>
 

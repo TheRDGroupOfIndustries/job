@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Clock, User, ArrowLeft, Send } from "lucide-react"; // Added 'Send' for the button
+import { Clock, User, ArrowLeft, Send, CalendarDays } from "lucide-react"; // Added 'Send' for the button
 import { PortableText } from '@portabletext/react'; 
 import { POST_QUERY } from "@/lib/sanityQueries"; // Assuming this utility is present
 import { client } from "@/sanity/lib/client"; // Assuming this utility is present
@@ -258,11 +258,12 @@ const BlogDetails = ({ slug }: { slug: string }) => {
                         </span>
                     </div>
                     <div className="flex items-center mr-6">
-                        <Clock size={18} className="text-[#FF7F3F] mr-2" />
+                        <CalendarDays size={18} className="text-[#FF7F3F] mr-2" />
                         <span>{publishedDate}</span>
                     </div>
                     <div className="flex items-center">
-                        <span className="text-gray-700 font-medium">{readTime}</span>
+                        <Clock size={18} className="text-[#FF7F3F] mr-2" />
+                        <span className="">{readTime}</span>
                     </div>
                 </div>
 
