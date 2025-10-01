@@ -74,6 +74,29 @@ export const rejectApplication = createAsyncThunk(
   }
 );
 
+export const deleteApplication = createAsyncThunk(
+  "applications/deleteApplication",
+  async (applicationId: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch(
+        `/api/user/applications/admin/reject/${applicationId}`, 
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        return rejectWithValue("Failed to delete application");
+      }
+
+      return applicationId; // return deleted app ID so we can remove it from state
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // -------------------- STATE -------------------- //
 
 interface ApplicationState {
@@ -159,6 +182,27 @@ export const applicationSlice = createSlice({
           id: "application-update",
         });
       });
+      //----DELETE----
+      builder
+    .addCase(deleteApplication.pending, (state) => {
+      state.loading = true;
+      toast.loading("Deleting application...", { id: "application-update" });
+    })
+    .addCase(deleteApplication.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.applications = state.applications.filter(
+        (app) => app._id !== action.payload
+      );
+      toast.success("Application deleted successfully", {
+        id: "application-update",
+      });
+    })
+    .addCase(deleteApplication.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+      toast.error("Failed to delete application", { id: "application-update" });
+    });
   },
 });
 

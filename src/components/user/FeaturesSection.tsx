@@ -73,7 +73,7 @@ const FeaturesSection = () => {
 
   return (
     <section className="py-16">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-14">
         {/* Why Choose Section Header */}
         <div className=" text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -92,7 +92,7 @@ const FeaturesSection = () => {
             return (
               <div
                 key={index}
-                className="bg-white rounded-xl p-8 transition-all duration-300 transform hover:-translate-y-2 group shadow-md hover:shadow-xl"
+                className="bg-white rounded-xl p-8 transition-all duration-300 transform hover:-translate-y-2 group shadow-lg hover:shadow-xl"
               >
                 {/* Icon */}
                 <div

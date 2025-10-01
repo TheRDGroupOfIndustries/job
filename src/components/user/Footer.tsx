@@ -10,6 +10,9 @@ import {
   Instagram,
   MessageSquare,
   Award,
+  MapPin, // Added for address icon
+  Phone,    // Added for phone icon
+  Mail    // Added for email icon
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -34,7 +37,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#111827] text-gray-300 py-10 px-4 md:px-8 relative">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 pb-8 border-b border-gray-700">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 pb-8 border-b border-gray-700"> {/* Changed to lg:grid-cols-4 */}
         
         {/* Company Info Section */}
         <div className="flex flex-col items-start text-center sm:text-left">
@@ -134,6 +137,37 @@ const Footer = () => {
             <li>
               <Link href="/cookie-policy" className="text-gray-400 hover:text-white transition-colors">
                 Cookie Policy
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Contact Info Section */}
+        <div className="flex flex-col items-center sm:items-start">
+          <h4 className="text-white text-lg font-semibold mb-4">Contact Info</h4>
+          <ul className="space-y-4 text-center sm:text-left"> {/* Increased space-y for better separation */}
+            <li className="flex items-start justify-center sm:justify-start">
+              <MapPin size={20} className="text-orange-500 mr-3 mt-1 flex-shrink-0" />
+              <p className="text-gray-400">
+                Alpran Software Pvt Ltd, Mahmoorganj, Varanasi - 221010
+              </p>
+            </li>
+            <li className="flex items-center justify-center sm:justify-start">
+              <Phone size={20} className="text-orange-500 mr-3 flex-shrink-0" />
+              <p className="text-gray-400">+91 98399 55309</p>
+            </li>
+            <li className="flex items-center justify-center sm:justify-start">
+              <Phone size={20} className="text-orange-500 mr-3 flex-shrink-0" />
+              <p className="text-gray-400">+91 73797 15444</p>
+            </li>
+            <li className="flex items-center justify-center sm:justify-start">
+              <Phone size={20} className="text-orange-500 mr-3 flex-shrink-0" />
+              <p className="text-gray-400">+91 88107 18650</p>
+            </li>
+            <li className="flex items-center justify-center sm:justify-start">
+              <Mail size={20} className="text-orange-500 mr-3 flex-shrink-0" />
+              <Link href="mailto:hr@alpranhrservices.com" className="text-gray-400 hover:text-white transition-colors">
+                hr@alpranhrservices.com
               </Link>
             </li>
           </ul>
