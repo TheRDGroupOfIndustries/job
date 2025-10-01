@@ -1,13 +1,30 @@
+"use client"
+
 import React, { Suspense, ReactElement } from "react";
 import Image from "next/image";
 import { Search, Briefcase } from "lucide-react";
 import JobSearchBar from "./JobSearchBar";
 import BgImage from "./images/bgImage-HeroSection.jpg";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import toast from "react-hot-toast";
+import { Button } from "../ui/button";
 
 const ORANGE = "#f97316";
 
-const HeroSection = (): ReactElement => {
+const HeroSection = () => {
+  const { isAutheticated } = useSelector((state: RootState) => state.auth)
+  const router = useRouter()
+  const handleRedirectCandidate = () => {
+    if (!isAutheticated) {
+      toast.error("You need to login first")
+      router.push('/auth/login')
+      return
+    }
+    router.push('/candidates')
+  }
   return (
     <section className="relative w-full min-h-screen flex flex-col items-center justify-center text-center text-gray-100 overflow-visible px-4 sm:px-6 md:px-8 lg:px-12">
       {/* Background Image Overlay */}
@@ -50,15 +67,14 @@ const HeroSection = (): ReactElement => {
             <Search size={20} />
             <span>Browse Jobs</span>
           </Link>
-          <Link
-            href={"/candidates"} 
-            className="w-full sm:w-auto relative z-10 px-8 py-4 bg-white/20 backdrop-blur-md text-white font-semibold rounded-xl shadow-lg hover:bg-white/40 flex items-center justify-center space-x-2 cursor-pointer 
-                        hover:scale-105 transform transition-all duration-200
+          <button
+            onClick={handleRedirectCandidate}
+            className="w-full sm:w-auto relative z-10 px-8 py-4 bg-white/20 backdrop-blur-md text-white font-semibold rounded-xl shadow-lg hover:bg-white/40 flex items-center justify-center space-x-2 cursor-pointer hover:scale-105 transform transition-all duration-200
                         border-2 border-white"
           >
             <Briefcase size={20} />
             <span>Candidates</span>
-          </Link>
+          </button>
         </div>
       </div>
 
