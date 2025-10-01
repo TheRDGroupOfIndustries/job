@@ -55,7 +55,7 @@ const StatsSection = () => (
           Trusted by Thousands
         </h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Join the growing community of professionals and employers who trust JobConnect
+          Join the growing community of professionals and employers who trust Alpran HR Services
         </p>
       </div>
 

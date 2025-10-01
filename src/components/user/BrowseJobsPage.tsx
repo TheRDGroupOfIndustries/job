@@ -150,7 +150,9 @@ const BrowseJobsPage = () => {
               {finalFilteredJobs.length} jobs found
             </p>
 
-            <button className="flex items-center gap-1 ml-4 cursor-pointer text-gray-400 hover:text-primary transition-colors duration-150">Clear Filters <X size={18} /></button>
+            {/* <button className="flex items-center gap-1 ml-4 cursor-pointer text-gray-400 hover:text-primary transition-colors duration-150">
+              Clear Filters <X size={18} />
+            </button> */}
           </div>
 
           {/* Filter Tabs */}

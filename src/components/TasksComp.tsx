@@ -25,7 +25,7 @@ const AssigneeToAvatars = ({
 }) => {
   // Only show the assignedTo avatar for now, as in the image
   const avatarUrl =
-    assignedTo?.profileImage || "/images/profile-placeholder.webp";
+    assignedTo?.profileImage || "/images/profile-placeholder.png";
 
   return (
     <div className="flex -space-x-2 overflow-hidden">
@@ -51,7 +51,7 @@ const AssigneeByAvatars = ({
 }) => {
   // Only show the assignedTo avatar for now, as in the image
   const avatarUrl =
-    createdBy?.profileImage || "/images/profile-placeholder.webp";
+    createdBy?.profileImage || "/images/profile-placeholder.png";
 
   return (
     <div className="flex -space-x-2 overflow-hidden">

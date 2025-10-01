@@ -118,7 +118,7 @@ export default function Sidebar() {
         </Badge>
         <div className="w-20 h-20 rounded-full mb-2">
           <Image
-            src={userData?.profileImage || "/images/profile_picture.jpg"}
+            src={userData?.profileImage || "/images/profile-placeholder.png"}
             alt="Profile Picture"
             priority={true}
             width={80}

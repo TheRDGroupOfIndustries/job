@@ -11,7 +11,7 @@ const REVIEWS = [
     company: "TechCorp",
     avatarUrl: "/images/t1.jpg",
     stars: 5,
-    quote: "JobConnect helped me find my dream job in just 2 weeks! The platform's matching algorithm is incredibly accurate, and the application process was seamless.",
+    quote: "Alpran HR Services helped me find my dream job in just 2 weeks! The platform's matching algorithm is incredibly accurate, and the application process was seamless.",
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const REVIEWS = [
     company: "InnovateLab",
     avatarUrl: "/images/t2.jpg",
     stars: 5,
-    quote: "As an employer, JobConnect has been invaluable for finding top talent. The quality of candidates is exceptional, and the hiring process is streamlined.",
+    quote: "As an employer, Alpran HR Services has been invaluable for finding top talent. The quality of candidates is exceptional, and the hiring process is streamlined.",
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ const REVIEWS = [
     company: "DesignStudio",
     avatarUrl: "/images/t3.jpg",
     stars: 5,
-    quote: "The career guidance and resources on JobConnect are outstanding. I not only found a great job but also developed new skills along the way.",
+    quote: "The career guidance and resources on Alpran HR Services are outstanding. I not only found a great job but also developed new skills along the way.",
   },
   {
     id: 4,

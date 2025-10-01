@@ -22,24 +22,41 @@ export const POST_QUERY = `
   *[_type == "post" && slug.current == $slug][0] {
     _id,
     title,
-    body,
     "slug": slug.current,
     publishedAt,
+    readTime,
+    body[],
     mainImage{
-        asset->{
-         url 
+      asset->{
+        _id,
+        url,
+        metadata {
+          lqip,
+          dimensions {
+            aspectRatio,
+            width,
+            height
+          }
         }
+      },
+      alt
     },
     author->{
-        name,          
-        "authorSlug": slug.current
+      _id,
+      name,
+      "authorSlug": slug.current,
+      image {
+        asset->{
+          url
+        }
+      },
+      bio
     },
-    
     categories[]->{
-        _id,
-        title,         
-        "categorySlug": slug.current
-    },
-
+      _id,
+      title,
+      description,
+      "categorySlug": slug.current
+    }
   }
 `;

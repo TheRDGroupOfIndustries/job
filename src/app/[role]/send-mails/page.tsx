@@ -1,4 +1,3 @@
-// app/send-mail/page.tsx (or pages/send-mail.tsx depending on your setup)
 "use client";
 
 import { useState } from "react";
@@ -9,14 +8,16 @@ export default function Page() {
   const [selectedMailId, setSelectedMailId] = useState<string | null>(null);
 
   return (
-    <div className="flex h-screen bg-white">
-      <div className="w-1/3 border-r border-gray-200">
-        <MailComp onSelectMail={(id: string) => setSelectedMailId(id)} />
+    // Changed bg-white to bg-gray-50 for a softer, themed background
+    <div className="flex h-screen bg-gray-50"> 
+      {/* Reduced width slightly for a more balanced layout like the image */}
+      <div className="w-[35%] border-r border-gray-200 bg-white">
+        <MailComp onSelectMail={(id: string) => setSelectedMailId(id)} selectedMailId={selectedMailId} />
       </div>
 
       <div className="flex-1 bg-white">
         {selectedMailId ? (
-          <MailDetails id={selectedMailId} />
+          <MailDetails id={selectedMailId} setSelectedMailId={setSelectedMailId} />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">
             Select a mail to view details
