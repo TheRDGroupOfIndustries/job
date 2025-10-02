@@ -247,6 +247,7 @@ const Footer = () => {
           <span>Talk with Us</span>
         </Link>
       </div>
+      </div>
     </footer>
   );
 };
