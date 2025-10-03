@@ -12,6 +12,7 @@ import {
   MapPin,
   Star,
   Code,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,15 +20,17 @@ import { RootState } from "@/redux/store";
 import {
   acceptApplication,
   rejectApplication,
+  deleteApplication,
+  fetchApplications,
 } from "@/redux/features/applicationSlice";
 import { useRouter } from "next/navigation";
-import { fetchApplications } from "@/redux/features/applicationSlice";
 
 const ApplicationDetails = ({ id }: { id: string }) => {
-  const { applications, loading, error } = useSelector(
+  const { applications } = useSelector(
     (state: RootState) => state.applications
   );
   const [application, setApplication] = useState<any>(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -43,7 +46,6 @@ const ApplicationDetails = ({ id }: { id: string }) => {
     const app = applications?.find((app) => app._id === id);
     if (app) {
       setApplication(app);
-      console.log(app);
     }
   }, [id, applications]);
 
@@ -61,7 +63,6 @@ const ApplicationDetails = ({ id }: { id: string }) => {
       ?.map((n: string) => n[0])
       ?.join("") || "NA";
 
-  // Helper to render star rating
   const renderRatingStars = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -76,7 +77,6 @@ const ApplicationDetails = ({ id }: { id: string }) => {
               }
             />
           ))}
-
         <span className="ml-2 font-semibold text-gray-800">
           {rating.toFixed(1)} / 5
         </span>
@@ -86,7 +86,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto ">
+      <div className="max-w-7xl mx-auto">
         <div className="sticky top-0 pl-20 pr-10 pt-5 pb-2 bg-section z-20 flex items-center justify-between">
           <Button
             variant={"ghost"}
@@ -97,15 +97,13 @@ const ApplicationDetails = ({ id }: { id: string }) => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 pl-20 pr-10 pb-10 pt-4  overflow-auto">
-          {/* Left Section - Takes 2 columns on large screens */}
-
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 pl-20 pr-10 pb-10 pt-4 overflow-auto">
+          {/* Left Section */}
           <div className="lg:col-span-2 space-y-6">
             {/* Profile Header */}
             <Card className="p-6 bg-white border-none shadow-sm">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                 <Avatar className="w-16 h-16 sm:w-20 sm:h-20 bg-[#FD5E00] text-white text-2xl sm:text-3xl font-semibold flex-shrink-0">
-                  {/* UPDATED: Use image field if available */}
                   {application.userProfileImage ? (
                     <Image
                       layout="fill"
@@ -131,8 +129,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
 
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm sm:text-base">
                     <span className="font-medium text-gray-800">
-                      {application?.job?.designation ||
-                        "Position not specified"}
+                      {application?.job?.designation || "Position not specified"}
                     </span>
 
                     <span className="hidden sm:inline text-gray-400">|</span>
@@ -145,147 +142,81 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                 </div>
               </div>
             </Card>
-            {/* NEW CARD: Applicant Specific Details (Location, Ratings, Skills) */}
+
+            {/* Applicant Details */}
             <Card className="p-6 bg-white border-none shadow-sm">
               <div className="space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 border-b pb-3">
                   Applicant Details
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* NEW FIELD: Location */}
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1 flex items-center">
                       <MapPin size={16} className="mr-2 text-primary" />
                       Location
                     </h3>
-
-                    <p className="text-gray-600">
-                      {application.userLocation || "N/A"}
-                    </p>
+                    <p className="text-gray-600">{application.userLocation || "N/A"}</p>
                   </div>
-                  {/* NEW FIELD: Ratings */}
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1 flex items-center">
                       <Star size={16} className="mr-2 text-primary" />
                       Rating
                     </h3>
-
                     {renderRatingStars(application.rating || 0)}
                   </div>
                 </div>
-                {/* NEW FIELD: Skills */}
+
                 {application.skills && application.skills.length > 0 && (
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-2 flex items-center">
                       <Code size={16} className="mr-2 text-primary" /> Skills
                     </h3>
-
                     <div className="flex flex-wrap gap-2">
-                      {application.skills.map(
-                        (skill: string, index: number) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-orange-100 text-primary rounded-full text-sm"
-                          >
-                            {skill}
-                          </span>
-                        )
-                      )}
+                      {application.skills.map((skill: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-orange-100 text-primary rounded-full text-sm"
+                        >
+                          {skill}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}
               </div>
             </Card>
-            {/* Job Overview (EXISTING) */}
+
+            {/* Job Overview */}
             <Card className="p-6 bg-white border-none shadow-sm">
               <div className="space-y-4">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 border-b pb-3">
                   Job Overview
                 </h2>
-                {/* ... existing job overview details ... */}
                 <div className="space-y-3">
                   <div>
-                    <h3 className="font-semibold text-gray-800 mb-1">
-                      Company
-                    </h3>
-
+                    <h3 className="font-semibold text-gray-800 mb-1">Company</h3>
                     <p className="text-gray-600">
-                      {application?.job?.companyDetails?.name ||
-                        "The RD Group of industries"}
+                      {application?.job?.companyDetails?.name || "The RD Group of industries"}
                     </p>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-gray-800 mb-1">
-                      Position
-                    </h3>
-
+                    <h3 className="font-semibold text-gray-800 mb-1">Position</h3>
                     <p className="text-gray-600">
-                      {application?.job?.designation ||
-                        application?.jobDesignation ||
-                        "Not specified"}
+                      {application?.job?.designation || application?.jobDesignation || "Not specified"}
                     </p>
                   </div>
-
-                  {application?.job?.jobDescription && (
-                    <div>
-                      <h3 className="font-semibold text-gray-800 mb-2">
-                        Job Description
-                      </h3>
-
-                      <p className="text-gray-600 leading-relaxed">
-                        {application.job.jobDescription}
-                      </p>
-                    </div>
-                  )}
-
-                  {application?.job?.keySkills &&
-                    application.job.keySkills.length > 0 && (
-                      <div>
-                        <h3 className="font-semibold text-gray-800 mb-2">
-                          Key Skills Required
-                        </h3>
-
-                        <div className="flex flex-wrap gap-2">
-                          {application.job.keySkills.map(
-                            (skill: string, index: number) => (
-                              <span
-                                key={index}
-                                className="px-3 py-1 bg-orange-100 text-primary rounded-full text-sm"
-                              >
-                                {skill}
-                              </span>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {application?.job?.workExperience && (
-                    <div>
-                      <h3 className="font-semibold text-gray-800 mb-1">
-                        Experience Required
-                      </h3>
-
-                      <p className="text-gray-600">
-                        {application.job.workExperience.min} -
-                        {application.job.workExperience.max} years
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
             </Card>
           </div>
-          {/* Right Section - Takes 1 column on large screens */}
 
+          {/* Right Section */}
           <div className="space-y-6">
-            {/* Resume Card (EXISTING) */}
+            {/* Resume Card */}
             <Card className="p-6 bg-[#FFE9D9] border-none shadow-sm">
-              {/* ... existing resume card content ... */}
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg text-gray-900">Resume</h3>
-
                 <div className="w-full aspect-[3/4] rounded-lg overflow-hidden bg-white shadow-sm">
                   <Image
                     src="/images/resume-placeholder.webp"
@@ -295,12 +226,7 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-
-                <div className="space-y-3 ">
-                  <p className="font-medium text-gray-800 truncate">
-                    {/* {application?.resume || "resume.pdf"} */}
-                  </p>
-
+                <div className="space-y-3">
                   <a
                     href={`${application?.resume}?fl_attachment:resume.pdf`}
                     download="Resume.pdf"
@@ -308,53 +234,60 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                     rel="noopener noreferrer"
                     className="bg-orange-500 text-white px-4 py-2 rounded-lg w-full block text-center"
                   >
-                    Download
+                    <div className="flex items-center justify-center gap-2">
+                      <Download size={18} />
+                      Download
+                    </div>
                   </a>
                 </div>
               </div>
             </Card>
-            {/* Application Status (EXISTING) */}
-            <Card className="p-6 bg-gray-100 border-none shadow-sm">
-              {/* ... existing status content ... */}
+
+            {/* Application Status */}
+            <Card className="p-6 bg-gray-100 border-none shadow-sm relative">
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg text-gray-900 flex flex-wrap items-center justify-between">
                   <span className="whitespace-nowrap">Application Status</span>
-                  {application.status !== "peending" && (
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        application.status === "accepted"
-                          ? "bg-orange-100 text-green-800"
-                          : application.status === "pending"
-                            ? "bg-orange-100 text-yellow-800"
+                  <div className="flex items-center gap-2">
+                    {/* Status Badge */}
+                    {application.status !== "pending" && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          application.status === "accepted"
+                            ? "bg-green-100 text-green-800"
+                            : application.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
                             : application.status === "rejected"
-                              ? "bg-orange-100 text-red-800"
-                              : "bg-orange-100 text-gray-800"
-                      }`}
-                    >
-                      {application.status === "accepted"
-                        ? "Accepted"
-                        : application.status === "pending"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {application.status === "accepted"
+                          ? "Accepted"
+                          : application.status === "pending"
                           ? "Pending"
                           : application.status === "rejected"
-                            ? "Rejected"
-                            : ""}
-                    </span>
-                  )}
+                          ? "Rejected"
+                          : "N/A"}
+                      </span>
+                    )}
+
+                    {/* Trash Icon */}
+                    <Trash2
+                      className="text-red-600 w-6 h-6 cursor-pointer hover:text-red-700 transition"
+                      onClick={() => setShowDeletePopup(true)}
+                    />
+                  </div>
                 </h3>
 
+                {/* Approve/Reject Buttons */}
                 {application.status === "pending" && (
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 mt-4 border-t pt-4">
                     <Button
                       variant="outline"
-                      className="flex-1 border-2 border-red-500
-                     text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg 
-                     transition-colors cursor-pointer"
+                      className="flex-1 border-2 border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 py-2.5 font-medium rounded-lg transition-colors cursor-pointer"
                       onClick={() => {
                         if (!application?._id) return;
-                        console.log(
-                          "Rejecting application...",
-                          application._id
-                        );
                         dispatch(rejectApplication(application._id) as any)
                           .unwrap()
                           .then(() => router.back());
@@ -366,8 +299,6 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                     <Button
                       className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2.5 font-medium rounded-lg transition-colors cursor-pointer"
                       onClick={() => {
-                        // Add approve functionality here
-                        console.log("Approving application...");
                         dispatch(acceptApplication(application._id) as any);
                       }}
                     >
@@ -376,36 +307,41 @@ const ApplicationDetails = ({ id }: { id: string }) => {
                   </div>
                 )}
               </div>
-            </Card>
-            {/* Additional Application Info (EXISTING) */}
-            {/* {application?.appliedAt && (
-              <Card className="p-6 bg-white border-none shadow-sm">
 
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-lg text-gray-900">
-                    Application Details
-                  </h3>
-
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Applied on:</span>
-
-                      <span className="font-medium text-gray-800">
-                        {new Date(application.appliedAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Status:</span>
-
-                      <span className="font-medium text-gray-800 capitalize">
-                        {application?.status || "Pending"}
-                      </span>
+              {/* Custom Delete Popup */}
+              {showDeletePopup && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                  <div className="bg-white rounded-lg p-6 w-80 shadow-lg space-y-4">
+                    <h2 className="text-lg font-semibold text-gray-900">Delete Application</h2>
+                    <p className="text-gray-600">
+                      Are you sure you want to permanently delete this application? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end gap-3 mt-4">
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowDeletePopup(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                        onClick={() => {
+                          if (!application._id) return;
+                          dispatch(deleteApplication(application._id) as any)
+                            .unwrap()
+                            .then(() => {
+                              setShowDeletePopup(false);
+                              router.back();
+                            });
+                        }}
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </div>
-              </Card>
-            )} */}
+              )}
+            </Card>
           </div>
         </div>
       </div>
