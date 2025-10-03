@@ -1,25 +1,28 @@
 // src/middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-function getRoleFromToken(token?: string): string | null {
+async function getRoleFromToken(token?: string): Promise<string | null> {
   if (!token) return null;
+
   try {
-    const payload = jwt.decode(token) as { role?: string };
-    return payload?.role || null;
-  } catch {
-    return null;
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+
+    const { payload } = await jwtVerify(token, secret);
+    return payload.role as string;
+  } catch (err) {
+    return null; 
   }
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // -----------------------
-  // ✅ Global CORS for all APIs
+  // Global CORS for all APIs
   // -----------------------
-  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*"; // 👈 change to "*" or prod domain
+  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*"; 
   const res = NextResponse.next();
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
@@ -32,42 +35,43 @@ export function middleware(req: NextRequest) {
   }
 
   // -----------------------
-  // 🔒 Authentication & Role-based routes
+  // Authentication & Role-based routes
   // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
-  const role = getRoleFromToken(token);
-  console.log("Role: ", role)
-  console.log("Token: ", token)
+  const role = await getRoleFromToken(token);
 
 
-  // if there is no token means no logged in, we can allow "/" and "/auth" only
+  // If there is no token, meaning no user is logged in
   if (!token) {
+    // Redirect to login if trying to access admin or employee routes
     if (pathname.startsWith("/admin") || pathname.startsWith("/employee")) {
       return NextResponse.redirect(new URL("/auth/login", req.url));
     }
-    if (pathname === '/' || pathname.startsWith("/auth")) {
-      return res;
-    }
+    // Allow access to the home page and auth pages
+    return res;
   }
 
-  // have token means user logged in
-  // if other try to go "/admin" except "admin" redirect to "/auth/login" | only admin route
+  // If a token exists (user is logged in)
+
+  // If trying to access "/admin" and the role is not "admin", redirect to login
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // if other try to go "/employee" except "employee" redirect to "/auth/login" | only employee route
+  // If trying to access "/employee" and the role is not "employee", redirect to login
   if (pathname.startsWith("/employee") && role !== "employee") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // if other try to go "/" except "user" redirect to "/auth/login" | only user route
+  // If trying to access "/" and the role is not "user", redirect to login
+  // This condition seems problematic if you want non-user roles to also access the home page.
+  // Consider if this is the desired behavior. For now, keeping it as is based on original logic.
   if (pathname === "/" && role !== "user") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // "/auth" redirect users to right place
-  if ((pathname.startsWith("/auth")) && token) {
+  // If logged in user tries to access "/auth" pages, redirect them to their respective dashboards
+  if (pathname.startsWith("/auth") && token) {
     if (role === "admin") {
       return NextResponse.redirect(new URL("/admin", req.url));
     } else if (role === "employee") {
@@ -77,7 +81,7 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // ✅ Allow everything else
+  // Allow everything else
   return res;
 }
 
