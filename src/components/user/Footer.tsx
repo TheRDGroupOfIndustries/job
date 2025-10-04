@@ -165,7 +165,9 @@ const Footer = () => {
 
         {/* Contact Info Section */}
         <div className="flex flex-col items-center sm:items-start">
-          <h4 className="text-white text-lg font-semibold mb-4">Contact Info</h4>
+          <h4 className="text-white text-lg font-semibold mb-4">
+            Contact Info
+          </h4>
           <ul className="space-y-4 text-center sm:text-left">
             <li className="flex items-start justify-center sm:justify-start">
               <MapPin
@@ -207,9 +209,9 @@ const Footer = () => {
       </div>
 
       {/* Floating Buttons */}
-      <div className="fixed bottom-20 left-6 z-50 sm:bottom-6">
-        <div className="relative bg-gradient-to-r w-fit bg-[linear-gradient(to_right,#dc2626,#ef4444,#b91c1c)] text-white px-4 py-2 rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer">
-          <div className="flex items-center space-x-2">
+      <div className="fixed bottom-4 left-4 lg:bottom-6 lg:left-6 z-50 sm:bottom-6">
+        <div className="relative bg-gradient-to-r w-fit bg-[linear-gradient(to_right,#dc2626,#ef4444,#b91c1c)] text-white px-2 py-2 rounded-lg shadow-2xl transform hover:scale-105 transition-all duration-300 cursor-pointer">
+          <div className="flex items-center ">
             <div className="w-10 h-6 px-1 bg-white flex items-center justify-center overflow-hidden">
               <Image
                 height={24}
@@ -219,7 +221,7 @@ const Footer = () => {
                 className="object-contain h-full w-full"
               />
             </div>
-            <span className="text-sm font-semibold whitespace-nowrap">
+            <span className="text-sm font-semibold whitespace-nowrap ml-2">
               Proud Member of BNI
             </span>
           </div>
@@ -227,7 +229,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className=" hidden lg:block fixed bottom-6 right-6 z-50">
         <Link
           href="/contact"
           className="bg-orange-500 text-white font-medium py-2 px-4 rounded-md shadow-lg hover:bg-orange-600 transition-colors flex items-center space-x-2 text-xs sm:text-sm min-w-[110px]"

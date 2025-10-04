@@ -33,7 +33,7 @@ const CtaBanner = () => {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
+          <div className="flex sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
             {/* Navigate to /auth/login */}
             <Link href={ isAutheticated ? "/" : "/auth/login"}  passHref>
               <button className="bg-white text-primary font-semibold py-3 px-8 rounded-lg shadow-xl hover:bg-gray-100 transition duration-300 transform hover:scale-[1.05] flex items-center justify-center cursor-pointer">

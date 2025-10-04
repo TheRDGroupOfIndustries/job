@@ -198,40 +198,46 @@ const Navbar = () => {
 
       {/* Mobile menu dropdown */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white shadow-md py-4 px-6 space-y-3">
+        <div className="md:hidden bg-white py-4 px-6 space-y-3">
           <Link
             href="/alpran-ai"
-            className="text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200 whitespace-nowrap"
+            onClick={() => setIsMenuOpen(false)}
+            className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200 whitespace-nowrap"
           >
             Alpran Ai
           </Link>
 
           <Link
             href="/browse-jobs"
+            onClick={() => setIsMenuOpen(false)}
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Browse Jobs
           </Link>
-          <Link
+          { isAutheticated && <Link
             href="/candidates"
+            onClick={() => setIsMenuOpen(false)}
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Candidates
-          </Link>
+          </Link>}
           <Link
-            href="#"
+            href="/blogs"
+            onClick={() => setIsMenuOpen(false)}
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Blogs
           </Link>
           <Link
             href="/about"
+            onClick={() => setIsMenuOpen(false)}
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             About
           </Link>
           <Link
             href="/contact"
+            onClick={() => setIsMenuOpen(false)}
             className="block text-gray-600 hover:text-[#FF7F3F] transition-colors duration-200"
           >
             Contact
