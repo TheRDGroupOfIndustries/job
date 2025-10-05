@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
   // -----------------------
   // Global CORS for all APIs
   // -----------------------
-  const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*"; 
+  const allowedOrigin = "*"; 
   const res = NextResponse.next();
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
