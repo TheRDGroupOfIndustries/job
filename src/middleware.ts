@@ -16,7 +16,7 @@ async function getRoleFromToken(token?: string): Promise<string | null> {
 
 // Helper function to add CORS headers to any response
 function addCorsHeaders(response: NextResponse, origin: string | null): NextResponse {
-  response.headers.set("Access-Control-Allow-Origin", origin || "*");
+  response.headers.set("Access-Control-Allow-Origin", "*");
   response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   
