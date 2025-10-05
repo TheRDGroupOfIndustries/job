@@ -16,12 +16,10 @@ async function getRoleFromToken(token?: string): Promise<string | null> {
 
 // Helper function to add CORS headers to any response
 function addCorsHeaders(response: NextResponse, origin: string | null): NextResponse {
-  // Allow the requesting origin (or * if no origin header)
   response.headers.set("Access-Control-Allow-Origin", origin || "*");
   response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   
-  // Only set credentials if we're allowing a specific origin (not *)
   if (origin) {
     response.headers.set("Access-Control-Allow-Credentials", "true");
   }
@@ -33,36 +31,43 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const origin = req.headers.get("origin");
 
-  // Handle preflight requests
-  if (req.method === "OPTIONS") {
-    const response = new NextResponse(null, { status: 204 });
-    return addCorsHeaders(response, origin);
-  }
-
-  // For API routes, just add CORS headers and continue
+  // ========================================
+  // 🌍 HANDLE API ROUTES FIRST (CORS)
+  // ========================================
   if (pathname.startsWith("/api")) {
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+      const response = new NextResponse(null, { status: 200 });
+      return addCorsHeaders(response, origin);
+    }
+
+    // For all other API requests, add CORS and continue
     const response = NextResponse.next();
     return addCorsHeaders(response, origin);
   }
 
-  // -----------------------
-  // 🔒 Authentication & Role-based routes
-  // -----------------------
+  // ========================================
+  // 🔒 HANDLE PAGE ROUTES (Authentication)
+  // ========================================
   const token = req.cookies.get("job-auth-token")?.value;
   const role = await getRoleFromToken(token);
 
+  // Redirect to login if no token (except for /auth pages)
   if (!token && !pathname.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
+  // Protect admin routes
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
+  // Protect employee routes
   if (pathname.startsWith("/employee") && role !== "employee") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
+  // Redirect authenticated users away from auth pages
   if (pathname.startsWith("/auth") && token) {
     if (role === "admin") {
       return NextResponse.redirect(new URL("/admin", req.url));
