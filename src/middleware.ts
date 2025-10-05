@@ -18,8 +18,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const res = NextResponse.next();
 
-
-  const allowedOrigin = "https://hr-app-five.vercel.app"; // 👈 change to "*" or prod domain
+  const allowedOrigin = "*";
 
   res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
   res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
