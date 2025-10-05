@@ -5,7 +5,6 @@ import { jwtVerify } from "jose";
 
 async function getRoleFromToken(token?: string): Promise<string | null> {
   if (!token) return null;
-
   try {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
     const { payload } = await jwtVerify(token, secret);
@@ -19,43 +18,28 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const res = NextResponse.next();
 
-  // -----------------------
-  // ✅ Global CORS for all APIs
-  // -----------------------
 
-  if (pathname.startsWith("/api")) {
-    const allowedOrigin = "*";
+  const allowedOrigin = "https://hr-app-five.vercel.app"; // 👈 change to "*" or prod domain
 
-    res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
-    res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    // Handle preflight request early
-    if (req.method === "OPTIONS") {
-      return new NextResponse(null, {
-        status: 204,
-        headers: res.headers,
-      });
-    }
-
-    return res; // Don’t apply auth logic to APIs
+  // Handle preflight request
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 204, headers: res.headers });
   }
 
   // -----------------------
-  // 🔐 Authentication & Role-based route protection
+  // 🔒 Authentication & Role-based routes
   // -----------------------
   const token = req.cookies.get("job-auth-token")?.value;
   const role = await getRoleFromToken(token);
 
-  // If not logged in
-  if (!token) {
-    if (pathname.startsWith("/admin") || pathname.startsWith("/employee")) {
-      return NextResponse.redirect(new URL("/auth/login", req.url));
-    }
-    return res;
+  if (!token && !pathname.startsWith("/auth") && !pathname.startsWith("/api")) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  // Role-based protection
   if (pathname.startsWith("/admin") && role !== "admin") {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
@@ -64,20 +48,27 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
-  if (pathname === "/" && role !== "user") {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
-
-  // Prevent logged-in users from accessing auth pages
   if (pathname.startsWith("/auth") && token) {
-    if (role === "admin") return NextResponse.redirect(new URL("/admin", req.url));
-    if (role === "employee") return NextResponse.redirect(new URL("/employee", req.url));
-    return NextResponse.redirect(new URL("/", req.url));
+    if (role === "admin") {
+      return NextResponse.redirect(new URL("/admin", req.url));
+    } else if (role === "employee") {
+      return NextResponse.redirect(new URL("/employee", req.url));
+    } else if (role === "user") {
+      return NextResponse.redirect(new URL("/", req.url));
+    } else {
+      return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
   }
 
+  // ✅ Allow everything else
   return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/api/:path*",   // 👈 apply CORS to all API routes
+    "/admin/:path*",
+    "/employee/:path*",
+    "/auth/:path*",
+  ],
 };
