@@ -14,19 +14,35 @@ async function getRoleFromToken(token?: string): Promise<string | null> {
   }
 }
 
+// Helper function to add CORS headers to any response
+function addCorsHeaders(response: NextResponse, origin: string | null): NextResponse {
+  // Allow the requesting origin (or * if no origin header)
+  response.headers.set("Access-Control-Allow-Origin", origin || "*");
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  
+  // Only set credentials if we're allowing a specific origin (not *)
+  if (origin) {
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+  }
+  
+  return response;
+}
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const res = NextResponse.next();
+  const origin = req.headers.get("origin");
 
-  const allowedOrigin = "*";
-
-  res.headers.set("Access-Control-Allow-Origin", allowedOrigin);
-  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  // Handle preflight request
+  // Handle preflight requests
   if (req.method === "OPTIONS") {
-    return new NextResponse(null, { status: 204, headers: res.headers });
+    const response = new NextResponse(null, { status: 204 });
+    return addCorsHeaders(response, origin);
+  }
+
+  // For API routes, just add CORS headers and continue
+  if (pathname.startsWith("/api")) {
+    const response = NextResponse.next();
+    return addCorsHeaders(response, origin);
   }
 
   // -----------------------
@@ -35,7 +51,7 @@ export async function middleware(req: NextRequest) {
   const token = req.cookies.get("job-auth-token")?.value;
   const role = await getRoleFromToken(token);
 
-  if (!token && !pathname.startsWith("/auth") && !pathname.startsWith("/api")) {
+  if (!token && !pathname.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
 
@@ -59,13 +75,12 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // ✅ Allow everything else
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/api/:path*",   // 👈 apply CORS to all API routes
+    "/api/:path*",
     "/admin/:path*",
     "/employee/:path*",
     "/auth/:path*",
