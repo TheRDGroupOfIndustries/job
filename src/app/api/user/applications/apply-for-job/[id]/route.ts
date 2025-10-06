@@ -51,9 +51,8 @@ export async function POST(
     // }
 
     const formData = await req.formData();
-    // Fields from the client form (JobApplicationForm.tsx)
-    // const appliedBy = formData.get("appliedBy") as string;
-    const appliedBy = user.id;
+    
+    const appliedBy = formData.get("appliedBy") as string || user.id;
     const userLocation = formData.get("userLocation") as string;
     const skillsString = formData.get("skills") as string;
     const yearOfExperienceString = formData.get("yearOfExperience") as string; // NEW/RENAMED
