@@ -31,12 +31,12 @@ const FileCard = ({
         credentials: "include",
       });
       if (res.ok) { 
-        console.log("Sheet Deleted Successfully.");
+        // console.log("Sheet Deleted Successfully.");
         dispatch(removeSheet(id))
         toast.success("Sheet Deleted Successfully.", {id: "deleting-sheet"})
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Failed to delete sheet!", {id: "deleting-sheet"})
     }
   };
@@ -91,7 +91,7 @@ export default function Sheet() {
     const req = await axios.post("/api/sheets", { title: "New Sheet", createdBy: userData?._id })
     if (req.status === 200) {
       const sheet = req.data;
-      console.log(req);
+      // console.log(req);
       router.push(`/${userData?.role}/sheets/${sheet._id}`);
     }
     setLoading(false)

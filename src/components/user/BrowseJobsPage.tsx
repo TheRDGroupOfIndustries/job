@@ -30,9 +30,9 @@ const BrowseJobsPage = () => {
     dispatch(fetchJobs() as any)
       .unwrap()
       .then((data: any) => {
-        console.log("JOBS DATA: ", data);
+        // console.log("JOBS DATA: ", data);
       })
-      .catch((err: any) => console.log(err))
+      .catch((err: any) => console.error(err))
       .finally(() => setLoading(false));
   };
 

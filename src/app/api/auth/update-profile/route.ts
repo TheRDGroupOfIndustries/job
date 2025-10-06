@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json();
-    console.log("Request Body:", body);
+    // console.log("Request Body:", body);
     // if (!phone) {
     //   return NextResponse.json({ error: "Phone is required" }, { status: 400 });
     // }

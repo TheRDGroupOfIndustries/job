@@ -61,7 +61,7 @@ export const deleteMails = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const { mail } = getState() as any;
     const mailIds = mail.selectedMail;
-    console.log(mailIds)
+    // console.log(mailIds)
     try {
       const res = await fetch("/api/mails/delete", {
         method: "POST",
@@ -85,7 +85,7 @@ export const deleteMail = createAsyncThunk(
   "mail/deleteMail",
   async ({ mailId }: { mailId: string }, { rejectWithValue, getState }) => {
     const mailIds = [mailId];
-    console.log(mailIds)
+    // console.log(mailIds)
     try {
       const res = await fetch("/api/mails/delete", {
         method: "POST",
@@ -153,7 +153,7 @@ const mailSlice = createSlice({
       // toast.loading("Fetching Mails...", { id: "mail" });
     })
     .addCase(fetchMails.fulfilled, (state, action: PayloadAction<any>) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       state.mails = action.payload.mails as never;
       state.filteredMails = action.payload.mails as never;
       // toast.success("Mails fetched successfully", { id: "mail" });
@@ -184,7 +184,7 @@ const mailSlice = createSlice({
       toast.loading("Deleting Mails...", { id: "deleteMail" });
     })
     .addCase(deleteMail.fulfilled, (state, action: PayloadAction<any>) => {
-      console.log(action.payload)
+      // console.log(action.payload)
       state.mails = state.mails.filter(
         (mail) => mail._id !== action.payload.mailId
       );

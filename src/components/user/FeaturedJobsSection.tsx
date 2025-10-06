@@ -100,9 +100,9 @@ const FeaturedJobsSection = () => {
 
   const handleApplyClick = (job: Job) => {
     if (isLoggedIn) {
-      console.log(
-        `User is applying for the job: "${job.title}" at "${job.company}"`
-      );
+      // console.log(
+      //   `User is applying for the job: "${job.title}" at "${job.company}"`
+      // );
       setShowApplyConfirmation(true);
     } else {
       setShowLoginPopup(true);

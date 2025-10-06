@@ -22,7 +22,7 @@ export async function PATCH(
     // }
 
     const {id:applicationId} = await params;
-    console.log("application id:", applicationId)
+    // console.log("application id:", applicationId)
 
     if (!mongoose.Types.ObjectId.isValid(applicationId)) {
       return NextResponse.json({ error: "Invalid application ID" }, { status: 400 });

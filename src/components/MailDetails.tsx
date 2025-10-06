@@ -46,7 +46,7 @@ const MailDetails: React.FC<MailDetailsProps> = ({ id, setSelectedMailId }) => {
   
   const handleDeleteMail = (id: string) => {
     dispatch(deleteMail({ mailId: id as string }) as any).unwrap().then(() => {
-      console.log("Mail deleted successfully");
+      // console.log("Mail deleted successfully");
       setSelectedMailId(null);
     }).catch((error: any) => {
       console.error("Error deleting mail:", error);

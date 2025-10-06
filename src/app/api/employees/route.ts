@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   await connectDB();
   const user = authenticate(req as any);
-  console.log("user", user);
+  // console.log("user", user);
 
 
   if (!user || user.role !== "admin") {

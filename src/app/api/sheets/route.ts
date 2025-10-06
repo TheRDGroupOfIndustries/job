@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   await connectDB();
   const body = await req.json();
-  console.log(body);
+  // console.log(body);
   
   const newSheet = await Sheet.create({
     title: body.title || "Untitled Sheet",

@@ -173,9 +173,9 @@ const JobApplicationForm = ({
     }
 
     // Log FormData contents (for debugging, won't show file content directly)
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
 
     // Example of how you might send this to an API:
     try {
@@ -189,7 +189,7 @@ const JobApplicationForm = ({
         }
       );
       if (!response.ok) {
-        console.log(response.status);
+        // console.log(response.status);
         if (response.status === 409) {
           toast.error("You have already applied for this job.", {
             id: "apply",
@@ -199,7 +199,7 @@ const JobApplicationForm = ({
         throw new Error("Failed to submit application");
       }
       const result = await response.json();
-      console.log("Application submitted successfully:", result);
+      // console.log("Application submitted successfully:", result);
       toast.success("Application submitted successfully!", { id: "apply" });
       reset();
       setOpenForm(false);

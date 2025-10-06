@@ -96,7 +96,7 @@ export default function CandidateApplicationsPage() {
         );
         if (!res.ok) throw new Error("Failed to fetch applications");
         const data = await res.json();
-        console.log("API Data:", data);
+        // console.log("API Data:", data);
 
         const mappedApps: ResumeApplication[] = data.applications.map(
           (app: any) => ({
@@ -115,7 +115,7 @@ export default function CandidateApplicationsPage() {
           })
         );
 
-        console.log("mapped data: ", mappedApps);
+        // console.log("mapped data: ", mappedApps);
 
         setApplications(mappedApps);
       } catch (err) {

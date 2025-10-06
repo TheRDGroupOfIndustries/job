@@ -220,7 +220,7 @@ export default function Luckysheet({ id }: { id: string }) {
           hook: {
             workbookCreateAfter: function() {
               if (cleanup) return;
-              console.log("✅ Workbook created");
+              // console.log("✅ Workbook created");
               
               lsRef.current = window.luckysheet;
               
@@ -245,7 +245,7 @@ export default function Luckysheet({ id }: { id: string }) {
                   // Force focus
                   container.focus();
                   
-                  console.log("✅ Spreadsheet setup complete and interactive");
+                  // console.log("✅ Spreadsheet setup complete and interactive");
                 }
                 
                 setIsReady(true);
@@ -254,34 +254,34 @@ export default function Luckysheet({ id }: { id: string }) {
             },
 
             cellEditBefore: function(range: any) {
-              console.log("📝 Cell edit initiated:", range);
+              // console.log("📝 Cell edit initiated:", range);
               return true;
             },
 
             cellEditAfter: function(range: any) {
-              console.log("✏️ Cell edit completed:", range);
+              // console.log("✏️ Cell edit completed:", range);
             },
 
             cellUpdateBefore: function(r: number, c: number, value: any) {
-              console.log("🔄 Cell updating:", { r, c, value });
+              // console.log("🔄 Cell updating:", { r, c, value });
               return true;
             },
 
             cellUpdateAfter: function(r: number, c: number, oldValue: any, newValue: any) {
-              console.log("✅ Cell updated:", { r, c, oldValue, newValue });
+              // console.log("✅ Cell updated:", { r, c, oldValue, newValue });
             },
 
             cellMousedown: function(cell: any, postion: any, sheetFile: any, ctx: any) {
-              console.log("🖱️ Cell mouse down:", cell);
+              // console.log("🖱️ Cell mouse down:", cell);
             },
 
             cellClick: function(cell: any, postion: any, sheetFile: any, ctx: any) {
-              console.log("👆 Cell clicked:", cell);
+              // console.log("👆 Cell clicked:", cell);
             }
           }
         };
 
-        console.log("🚀 Creating Luckysheet with config");
+        // console.log("🚀 Creating Luckysheet with config");
         
         // Create with a small delay to ensure DOM is ready
         setTimeout(() => {

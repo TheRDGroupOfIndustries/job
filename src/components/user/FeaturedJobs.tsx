@@ -20,8 +20,8 @@ const FeaturedJobs: React.FC = () => {
     setLoading(true);
     dispatch(fetchJobs() as any)
       .unwrap()
-      .then((data: any) => console.log("JOBS DATA:", data))
-      .catch((err: any) => console.log(err))
+      // .then((data: any) => console.log("JOBS DATA:", data))
+      .catch((err: any) => console.error(err))
       .finally(() => setLoading(false));
   };
 

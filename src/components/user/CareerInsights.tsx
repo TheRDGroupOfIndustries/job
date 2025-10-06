@@ -138,7 +138,7 @@ const CareerInsights = () => {
   const fetchPosts = async () => {
     try {
       const data: Post[] = await client.fetch(POSTS_QUERY);
-      console.log("Blog Posts: ", data);
+      // console.log("Blog Posts: ", data);
       setPosts(data);
     } catch (error) {
       console.error("Error fetching posts:", error);

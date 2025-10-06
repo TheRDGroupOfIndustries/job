@@ -53,7 +53,7 @@ export const getEmployeeTasks = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     try {
       const { auth } = getState() as any; 
-      console.log("auth", auth)
+      // console.log("auth", auth)
       const response = await fetch(`/api/kanban/employee/${auth.userData._id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -75,7 +75,7 @@ export const updateTaskStatus = createAsyncThunk(
   "task/updateTaskStatus",
   async ({newData, id}: {newData: any, id: string}, { rejectWithValue }) => {
     try {
-      console.log("details:", {newData, id})
+      // console.log("details:", {newData, id})
       const response = await fetch(`/api/kanban/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -87,7 +87,7 @@ export const updateTaskStatus = createAsyncThunk(
         return rejectWithValue("Failed to fetch job");
       }
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -109,7 +109,7 @@ export const deleteTask = createAsyncThunk(
         return rejectWithValue("Failed to fetch job");
       }
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
       return data;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -133,15 +133,15 @@ export const taskSlice = createSlice({
         state.tasks.unshift(action.payload.task);
       })
       .addCase(getTasks.fulfilled, (state, action) => {
-        console.log("action", action.payload)
+        // console.log("action", action.payload)
         state.tasks = action.payload;
       })
       .addCase(getEmployeeTasks.fulfilled, (state, action) => {
-        console.log("action", action.payload)
+        // console.log("action", action.payload)
         state.tasks = action.payload;
       })
       .addCase(updateTaskStatus.fulfilled, (state, action) => {
-        console.log("action", action.payload)
+        // console.log("action", action.payload)
         state.tasks = state.tasks.map((task) => {
           if (task._id === action.payload.task._id) {
             return action.payload.task;
@@ -150,7 +150,7 @@ export const taskSlice = createSlice({
         });
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
-        console.log("action", action.payload)
+        // console.log("action", action.payload)
         state.tasks = state.tasks.filter((task) => task._id !== action.payload.task._id);
       })
 

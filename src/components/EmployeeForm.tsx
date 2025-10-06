@@ -43,7 +43,7 @@ const EmployeeForm = ({
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
-  console.log("employee:", employee);
+  // console.log("employee:", employee);
   const {
     register,
     handleSubmit,
@@ -78,8 +78,8 @@ const EmployeeForm = ({
   const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
   const handleProfileUpdate = async (data: ProfileFormInputs) => {
-    console.log("Form Data Submitted:", data);
-    console.log("New Profile Image:", profileImage);
+    // console.log("Form Data Submitted:", data);
+    // console.log("New Profile Image:", profileImage);
     toast.loading("Updating...", { id: "updateEmployee" });
 
     if (imageFile) {
@@ -94,7 +94,7 @@ const EmployeeForm = ({
       });
 
       data.profileImage = response.data.secure_url;
-      console.log("Upload successful:", response.data);
+      // console.log("Upload successful:", response.data);
       setLoading(false);
     }
 

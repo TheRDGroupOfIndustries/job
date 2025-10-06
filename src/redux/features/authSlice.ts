@@ -137,7 +137,7 @@ export const updateProfile = createAsyncThunk(
       })
 
       const data = await res.json()
-      console.log(data)
+      // console.log(data)
       return data
     } catch (error) {
       return rejectWithValue(error);
@@ -205,7 +205,7 @@ const authSlice = createSlice({
     decodeToken: (state, action: PayloadAction<any>) => {
       const token = action.payload;
       const payload = JSON.parse(atob(token.split(".")[1]));
-      console.log(payload);
+      // console.log(payload);
       state.userData = payload;
       state.isAutheticated = true;
     },
@@ -278,7 +278,7 @@ const authSlice = createSlice({
         // state.loading = true;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        console.log(action.payload)
+        // console.log(action.payload)
         state.userData = action.payload.user;
         toast.success(action.payload.message, { id: "update" });
       })
@@ -293,7 +293,7 @@ const authSlice = createSlice({
         
       })
       .addCase(updateEmployee.fulfilled, (state, action) => {
-        console.log(action.payload)
+        // console.log(action.payload)
         // state.userData = action.payload.user;
         toast.success(action.payload.message, { id: "updateEmployee" });
       })
@@ -308,7 +308,7 @@ const authSlice = createSlice({
         toast.loading("Updating...", { id: "deleteEmployee" });
       })
       .addCase(deleteEmployee.fulfilled, (state, action) => {
-        console.log(action.payload)
+        // console.log(action.payload)
         // state.userData = action.payload.user;
         toast.success(action.payload.message, { id: "deleteEmployee" });
       })

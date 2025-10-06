@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     }
 
     const OTP = generateOTP();
-    console.log(OTP);
+    // console.log(OTP);
 
     await sendOTP(email, OTP, "Register");
 

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     // }
 
     const body: IJob = await req.json();
-    console.log(body);
+    // console.log(body);
     
 
     if (

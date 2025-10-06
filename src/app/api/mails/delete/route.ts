@@ -9,7 +9,7 @@ export async function POST(req: Request) {
         const user = authenticate(req as any);
 
         const { mailIds }: { mailIds: string[] } = await req.json();
-        console.log(mailIds);
+        // console.log(mailIds);
 
         if (!user || (user.role !== "admin" && user.role !== "employee")) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });

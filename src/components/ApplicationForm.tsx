@@ -31,8 +31,7 @@ const ApplicationForm = ({ close }: { close: () => void }) => {
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     setIsSubmitting(true);
-    console.log("Form Data Submitted:", data); // If you were sending this to a real API, you'd process it here:
-
+    // console.log("Form Data Submitted:", data); 
     const formData = new FormData();
     formData.append("appliedBy", data.appliedBy);
     formData.append("jobDesignation", data.jobDesignation);

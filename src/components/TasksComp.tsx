@@ -96,7 +96,7 @@ const TasksCard = ({ task }: { task: any }) => {
       setIsStatusOpen(false);
       return;
     }
-    console.log(status);
+    // console.log(status);
     setSelectedStatus(status);
     toast.loading("Updating Task ...", { id: "task" });
     dispatch(updateTaskStatus({ newData: { status }, id: task._id }) as any)

@@ -29,7 +29,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
     return null;
   }
   const job = jobs.find((job: IJob) => job._id === jobId) as IJob;
-  console.log("job: ", job);
+  // console.log("job: ", job);
 
   // Format the date to "MM/DD/YYYY"
   const formatDate = (dateString: string) => {
@@ -52,7 +52,7 @@ export default function JobDetails({ jobId }: { jobId: string }) {
       })
       .catch((err: any) => {
         toast.error("Error Deleting Job", { id: "delete-job" });
-        console.log("err", err);
+        // console.log("err", err);
       })
       .finally(() => {
         setDeletingJob(false);

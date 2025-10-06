@@ -38,7 +38,7 @@ export default function Page() {
     fetch("/api/mails/mail-users")
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setUsers(res.suggetions);
       });
   }, []);
@@ -49,14 +49,14 @@ export default function Page() {
     fetch(`/api/admin/reports/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setReport(data);
       }).finally(() => setLoading(false));
   };
 
   useEffect(() => {
     if (selectedEmployee) {
-      console.log(selectedEmployee);
+      // console.log(selectedEmployee);
       fetchEmployeeDetails(selectedEmployee._id);
     }
   }, [selectedEmployee?._id ]);

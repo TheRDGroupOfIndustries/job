@@ -47,7 +47,7 @@ export async function PUT(
 
     const { id } = await context.params;
     const body = await req.json();
-    console.log("Body", body);
+    // console.log("Body", body);
 
     const updatedTask = await Kanban.findByIdAndUpdate(id, body, {
       new: true,

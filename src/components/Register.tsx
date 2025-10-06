@@ -62,7 +62,7 @@ export default function Register() {
         }
       })
       .catch((err: any) => {
-        console.log("register err", err);
+        // console.log("register err", err);
       })
       .finally(() => {
         setSendingOtp(false);
@@ -80,7 +80,7 @@ export default function Register() {
         }
       })
       .catch((err: any) => {
-        console.log("register err", err);
+        console.error("register err", err);
       })
       .finally(() => {
         setLoading(false);

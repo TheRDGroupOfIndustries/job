@@ -44,7 +44,7 @@ export default function ComposeMailModal() {
       fetch("/api/mails/mail-users")
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           setSuggestions(res.suggetions);
           setFilteredSuggestions(res.suggetions); // ✅ show all initially
         });
@@ -52,7 +52,7 @@ export default function ComposeMailModal() {
   }, [isOpen]);
 
   const onSubmit = (data: any) => {
-    console.log("Form Data:", data, selectedUser, inputValue);
+    // console.log("Form Data:", data, selectedUser, inputValue);
     dispatch(createMail(data) as any)
       .unwrap()
       .then(() => {

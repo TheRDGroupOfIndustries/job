@@ -40,7 +40,7 @@ export async function POST(
     await connectDB();
     const {id: jobId} = await params; // job id corresponds to 'job' in schema
     const user = authenticate(req as any);
-    console.log(user)
+    // console.log(user)
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -157,7 +157,7 @@ export async function POST(
       yearOfExperience, // NEW FIELD
       rating, // RENAMED
     });
-    console.log("Application saved in DB:", application);
+    // console.log("Application saved in DB:", application);
 
     const appUser = await User.findById(appliedBy).select("name email profileImage");
     const appJob = await Job.findById(jobId).select("designation jobDescription workMode companyDetails employmentType");

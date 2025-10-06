@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       jobs,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: (error as Error).message },
       { status: 500 }

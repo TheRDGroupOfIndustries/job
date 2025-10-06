@@ -53,7 +53,7 @@ export default function AllEmployees() {
     fetch("/api/employees")
       .then((res) => res.json())
       .then((data) => {
-        console.log("data:", data.employees);
+        // console.log("data:", data.employees);
         setEmployees(data.employees);
       })
       .finally(() => setLoading(false));

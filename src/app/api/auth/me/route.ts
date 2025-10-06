@@ -7,7 +7,7 @@ import { User } from "@/models";
 export async function GET(req: Request) {
   const token = req.headers.get("cookie")?.split("job-auth-token=")[1];
 
-  console.log("token", token);
+  // console.log("token", token);
   if (!token) {
     return NextResponse.json({
       success: false,
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedUser;
     const details = await User.findById(decoded?.id).select("-password");
 
-    console.log("Authorized user details:", details)
+    // console.log("Authorized user details:", details)
 
     return NextResponse.json({
       success: true,
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
 
   } catch (error) {
     // console.error("Error verifying token:", error);
-    console.log("Unauthorized user :", error)
+    console.error("Unauthorized user :", error)
 
     const res = NextResponse.json({
       success: false,

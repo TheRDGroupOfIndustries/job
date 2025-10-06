@@ -27,7 +27,7 @@ export async function PUT(
 
     const body: Partial<IJob> = await req.json();
 
-    console.log(jobId, body)
+    // console.log(jobId, body)
 
     const immutableFields: (keyof IJob)[] = [
       "createdBy",

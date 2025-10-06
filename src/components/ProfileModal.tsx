@@ -57,7 +57,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
   const handleProfileUpdate = async (data: ProfileFormInputs) => {
     try {
       toast.loading("Updating...", { id: "update" });
-      console.log("Form Data Submitted:", data);
+      // console.log("Form Data Submitted:", data);
 
       // Only upload image if a new image file was selected
       if (imageFile) {
@@ -72,7 +72,7 @@ const ProfileModal = ({ close }: { close: () => void }) => {
         });
 
         data.profileImage = response.data.secure_url;
-        console.log("Upload successful:", response.data);
+        // console.log("Upload successful:", response.data);
       } else {
         // Keep existing profile image if no new image was uploaded
         // data.profileImage = "/images/profile_picture.jpg";

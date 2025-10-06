@@ -106,9 +106,9 @@ const BlogDetails = ({ slug }: { slug: string }) => {
         try {
              // --- Replace with actual Sanity fetch in production ---
             const data = await client.fetch(POST_QUERY, { slug });
-            console.log(data)
+            // console.log(data)
             const postData = Array.isArray(data) ? data[0] : data; 
-            console.log(postData)
+            // console.log(postData)
 
             // Hardcoding the provided JSON object for immediate UI development
             // const providedData = {

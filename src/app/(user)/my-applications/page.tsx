@@ -236,7 +236,7 @@ export default function MyApplicationsPage() {
         headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setApplications(data.applications);
 
       // Using mock data for immediate display
