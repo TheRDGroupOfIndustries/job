@@ -42,9 +42,6 @@ export async function POST(
     const user = authenticate(req as any);
     // console.log(user)
 
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     // if (user.role !== "user") {
     //   return NextResponse.json(
