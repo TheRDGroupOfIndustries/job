@@ -4,6 +4,7 @@ import {
   BellRing,
   BriefcaseBusiness,
   ChartPie,
+  ClipboardList,
   DoorOpen,
   Layers,
   NotebookText,
@@ -42,7 +43,8 @@ export default function Sidebar() {
   const { mails } = useSelector((state: RootState) => state.mail);
   const [Options, setOptions] = useState<TOptions[] | []>([]);
   const [openProfileModal, setOpenProfileModal] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(false);
+  const [notificationsEnabled, setNotificationsEnabled] =
+    useState<boolean>(false);
 
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -50,34 +52,108 @@ export default function Sidebar() {
 
   const AdminOptions = [
     { label: "Dashboard", icon: <ChartPie className="w-5 h-5" />, path: "" },
-    { label: "All Employee", icon: <UsersRound className="w-5 h-5" />, path: "all-employee" },
+    {
+      label: "All Employee",
+      icon: <UsersRound className="w-5 h-5" />,
+      path: "all-employee",
+    },
+    {
+      label: "Interviews",
+      icon: <ClipboardList className="w-5 h-5" />,
+      path: "interviews",
+    },
     { label: "Sheets", icon: <Table2 className="w-5 h-5" />, path: "sheets" },
-    { label: "Job Posts", icon: <BriefcaseBusiness className="w-5 h-5" />, path: "job-posts" },
-    { label: "Applications", icon: <NotebookText className="w-5 h-5" />, path: "applications" },
-    { label: "Send Mails", icon: <Send className="w-5 h-5" />, path: "send-mails" },
-    { label: "Blogs", icon: <Layers className="w-5 h-5" />, path: "/sanity-studio" },
-    { label: "Assign Works", icon: <Target className="w-5 h-5" />, path: "assign-works" },
-    { label: "Employee Chatbot", icon: <TrainFront className="w-5 h-5" />, path: "employee-chatbot" },
+    {
+      label: "Job Posts",
+      icon: <BriefcaseBusiness className="w-5 h-5" />,
+      path: "job-posts",
+    },
+    {
+      label: "Applications",
+      icon: <NotebookText className="w-5 h-5" />,
+      path: "applications",
+    },
+    {
+      label: "Send Mails",
+      icon: <Send className="w-5 h-5" />,
+      path: "send-mails",
+    },
+    {
+      label: "Blogs",
+      icon: <Layers className="w-5 h-5" />,
+      path: "/sanity-studio",
+    },
+    {
+      label: "Assign Works",
+      icon: <Target className="w-5 h-5" />,
+      path: "assign-works",
+    },
+    {
+      label: "Employee Chatbot",
+      icon: <TrainFront className="w-5 h-5" />,
+      path: "employee-chatbot",
+    },
   ];
 
   const EmployeeOptions = [
     { label: "Dashboard", icon: <ChartPie className="w-5 h-5" />, path: "" },
+    {
+      label: "Interviews",
+      icon: <ClipboardList className="w-5 h-5" />,
+      path: "interviews",
+    },
     { label: "Sheets", icon: <Table2 className="w-5 h-5" />, path: "sheets" },
-    { label: "Job Posts", icon: <BriefcaseBusiness className="w-5 h-5" />, path: "job-posts" },
-    { label: "Applications", icon: <NotebookText className="w-5 h-5" />, path: "applications" },
-    { label: "Send Mails", icon: <Send className="w-5 h-5" />, path: "send-mails" },
-    { label: "Blogs", icon: <Layers className="w-5 h-5" />, path: "/sanity-studio" },
-    { label: "My Works", icon: <Target className="w-5 h-5" />, path: "my-works" },
+    {
+      label: "Job Posts",
+      icon: <BriefcaseBusiness className="w-5 h-5" />,
+      path: "job-posts",
+    },
+    {
+      label: "Applications",
+      icon: <NotebookText className="w-5 h-5" />,
+      path: "applications",
+    },
+    {
+      label: "Send Mails",
+      icon: <Send className="w-5 h-5" />,
+      path: "send-mails",
+    },
+    {
+      label: "Blogs",
+      icon: <Layers className="w-5 h-5" />,
+      path: "/sanity-studio",
+    },
+    {
+      label: "My Works",
+      icon: <Target className="w-5 h-5" />,
+      path: "my-works",
+    },
   ];
 
   const UserOptions = [
     { label: "Dashboard", icon: <ChartPie className="w-5 h-5" />, path: "" },
     { label: "Sheets", icon: <Table2 className="w-5 h-5" />, path: "sheets" },
-    { label: "Job Posts", icon: <BriefcaseBusiness className="w-5 h-5" />, path: "job-posts" },
-    { label: "Applications", icon: <NotebookText className="w-5 h-5" />, path: "applications" },
-    { label: "Send Mails", icon: <Send className="w-5 h-5" />, path: "send-mails" },
+    {
+      label: "Job Posts",
+      icon: <BriefcaseBusiness className="w-5 h-5" />,
+      path: "job-posts",
+    },
+    {
+      label: "Applications",
+      icon: <NotebookText className="w-5 h-5" />,
+      path: "applications",
+    },
+    {
+      label: "Send Mails",
+      icon: <Send className="w-5 h-5" />,
+      path: "send-mails",
+    },
     { label: "Blogs", icon: <Layers className="w-5 h-5" />, path: "blogs" },
-    { label: "My Works", icon: <Target className="w-5 h-5" />, path: "my-works" },
+    {
+      label: "My Works",
+      icon: <Target className="w-5 h-5" />,
+      path: "my-works",
+    },
   ];
 
   useEffect(() => {
@@ -180,7 +256,9 @@ export default function Sidebar() {
             {Options.map((option) => (
               <Link
                 href={`${
-                  option.label === "Blogs" ? `${option.path}` : `/${userData?.role}/${option.path}`
+                  option.label === "Blogs"
+                    ? `${option.path}`
+                    : `/${userData?.role}/${option.path}`
                 }`}
                 key={option.label}
                 className={`flex items-center gap-2 p-2 ${
@@ -229,7 +307,9 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {openProfileModal && <ProfileModal close={() => setOpenProfileModal(false)} />}
+      {openProfileModal && (
+        <ProfileModal close={() => setOpenProfileModal(false)} />
+      )}
     </div>
   );
 }

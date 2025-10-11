@@ -5,6 +5,7 @@ import jobSlice from "./features/jobSlice";
 import taskSlice from "./features/taskSlice";
 import sheetsSlice from "./features/sheetsSlice";
 import applicationSlice from "./features/applicationSlice";
+import interviewSlice from "./features/interviewSlice";
 
 // 1. Explicitly combine all your individual slices into the main reducer
 const appReducer = combineReducers({
@@ -14,15 +15,16 @@ const appReducer = combineReducers({
   task: taskSlice,
   sheet: sheetsSlice,
   applications: applicationSlice,
+  interview: interviewSlice,
 });
 
 // 2. Create a root reducer that handles the state reset logic
 const rootReducer: typeof appReducer = (state, action) => {
-  // We are assuming the logout action type is 'auth/logout' 
-  // based on Redux Toolkit naming conventions for a slice named 'auth' 
+  // We are assuming the logout action type is 'auth/logout'
+  // based on Redux Toolkit naming conventions for a slice named 'auth'
   // with a reducer function named 'logout'.
-  if (action.type === 'auth/logout') {
-    // When the logout action is dispatched, call appReducer with 'undefined' 
+  if (action.type === "auth/logout") {
+    // When the logout action is dispatched, call appReducer with 'undefined'
     // state to force all slices to return their initial state.
     return appReducer(undefined, action);
   }

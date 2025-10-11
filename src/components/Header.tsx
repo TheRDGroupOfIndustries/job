@@ -17,6 +17,7 @@ import ApplicationForm from "./ApplicationForm";
 import Image from "next/image";
 import Link from "next/link";
 import JobApplicationForm from "./user/JobApplicationForm";
+import InterviewForm from "./InterviewForm";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -121,6 +122,10 @@ export default function Header() {
     //     </div>
     //   );
     // }
+
+    if (pathname.includes("interviews") && userData?.role === "employee") {
+      return <InterviewForm mode="create" />;
+    }
 
     return (
       <div className="flex justify-end">{/* Empty space on the right */}</div>
