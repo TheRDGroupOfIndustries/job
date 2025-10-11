@@ -18,10 +18,14 @@ import Image from "next/image";
 import Link from "next/link";
 import JobApplicationForm from "./user/JobApplicationForm";
 import InterviewForm from "./InterviewForm";
+import InterviewDownload from "./InterviewDownload";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const { selectedMail } = useSelector((state: RootState) => state.mail);
+  const { interviews, selectedInterviews } = useSelector(
+    (state: RootState) => state.interview
+  );
   const [openAssignWorkForm, setOpenAssignWorkForm] = useState(false);
   const [openApplicationForm, setOpenApplicationForm] = useState(false);
   const { mails, filteredMails } = useSelector(
@@ -123,9 +127,24 @@ export default function Header() {
     //   );
     // }
 
-    if (pathname.includes("interviews") && userData?.role === "employee") {
-      return <InterviewForm mode="create" />;
+    if (pathname.includes("interviews")) {
+      return (
+        <>
+          {userData?.role === "employee" && selectedInterviews.length === 0 && (
+            <InterviewForm mode="create" />
+          )}
+          {selectedInterviews.length > 0 && <InterviewDownload />}
+        </>
+      );
     }
+
+    // if (pathname.includes("interviews") && userData?.role === "employee") {
+    //   return <InterviewForm mode="create" />;
+    // }
+
+    // if (pathname.includes("interviews") && selectedInterviews.length > 0) {
+    //   return <InterviewDownload />;
+    // }
 
     return (
       <div className="flex justify-end">{/* Empty space on the right */}</div>

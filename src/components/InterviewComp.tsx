@@ -8,9 +8,11 @@ import { RootState } from "@/redux/store";
 import {
   deleteInterview,
   fetchInterviews,
+  toggleInterviewSelection,
 } from "@/redux/features/interviewSlice";
 import InterviewForm from "./InterviewForm";
 import PageLoader from "./PageLoader";
+import { Checkbox } from "./ui/checkbox";
 
 // export const mockInterviews: Interview[] = [
 //   {
@@ -100,6 +102,10 @@ const DataRow: React.FC<DataRowProps> = ({ label, value, postFix }) => {
 };
 
 const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
+  const { selectedInterviews } = useSelector(
+    (state: RootState) => state.interview
+  );
+
   const [deleting, setDeleting] = useState<any>(null);
   const dispatch = useDispatch();
   const formatDate = (dateString: string): string => {
@@ -147,6 +153,17 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
 
   return (
     <div className="relative px-4 py-3 bg-white rounded-xl shadow-md transition-all duration-300 hover:shadow-lg border border-gray-100 flex">
+      <div className="h-full flex items-center justify-center w-10">
+        <Checkbox
+          checked={selectedInterviews.includes(interview._id as never)}
+          onCheckedChange={() =>
+            dispatch(toggleInterviewSelection(interview._id))
+          }
+          // Style checkbox to match a more modern, rounded look if possible (requires custom styling or shadcn component properties)
+          className="mt-1 rounded-md border-gray-300 cursor-pointer"
+        />
+      </div>
+
       <div className="grid grid-cols-3 gap-5 text-sm flex-1">
         <div className=" ">
           <DataRow label="Name" value={interview.candidateName} />

@@ -73,6 +73,7 @@ export const deleteInterview = createAsyncThunk(
 
 interface InterviewState {
   interviews: Interview[] | [];
+  selectedInterviews: Interview[] | [];
   loading: boolean;
   error: any;
 }
@@ -81,10 +82,24 @@ const interviewSlice = createSlice({
   name: "interview",
   initialState: {
     interviews: [],
+    selectedInterviews: [],
     loading: false,
     error: null,
   } as InterviewState,
-  reducers: {},
+  reducers: {
+    toggleInterviewSelection: (state, action) => {
+      const interviewId: any = action.payload;
+      const index = state.selectedInterviews.indexOf(interviewId as never);
+      if (index === -1) {
+        state.selectedInterviews.push(interviewId as never);
+      } else {
+        state.selectedInterviews.splice(index, 1);
+      }
+    },
+    setSelectediInterviews: (state, action) => {
+      state.selectedInterviews = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch
@@ -145,5 +160,8 @@ const interviewSlice = createSlice({
       });
   },
 });
+
+export const { toggleInterviewSelection, setSelectediInterviews } =
+  interviewSlice.actions;
 
 export default interviewSlice.reducer;
