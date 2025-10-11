@@ -1,6 +1,7 @@
 import { Interview } from "@/types/Interview";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export const fetchInterviews = createAsyncThunk(
   "interview/fetchInterviews",
@@ -119,44 +120,47 @@ const interviewSlice = createSlice({
       .addCase(createInterview.pending, (state) => {
         state.loading = true;
         state.error = null;
+        toast.loading("Creating Interview...", { id: "interview" });
       })
       .addCase(createInterview.fulfilled, (state, action) => {
         state.loading = false;
         state.interviews.unshift(action.payload as never);
+        toast.success("Interview created successfully", { id: "interview" });
       })
       .addCase(createInterview.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        toast.error("Failed to create interview", { id: "interview" });
       })
       // Update
       .addCase(updateInterview.pending, (state) => {
-        // state.loading = true;
         state.error = null;
+        toast.loading("Updating Interview...", { id: "interview" });
       })
       .addCase(updateInterview.fulfilled, (state, action) => {
-        // state.loading = false;
         state.interviews = state.interviews.map((i: any) =>
           i._id === action.payload._id ? action.payload : i
         );
+        toast.success("Interview updated successfully", { id: "interview" });
       })
       .addCase(updateInterview.rejected, (state, action) => {
-        // state.loading = false;
         state.error = action.payload;
+        toast.error("Failed to update interview", { id: "interview" });
       })
       // Delete
       .addCase(deleteInterview.pending, (state) => {
-        // state.loading = true;
         state.error = null;
+        toast.loading("Deleting Interview...", { id: "interview" });
       })
       .addCase(deleteInterview.fulfilled, (state, action) => {
-        // state.loading = false;
         state.interviews = state.interviews.filter(
           (i: any) => i._id !== action.payload
         );
+        toast.success("Interview deleted successfully", { id: "interview" });
       })
       .addCase(deleteInterview.rejected, (state, action) => {
-        // state.loading = false;
         state.error = action.payload;
+        toast.error("Failed to delete interview", { id: "interview" });
       });
   },
 });

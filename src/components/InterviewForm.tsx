@@ -1,23 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  X,
-  Save,
-  User,
-  Clock,
-  Calendar,
-  Briefcase,
-  MapPin,
-  Mail,
-  Phone,
-  Gauge,
-  Edit2,
-  Plus,
-} from "lucide-react";
+import { X, Save, Clock, Calendar, Edit2, Plus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
 import {
   createInterview,
   updateInterview,
@@ -33,7 +18,7 @@ const InterviewForm = ({
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isDirty },
     reset,
   } = useForm({
     defaultValues: {
@@ -43,16 +28,14 @@ const InterviewForm = ({
       gender: "Male",
       joiningLocation: "",
       position: "",
-      workExp: 0,
+      workExp: "",
       status: "scheduled",
       interviewDate: "",
       interviewTime: "",
     },
   });
 
-  const { interviews, error } = useSelector(
-    (state: RootState) => state.interview
-  );
+  const { interviews } = useSelector((state: RootState) => state.interview);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -67,11 +50,6 @@ const InterviewForm = ({
         const dateObj = new Date(initialData?.interviewDate);
         const formattedDate = dateObj.toISOString().split("T")[0];
 
-        // Capitalize status for consistency
-        // const statusValue =
-        //   initialData?.status?.charAt(0).toUpperCase() +
-        //     initialData?.status?.slice(1) || "Scheduled";
-
         reset({
           name: initialData?.candidateName || "",
           email: initialData?.candidateEmail || "",
@@ -79,7 +57,7 @@ const InterviewForm = ({
           gender: initialData?.candidateGender || "Male",
           joiningLocation: initialData?.joiningLocation || "",
           position: initialData?.position || "",
-          workExp: initialData?.candidateExp || 0,
+          workExp: (initialData?.candidateExp).toString() || "",
           status: initialData?.status || "scheduled",
           interviewDate: formattedDate,
           interviewTime: initialData?.interviewTime || "",
@@ -103,9 +81,9 @@ const InterviewForm = ({
     };
     setLoading(true);
     if (mode === "update") {
-      console.log("--- UPDATE INTERVIEW RECORD ---");
-      console.log("ID:", editId || "N/A");
-      console.log("Updated Data:", dataToSubmit);
+      // console.log("--- UPDATE INTERVIEW RECORD ---");
+      // console.log("ID:", editId || "N/A");
+      // console.log("Updated Data:", dataToSubmit);
 
       dispatch(
         updateInterview({
@@ -123,8 +101,8 @@ const InterviewForm = ({
         })
         .finally(() => setLoading(false));
     } else {
-      console.log("--- CREATE NEW INTERVIEW RECORD ---");
-      console.log("New Data:", dataToSubmit);
+      // console.log("--- CREATE NEW INTERVIEW RECORD ---");
+      // console.log("New Data:", dataToSubmit);
 
       dispatch(createInterview(dataToSubmit as any) as any)
         .unwrap()
@@ -139,9 +117,9 @@ const InterviewForm = ({
         .finally(() => setLoading(false));
     }
 
-    console.log(
-      `Success! Interview for ${data.name} ${mode === "update" ? "updated" : "created"}.`
-    );
+    // console.log(
+    //   `Success! Interview for ${data.name} ${mode === "update" ? "updated" : "created"}.`
+    // );
   };
 
   const formTitle =
@@ -322,10 +300,6 @@ const InterviewForm = ({
                     placeholder="e.g., 5"
                     {...register("workExp", {
                       required: "Work Experience is required",
-                      min: {
-                        value: 0,
-                        message: "Work experience cannot be negative",
-                      },
                     })}
                     className={`w-full px-3 py-3 rounded-xl bg-gray-100 border border-transparent focus:border-zinc-500 focus:outline-none ${
                       errors.workExp ? "border-red-500 border" : ""

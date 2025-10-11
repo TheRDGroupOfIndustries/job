@@ -5,35 +5,23 @@ import { useDispatch, useSelector } from "react-redux";
 import JobForm from "./JobForm";
 
 import { useEffect, useState } from "react";
-import { deleteJob, fetchJobs } from "@/redux/features/jobSlice";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import BtnLoader from "./BtnLoader";
-import JobDetails from "./JobDetails";
-import { ArrowUpRight, Pencil, Plus, Trash } from "lucide-react";
-import toast from "react-hot-toast";
-import { Avatar, AvatarFallback } from "./ui/avatar";
-import { useRouter } from "next/navigation";
+import { fetchJobs } from "@/redux/features/jobSlice";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { ArrowUpRight, Plus } from "lucide-react";
 import Link from "next/link";
 import PageLoader from "./PageLoader";
 import Image from "next/image";
 
 export default function JobComp() {
-  const { mails, selectedMail } = useSelector((state: RootState) => state.mail);
   const { jobs } = useSelector((state: RootState) => state.job); // Ensure jobs is typed as IJob[]
   const { userData } = useSelector((state: RootState) => state.auth);
   const [isOpenForm, setIsOpenForm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
     setLoading(true);
-    if (jobs.length > 0) {
-      setLoading(false);
-    }
     dispatch(fetchJobs())
       .then(() => setLoading(false))
       .catch(() => setLoading(false));

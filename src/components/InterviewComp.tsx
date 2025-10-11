@@ -14,73 +14,6 @@ import InterviewForm from "./InterviewForm";
 import PageLoader from "./PageLoader";
 import { Checkbox } from "./ui/checkbox";
 
-// export const mockInterviews: Interview[] = [
-//   {
-//     _id: "68ea59df3f95bafea33b5946",
-//     candidateName: "Aditya Verma",
-//     candidateEmail: "aditya.verma@ex.com",
-//     candidatePhone: "+91 9812345678",
-//     candidateGender: "Male",
-//     candidateExp: 4,
-//     candidateSkills: ["React", "Next.js", "TypeScript"],
-//     interviewDate: "2025-10-28T00:00:00.000Z",
-//     interviewTime: "9:45 AM",
-//     joiningLocation: "Delhi Office",
-//     createdBy: "68dbd20dfb4601466b89b84b",
-//     status: "done",
-//     createdAt: "2025-10-11T13:21:36.024Z",
-//     updatedAt: "2025-10-11T13:41:56.084Z",
-//   },
-//   {
-//     _id: "68ea59df3f95bafea33b5947",
-//     candidateName: "Radha Sharma",
-//     candidateEmail: "radha.sharma@ex.com",
-//     candidatePhone: "+91 9812345679",
-//     candidateGender: "Female",
-//     candidateExp: 7,
-//     candidateSkills: ["JavaScript", "Node.js", "MongoDB"],
-//     interviewDate: "2025-10-29T00:00:00.000Z",
-//     interviewTime: "11:00 AM",
-//     joiningLocation: "Mumbai Office",
-//     createdBy: "68dbd20dfb4601466b89b84c",
-//     status: "scheduled",
-//     createdAt: "2025-10-12T10:00:00.000Z",
-//     updatedAt: "2025-10-12T10:00:00.000Z",
-//   },
-//   {
-//     _id: "68ea59df3f95bafea33b5948",
-//     candidateName: "Priya Singh",
-//     candidateEmail: "priya.singh@ex.com",
-//     candidatePhone: "+91 9812345680",
-//     candidateGender: "Female",
-//     candidateExp: 2,
-//     candidateSkills: ["HTML", "CSS", "Sass"],
-//     interviewDate: "2025-10-30T00:00:00.000Z",
-//     interviewTime: "2:30 PM",
-//     joiningLocation: "Bangalore Office",
-//     createdBy: "68dbd20dfb4601466b89b84d",
-//     status: "done",
-//     createdAt: "2025-10-13T10:00:00.000Z",
-//     updatedAt: "2025-10-13T10:00:00.000Z",
-//   },
-//   {
-//     _id: "68ea59df3f95bafea33b5949",
-//     candidateName: "Rahul Kumar",
-//     candidateEmail: "rahul.kumar@ex.com",
-//     candidatePhone: "+91 9812345681",
-//     candidateGender: "Male",
-//     candidateExp: 5,
-//     candidateSkills: ["Java", "Spring Boot", "MySQL"],
-//     interviewDate: "2025-10-31T00:00:00.000Z",
-//     interviewTime: "10:00 AM",
-//     joiningLocation: "Hyderabad Office",
-//     createdBy: "68dbd20dfb4601466b89b84e",
-//     status: "scheduled",
-//     createdAt: "2025-10-14T10:00:00.000Z",
-//     updatedAt: "2025-10-14T10:00:00.000Z",
-//   },
-// ];
-
 interface InterviewCardProps {
   interview: Interview;
 }
@@ -138,9 +71,6 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
     setDeleting(id);
     dispatch(deleteInterview(id as string) as any)
       .unwrap()
-      .then(() => {
-        console.log("Interview deleted successfully");
-      })
       .catch((error: any) => {
         console.error("Error deleting interview:", error);
       })
@@ -265,9 +195,15 @@ const InterviewGrid: React.FC = () => {
         {/* <NewCard /> */}
 
         {/* List of Interview Cards */}
-        {interviews.map((interview) => (
-          <InterviewCard key={interview._id} interview={interview} />
-        ))}
+        {interviews.length === 0 ? (
+          <div className="p-10 text-center text-gray-500">
+            No Interview found.
+          </div>
+        ) : (
+          interviews.map((interview) => (
+            <InterviewCard key={interview._id} interview={interview} />
+          ))
+        )}
       </div>
     </div>
   );
