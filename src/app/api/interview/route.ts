@@ -13,9 +13,13 @@ export async function GET(req: NextRequest) {
 
   let interviews;
   if (user.role === "admin") {
-    interviews = await Interview.find().populate("createdBy");
+    interviews = await Interview.find().populate("createdBy").sort({
+      createdAt: -1,
+    });
   } else if (user.role === "employee") {
-    interviews = await Interview.find({ createdBy: user.id });
+    interviews = await Interview.find({ createdBy: user.id }).sort({
+      createdAt: -1,
+    });
   } else {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
